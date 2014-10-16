@@ -17,14 +17,7 @@ namespace Globals
   Cube cube;
 };
 
-void processNormalKeys(unsigned char key, int x, int y) {
-	if (key == 27)
-		exit(0);
-	//'t' for spinning clockwise or counter clockwise
-	if (key == 117) {
-		exit(0);
-	}
-}
+
 
 int main(int argc, char *argv[])
 {
@@ -63,9 +56,8 @@ int main(int argc, char *argv[])
     
   // Initialize cube matrix:
   Globals::cube.getMatrix().identity();
-  cerr << "WindowafdsafsdafdsafreshapeCallback called" << endl;
   OutputDebugString("fdsa");
-  glutKeyboardFunc(processNormalKeys);
+  glutKeyboardFunc(Window::processNormalKeys);
   glutMainLoop();
   return 0;
 }

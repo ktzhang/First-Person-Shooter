@@ -12,6 +12,19 @@ using namespace std;
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
 
+
+//----------------------------------------------------------------------------
+// Callback method of keyboard input
+void Window::processNormalKeys(unsigned char key, int x, int y) 
+{
+	if (key == 27)
+		exit(0);
+	//'t' for spinning clockwise or counter clockwise
+	if (key == 117) {
+		exit(0);
+	}
+}
+
 //----------------------------------------------------------------------------
 // Callback method called when system is idle.
 void Window::idleCallback()
