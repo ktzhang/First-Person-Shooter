@@ -7,6 +7,11 @@
 #include "Matrix4.h"
 #include "main.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <Windows.h>
+
 using namespace std;
 
 int Window::width = 512;   // set window width in pixels here
@@ -17,22 +22,41 @@ int Window::height = 512;   // set window height in pixels here
 // Callback method of keyboard input
 void Window::processNormalKeys(unsigned char key, int x, int y) 
 {
+	double transFactor = 0.5;
 	switch (key) {
-	//'t' for spinning clockwise or counter clockwise
-	case 116 :
-		Globals::cube.spinDirection = -Globals::cube.spinDirection;
+		//'t' for spinning clockwise or counter clockwise
+	case 116:
+		Globals::cube.changeSpinDirection();
 		break;
-	//'x'
+
+		//'x' left 
 	case 120:
-		Globals::cube.horizontalTransform(-1.0);
-		displayCallback();
-
+		Globals::cube.horizontalTransform(-transFactor, 0, 0);
 		break;
-	// 'X'
-	case 88:
-		Globals::cube.horizontalTransform(1.0);
-		displayCallback();
 
+		// 'X' right
+	case 88:
+		Globals::cube.horizontalTransform(transFactor, 0, 0);
+		break;
+
+		// 'y' down 
+	case 121:
+		Globals::cube.horizontalTransform(0, -transFactor, 0);
+		break;
+
+		// 'Y' up
+	case 89:
+		Globals::cube.horizontalTransform(0, transFactor, 0);
+		break;
+
+		// 'z' in
+	case 122:
+		Globals::cube.horizontalTransform(0, 0, transFactor);
+		break;
+
+		// 'Z' out
+	case 90:
+		Globals::cube.horizontalTransform(0, 0, -transFactor);
 		break;
 	}
 }
@@ -70,7 +94,14 @@ void Window::displayCallback()
 	// Tell OpenGL what ModelView matrix to use:
 	Matrix4 glmatrix;
 	glmatrix = Globals::cube.getMatrix();
-	glmatrix.transpose();
+
+	std::string hiThere = "\n";
+	
+
+	//glmatrix.transpose();
+	glmatrix.print(hiThere);
+	OutputDebugString(hiThere.c_str());
+	
 	glLoadMatrixd(glmatrix.getPointer());
 
 	// Draw all six faces of the cube:

@@ -2,6 +2,8 @@
 
 #include "Matrix4.h"
 
+using namespace std;
+
 Matrix4::Matrix4()
 {
   for (int i=0; i<4; ++i)
@@ -29,14 +31,24 @@ Matrix4& Matrix4::operator=(const Matrix4& m2)
 }
 
 Matrix4 Matrix4::operator*(const Matrix4& m2) {
+	Matrix4 n;
+
 	for (int i = 0; i < 4; i++){
 		for (int j = 0; j < 4; j++){
 			for (int x = 0; x < 4; x++){
-				this->m[i][j] += this->m[i][x] * m2.m[x][j];
+				n.m[j][i] += this->m[x][i] * m2.m[j][x];
 			}
 		}
 	}
-	return *this;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++) {
+				//n[]
+			}
+		}
+	}
+	return n;
 }
 
 
@@ -44,7 +56,7 @@ Vector4 Matrix4::operator*(const Vector4& v) { // : multiply matrix with vector
 	Vector4 v2(0, 0, 0, 0);
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			v2.m[i] = this->m[i][j] * v.m[j];
+			v2.m[i] = this->m[j][i] * v.m[j];
 		}
 	}
 	return v2;
@@ -156,9 +168,28 @@ void Matrix4::makeTranslate(double tx, double ty, double tz) {
 	m[3][0] = tx;
 	m[3][1] = ty;
 	m[3][2] = tz;
+
+	/*m[3][0] = tx;
+	m[3][1] = ty;
+	m[3][2] = tz;*/
 }
 
-void Matrix4::print(std::string comment) {
-
-
+void Matrix4::print(std::string& comment) {
+	comment.append("\n| "
+		+ to_string(m[0][0]) + " "
+		+ to_string(m[1][0]) + " "
+		+ to_string(m[2][0]) + " "
+		+ to_string(m[3][0]) + " |\n| "
+		+ to_string(m[0][1]) + " "
+		+ to_string(m[1][1]) + " "
+		+ to_string(m[2][1]) + " "
+		+ to_string(m[3][1]) + " |\n| "
+		+ to_string(m[0][2]) + " "
+		+ to_string(m[1][2]) + " "
+		+ to_string(m[2][2]) + " "
+		+ to_string(m[3][2]) + " |\n| "
+		+ to_string(m[0][3]) + " "
+		+ to_string(m[1][3]) + " "
+		+ to_string(m[2][3]) + " "
+		+ to_string(m[3][3]) + " |");
 }

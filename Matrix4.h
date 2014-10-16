@@ -26,7 +26,7 @@ class Matrix4
 	void Matrix4::makeRotate(double angle, const Vector3& axis); // : Make a rotation matrix about an arbitrary axis
 	void Matrix4::makeScale(double sx, double sy, double sz); // : make a non - uniform scaling matrix
 	void Matrix4::makeTranslate(double tx, double ty, double tz); // : make a translation matrix
-	void Matrix4::print(std::string comment);// : print the matrix(display all 16 matrix components numerically on the screen in a 4x4 array)
+	void Matrix4::print(std::string& comment);// : print the matrix(display all 16 matrix components numerically on the screen in a 4x4 array)
 };
 
 #endif

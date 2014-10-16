@@ -62,8 +62,18 @@ int main(int argc, char *argv[])
   Vector4 vector(3, 3, 3, 3);
   Vector4 vector2(1, 1, 1, 1);
   vector + vector2;
+
+
+  Matrix4 m;
+  m.identity();
+  m.makeTranslate(1, 2, 3);
+
+  Matrix4 m2;
+  m2.makeTranslate(4,5,6);
+  m =  m*m2;
+
   std::string hiThere = "aa";
-  vector.print(hiThere);
+  m.print(hiThere);
   OutputDebugString(hiThere.c_str());
   
   glutKeyboardFunc(Window::processNormalKeys);
