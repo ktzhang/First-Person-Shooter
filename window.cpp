@@ -31,32 +31,54 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 		//'x' left 
 	case 120:
-		Globals::cube.horizontalTransform(-transFactor, 0, 0);
+		Globals::cube.translateCube(-transFactor, 0, 0);
 		break;
 
 		// 'X' right
 	case 88:
-		Globals::cube.horizontalTransform(transFactor, 0, 0);
+		Globals::cube.translateCube(transFactor, 0, 0);
 		break;
 
 		// 'y' down 
 	case 121:
-		Globals::cube.horizontalTransform(0, -transFactor, 0);
+		Globals::cube.translateCube(0, -transFactor, 0);
 		break;
 
 		// 'Y' up
 	case 89:
-		Globals::cube.horizontalTransform(0, transFactor, 0);
+		Globals::cube.translateCube(0, transFactor, 0);
 		break;
 
 		// 'z' in
 	case 122:
-		Globals::cube.horizontalTransform(0, 0, transFactor);
+		Globals::cube.translateCube(0, 0, transFactor);
 		break;
 
 		// 'Z' out
 	case 90:
-		Globals::cube.horizontalTransform(0, 0, -transFactor);
+		Globals::cube.translateCube(0, 0, -transFactor);
+		break;
+
+		// 'r' reset
+	case 114:
+		Globals::cube.reset();
+		break;
+
+		// 'o' orbit counterclockwise
+	case 111:
+		break;
+
+		// 'O' orbit clockwise
+	case 79:
+		break;
+
+
+		// 's' scale down
+	case 115:
+		break;
+
+		// 'S' scale up
+	case 83:
 		break;
 	}
 }

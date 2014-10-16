@@ -16,9 +16,11 @@ class Cube
 
     Matrix4& getMatrix();
     Matrix4 spin(double);      // spin cube [degrees]
-	void Cube::horizontalTransform(double x, double y, double z);
+	void Cube::translateCube(double x, double y, double z);
 	void Cube::animate();
 	void Cube::changeSpinDirection();
+
+	void Cube::reset();
 };
 
 #endif

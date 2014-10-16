@@ -20,11 +20,7 @@ using namespace std;
 
 Cube::Cube()
 {
-   spinDirection = -1;
-   angle = 0.0;
-   origin[0] = 0;
-   origin[1] = 0;
-   origin[2] = 0;
+	reset();
 }
 
 Matrix4& Cube::getMatrix()
@@ -37,15 +33,23 @@ void Cube::changeSpinDirection() {
 	spinDirection = -spinDirection;
 }
 
+void Cube::reset() {
+	spinDirection = -1;
+	angle = 0.0;
+	origin[0] = 0;
+	origin[1] = 0;
+	origin[2] = 0;
+}
+
 void Cube::animate() {
-	Matrix4 horizontal;
-	horizontal.makeTranslate(origin[0], origin[1], origin[2]);
-	//horizontal.makeTranslate(0.01, 0.01, 0.01);
+	//Translate
+	Matrix4 translate;
+	translate.makeTranslate(origin[0], origin[1], origin[2]);
+
+
 	Matrix4 rotate = spin(spinDirection);
-	model2world =  horizontal * rotate;
+	model2world = translate * rotate;
 	
-	Matrix4 scale;
-	scale.makeScale(1.001, 1.001, 1.001);
 	//model2world = scale;
 }
 
@@ -58,7 +62,7 @@ Matrix4 Cube::spin(double deg)   // deg is in degrees
   return base;
 }
 
-void Cube::horizontalTransform(double x, double y, double z) {
+void Cube::translateCube(double x, double y, double z) {
 	origin[0] = origin[0] + x;
 	origin[1] = origin[1] + y;
 	origin[2] = origin[2] + z;
