@@ -9,17 +9,16 @@ class Vector3
 {
 protected:
 public:
-	Vector3& operator=(const Vector3&);
-	double* getPointer();
-	void identity();
-	void transpose();
-	void makeRotateY(double);
+	static const int numElements = 3;
+	double m[numElements];
 
-	double x;
-	double y;
-	double z;
 
-	Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z){};	// constructor with three parameters for the vector coordinates
+	Vector3::Vector3(double x, double y, double z) {
+		m[0] = x;
+		m[1] = y;
+		m[2] = z;
+	};	// constructor with three parameters for the vector coordinates
+	
 	Vector3 operator+(const Vector3& vector);			// overload operator '+' for addition
 	Vector3 operator-(const Vector3& vector); //overload operator '-' for subtraction
 
