@@ -134,3 +134,40 @@ void Matrix4::makeRotateZ(double angle)
 	m[1][1] = cos(angle);
 }
 
+// : Make a rotation matrix about an arbitrary axis
+void Matrix4::makeRotate(double angle, const Vector3& axis) {
+	angle = angle / 180.0 * M_PI;  // convert from degrees to radians
+	double t = 1 - cos(angle);
+	double s = sin(angle);
+	double c = cos(angle);
+	double X = axis.m[0];
+	double Y = axis.m[1];
+	double Z = axis.m[2];
+
+	identity();
+	m[0][0] = t*X*X + c;
+	m[0][1] = t*X*Y - s*Z;
+	m[0][2] = t*X*Z + s*Y;
+	m[1][0] = t*X*Y + s*Z;
+	m[1][1] = t*Y*Y + c;
+	m[1][2] = t*Y*Z - s*X;
+	m[2][0] = t*X*Z - s*Y;
+	m[2][1] = t*Y*Z + s*X;
+	m[2][2] = t*Z*Z + c;
+}
+
+// : make a non - uniform scaling matrix
+void Matrix4::makeScale(double sx, double sy, double sz) {
+	identity();
+	m[0][0] = sx;
+	m[1][1] = sy;
+	m[2][2] = sz;
+}
+
+// : make a translation matrix
+void Matrix4::makeTranslate(double tx, double ty, double tz) {
+	identity();
+	m[3][0] = tx;
+	m[3][1] = ty;
+	m[3][2] = tz;
+}
