@@ -8,6 +8,7 @@ class Cube
   protected:
     Matrix4 model2world;            // model matrix (transforms model coordinates to world coordinates)
     double angle;                   // rotation angle [degrees]
+	double orbitAngle;				// rotation angle orbit
 	double origin[3];
 
   public:
@@ -19,7 +20,7 @@ class Cube
 	void Cube::translateCube(double x, double y, double z);
 	void Cube::animate();
 	void Cube::changeSpinDirection();
-
+	void Cube::orbitCube(double deg);
 	void Cube::reset();
 };
 

@@ -23,6 +23,7 @@ int Window::height = 512;   // set window height in pixels here
 void Window::processNormalKeys(unsigned char key, int x, int y) 
 {
 	double transFactor = 0.5;
+	double orbitDeg = 10;
 	switch (key) {
 		//'t' for spinning clockwise or counter clockwise
 	case 116:
@@ -66,10 +67,14 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 		// 'o' orbit counterclockwise
 	case 111:
+		Globals::cube.orbitCube(-orbitDeg);
+
 		break;
 
 		// 'O' orbit clockwise
 	case 79:
+		Globals::cube.orbitCube(orbitDeg);
+
 		break;
 
 

@@ -36,6 +36,7 @@ void Cube::changeSpinDirection() {
 void Cube::reset() {
 	spinDirection = -1;
 	angle = 0.0;
+	orbitAngle = 0.0;
 	origin[0] = 0;
 	origin[1] = 0;
 	origin[2] = 0;
@@ -48,7 +49,12 @@ void Cube::animate() {
 
 
 	Matrix4 rotate = spin(spinDirection);
-	model2world = translate * rotate;
+
+
+	Matrix4 orbit;
+	orbit.makeRotateZ(orbitAngle);
+
+	model2world = orbit * translate * rotate;
 	
 	//model2world = scale;
 }
@@ -60,6 +66,11 @@ Matrix4 Cube::spin(double deg)   // deg is in degrees
   if (angle > 360.0 || angle < -360.0) angle = 0.0;
   base.makeRotateY(angle);   // This creates the matrix to rotate the cube
   return base;
+}
+
+void Cube::orbitCube(double deg) {
+	orbitAngle += deg;
+	if (orbitAngle > 360.0 || orbitAngle < -360.0) orbitAngle = 0.0;
 }
 
 void Cube::translateCube(double x, double y, double z) {
