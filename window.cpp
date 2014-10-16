@@ -24,6 +24,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 {
 	double transFactor = 0.5;
 	double orbitDeg = 10;
+	double scaleFactor = 0.01;
 	switch (key) {
 		//'t' for spinning clockwise or counter clockwise
 	case 116:
@@ -68,22 +69,22 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		// 'o' orbit counterclockwise
 	case 111:
 		Globals::cube.orbitCube(-orbitDeg);
-
 		break;
 
 		// 'O' orbit clockwise
 	case 79:
 		Globals::cube.orbitCube(orbitDeg);
-
 		break;
 
 
 		// 's' scale down
 	case 115:
+		Globals::cube.scaleCube(-scaleFactor);
 		break;
 
 		// 'S' scale up
 	case 83:
+		Globals::cube.scaleCube(scaleFactor);
 		break;
 	}
 }
