@@ -17,11 +17,23 @@ int Window::height = 512;   // set window height in pixels here
 // Callback method of keyboard input
 void Window::processNormalKeys(unsigned char key, int x, int y) 
 {
-	if (key == 27)
-		exit(0);
+	switch (key) {
 	//'t' for spinning clockwise or counter clockwise
-	if (key == 117) {
-		exit(0);
+	case 116 :
+		Globals::cube.spinDirection = -Globals::cube.spinDirection;
+		break;
+	//'x'
+	case 120:
+		Globals::cube.horizontalTransform(-1.0);
+		displayCallback();
+
+		break;
+	// 'X'
+	case 88:
+		Globals::cube.horizontalTransform(1.0);
+		displayCallback();
+
+		break;
 	}
 }
 
@@ -29,7 +41,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 // Callback method called when system is idle.
 void Window::idleCallback()
 {
-	Globals::cube.spin(1.0);   // rotate cube; if it spins too fast try smaller values and vice versa
+	Globals::cube.animate();   // rotate cube; if it spins too fast try smaller values and vice versa
 	displayCallback();         // call display routine to show the cube
 }
 
