@@ -10,6 +10,7 @@
 #include "Matrix4.h"
 #include "main.h"
 #include "Vector3.h"
+#include "Vector4.h"
 
 using namespace std;
 
@@ -57,7 +58,14 @@ int main(int argc, char *argv[])
     
   // Initialize cube matrix:
   Globals::cube.getMatrix().identity();
-  OutputDebugString("fdsa");
+
+  Vector4 vector(3, 3, 3, 3);
+  Vector4 vector2(1, 1, 1, 1);
+  vector + vector2;
+  std::string hiThere = "aa";
+  vector.print(hiThere);
+  OutputDebugString(hiThere.c_str());
+  
   glutKeyboardFunc(Window::processNormalKeys);
   glutMainLoop();
   return 0;
