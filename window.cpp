@@ -24,7 +24,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 {
 	double transFactor = 0.5;
 	double orbitDeg = 10;
-	double scaleFactor = 0.01;
+	double scaleFactor = 0.1;
 	switch (key) {
 		//'t' for spinning clockwise or counter clockwise
 	case 116:

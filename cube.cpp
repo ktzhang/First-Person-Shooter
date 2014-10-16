@@ -49,7 +49,7 @@ void Cube::animate() {
 	translateMatrix.makeTranslate(origin[0], origin[1], origin[2]);
 
 	Matrix4 rotateMatrix;
-	rotateMatrix.makeRotateY(spinAngle);   // This creates the matrix to rotate the cube
+	rotateMatrix.makeRotateY(spinAngle += spinDirection * 1);   // This creates the matrix to rotate the cube
 
 	Matrix4 orbitMatrix;
 	orbitMatrix.makeRotateZ(orbitAngle);
