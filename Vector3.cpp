@@ -51,3 +51,7 @@ void Vector3::normalize() {
 	this->y = this->y / length;
 	this->z = this->z / length;
 }
+
+void Vector3::print(std::string comment) {
+	comment.append("x: " + std::to_string(this->x) + ", y: " + std::to_string(this->y) + ", z: " + std::to_string(this->z));
+}

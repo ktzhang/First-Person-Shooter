@@ -1,3 +1,5 @@
+#include <string>
+
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
 
@@ -29,7 +31,7 @@ public:
 	Vector3 cross(const Vector3& vector1, const Vector3& vector2); //: cross product, returns result and puts it in calling vector
 	double length();// : length of the vector
 	void normalize();// : normalize the vector(make it so that its length is equal to one)
-	//void print(string comment);// : print x, y and z components of the vector after a comment string
+	void print(std::string comment);// : print x, y and z components of the vector after a comment string
 };
 
 #endif
