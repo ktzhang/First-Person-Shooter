@@ -57,7 +57,7 @@ void Cube::animate() {
 	Matrix4 scaleMatrix;
 	scaleMatrix.makeScale(scale, scale, scale);
 
-	model2world = orbitMatrix * translateMatrix * scaleMatrix * rotateMatrix;
+	model2world = translateMatrix * orbitMatrix  * scaleMatrix * rotateMatrix;
 	
 	//model2world = scale;
 }

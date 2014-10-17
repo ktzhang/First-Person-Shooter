@@ -168,10 +168,6 @@ void Matrix4::makeTranslate(double tx, double ty, double tz) {
 	m[3][0] = tx;
 	m[3][1] = ty;
 	m[3][2] = tz;
-
-	/*m[3][0] = tx;
-	m[3][1] = ty;
-	m[3][2] = tz;*/
 }
 
 void Matrix4::print(std::string& comment) {

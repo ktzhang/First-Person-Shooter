@@ -93,6 +93,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 // Callback method called when system is idle.
 void Window::idleCallback()
 {
+
 	Globals::cube.animate();   // rotate cube; if it spins too fast try smaller values and vice versa
 	displayCallback();         // call display routine to show the cube
 }
