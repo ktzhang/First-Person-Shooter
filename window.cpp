@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Matrix4.h"
 #include "main.h"
+#include "Camera.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,18 +121,19 @@ void Window::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);  // make sure we're in Modelview mode
 
+
+
 	// Tell OpenGL what ModelView matrix to use:
-	Matrix4 glmatrix;
-	glmatrix = Globals::cube.getMatrix();
+	//Matrix4 glmatrix;
+	//glmatrix = Globals::cube.getMatrix();
+
+	Camera camera;
+	glLoadMatrixd(camera.getGLMatrix());
 
 	std::string hiThere = "\n";
-	
-
-	//glmatrix.transpose();
-	glmatrix.print(hiThere);
-	OutputDebugString(hiThere.c_str());
-	
-	glLoadMatrixd(glmatrix.getPointer());
+	//glmatrix.print(hiThere);
+	//OutputDebugString(hiThere.c_str());
+	//glLoadMatrixd(glmatrix.getPointer());
 
 	// Draw all six faces of the cube:
 	glBegin(GL_QUADS);

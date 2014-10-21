@@ -11,6 +11,7 @@
 #include "main.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -61,7 +62,9 @@ int main(int argc, char *argv[])
 
 
   // Test Methods
-  OutputDebugString(hiThere.c_str());
+
+  Camera cam;
+  cam.dVector = Vector3(3, 4, 5);
   
   glutKeyboardFunc(Window::processNormalKeys);
   glutMainLoop();
