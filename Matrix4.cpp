@@ -15,6 +15,16 @@ Matrix4::Matrix4()
   }
 } 
 
+Matrix4::Matrix4(double n[4][4]) {
+	for (int i = 0; i<4; ++i)
+	{
+		for (int j = 0; j<4; ++j)
+		{
+			m[i][j] = n[i][j];
+		}
+	}
+}
+
 Matrix4& Matrix4::operator=(const Matrix4& m2)
 {
   if (this != &m2)

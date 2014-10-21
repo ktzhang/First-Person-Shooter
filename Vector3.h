@@ -12,7 +12,11 @@ public:
 	static const int numElements = 3;
 	double m[numElements];
 
-
+	Vector3::Vector3(){
+		m[0] = 0;
+		m[1] = 1;
+		m[2] = 2;
+	}
 	Vector3::Vector3(double x, double y, double z) {
 		m[0] = x;
 		m[1] = y;

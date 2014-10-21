@@ -13,7 +13,8 @@ class Matrix4
     double m[4][4];   // matrix elements; first index is for rows, second for columns (row-major)
     
   public:
-    Matrix4();     
+    Matrix4(); 
+	Matrix4(double[4][4]);
     Matrix4& operator=(const Matrix4&);
     double* getPointer(); 
 	Matrix4 Matrix4::operator*(const Matrix4& m2); // : multiply matrix with matrix
