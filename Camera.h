@@ -12,16 +12,14 @@ class Camera
 {
 protected:
 	Matrix4 matrix;
-	double m[CAMERA_MATRIX*CAMERA_MATRIX];   // matrix elements; first index is for rows, second for columns (row-major)
+	double m[CAMERA_MATRIX][CAMERA_MATRIX];   // matrix elements; first index is for rows, second for columns (row-major)
 public:
 	Camera();
 	//Camera(Vector3 upVector, Vector3 eVector, Vector3 dVector);
 	Vector3 upVector;
 	Vector3 eVector; // Center of projection
 	Vector3 dVector; // Look at point
-	double* Camera::getGLMatrix();
-	double* Camera::getValues();
-	
+	Matrix4* Camera::getGLMatrix();
 };
 
 #endif

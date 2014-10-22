@@ -6,12 +6,15 @@ Camera::Camera() {
 	upVector = Vector3(0, 0, 0);
 	eVector = Vector3(0, 0, 0);
 	dVector = Vector3(0, 0, 0);
-	for (int i = 0; i < CAMERA_MATRIX*CAMERA_MATRIX; i++) {
-		m[i] = 0;
+	for (int i = 0; i < CAMERA_MATRIX; i++) {
+		for (int j = 0; j < CAMERA_MATRIX; j++) {
+			m[i][j] = 0;
+		}
 	}
 }
 
-double* Camera::getGLMatrix() {
+
+Matrix4* Camera::getGLMatrix() {
 	Vector3 zAxis = eVector - dVector;
 	zAxis.normalize();
 
@@ -22,15 +25,16 @@ double* Camera::getGLMatrix() {
 	upVector.normalize();
 
 	for (int i = 0; i < 3; i++) {
-		m[i] = xAxis.m[i];
-		m[i + 4] = yAxis.m[i];
-		m[i + 8] = zAxis.m[i];
-		m[i + 12] = this->eVector.m[i];
+		m[0][i] = xAxis.m[i];
+		m[1][i] = yAxis.m[i];
+		m[2][i] = zAxis.m[i];
+		m[3][i] = this->eVector.m[i];
 	}
-	m[3] = 0;
-	m[7] = 0;
-	m[11] = 0;
-	m[15] = 1;
-
-	return m;
+	m[0][3] = 0;
+	m[1][3] = 0;
+	m[2][3] = 0;
+	m[3][3] = 1;
+	
+	matrix = Matrix4(m);
+	return &matrix;
 }

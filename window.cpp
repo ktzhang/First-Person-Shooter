@@ -127,12 +127,21 @@ void Window::displayCallback()
 	//Matrix4 glmatrix;
 	//glmatrix = Globals::cube.getMatrix();
 
+	Vector3 cameraCenterVector = Vector3(0, 10, 10);
+	Vector3 cameraDVector = Vector3(0, 0, 0);
+	Vector3 cameraUpVector = Vector3(0, 1, 0);
+
 	Camera camera;
-	glLoadMatrixd(camera.getGLMatrix());
+	camera.eVector = cameraCenterVector;
+	camera.dVector = cameraDVector;
+	camera.upVector = cameraUpVector;
+
+	Matrix4 cameraMatrix = *(camera.getGLMatrix());
+	glLoadMatrixd(cameraMatrix.getPointer());
 
 	std::string hiThere = "\n";
-	//glmatrix.print(hiThere);
-	//OutputDebugString(hiThere.c_str());
+	cameraMatrix.print(hiThere);
+	OutputDebugString(hiThere.c_str());
 	//glLoadMatrixd(glmatrix.getPointer());
 
 	// Draw all six faces of the cube:
