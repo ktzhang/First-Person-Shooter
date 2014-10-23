@@ -19,6 +19,8 @@ int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
 
 
+int viewMode = 2; // 0 = ball, 1/2 = house
+
 //----------------------------------------------------------------------------
 // Callback method of keyboard input
 void Window::processNormalKeys(unsigned char key, int x, int y) 
@@ -114,6 +116,13 @@ void Window::reshapeCallback(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+
+struct CameraVectors {
+	Vector3 centerVector;
+	Vector3 dVector;
+	Vector3 upVector;
+};
+
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
@@ -124,72 +133,80 @@ void Window::displayCallback()
 
 
 	// Tell OpenGL what ModelView matrix to use:
-	//Matrix4 glmatrix;
-	//glmatrix = Globals::cube.getMatrix();
+	CameraVectors cameraVectors[2];
+	cameraVectors[0] = { Vector3(0, 10, 10), Vector3(0, 0, 0), Vector3(0, 1, 0) };
+	cameraVectors[1] = { Vector3(-15, 5, 10), Vector3(-5, 0, 0), Vector3(0, 1, 0.5) };
 
-	Vector3 cameraCenterVector = Vector3(0, 10, 10);
-	Vector3 cameraDVector = Vector3(0, 0, 0);
-	Vector3 cameraUpVector = Vector3(0, 1, 0);
+	Camera camera[2];
+	for (int i = 0; i < 2; i++) {
+		camera[i].eVector = cameraVectors[i].centerVector;
+		camera[i].dVector = cameraVectors[i].dVector;
+		camera[i].upVector = cameraVectors[i].upVector;
+	}
 
-	Camera camera;
-	camera.eVector = cameraCenterVector;
-	camera.dVector = cameraDVector;
-	camera.upVector = cameraUpVector;
+	if (viewMode != 0) {
+		Matrix4 cameraMatrix = *(camera[viewMode-1].getGLMatrix());
+		glLoadMatrixd(cameraMatrix.getPointer());
+		std::string hiThere = "\n";
+		cameraMatrix.print(hiThere);
+		OutputDebugString(hiThere.c_str());
+	}
+	else {
+		Matrix4 glmatrix;
+		glmatrix = Globals::cube.getMatrix();
+		glLoadMatrixd(glmatrix.getPointer());
 
-	Matrix4 cameraMatrix = *(camera.getGLMatrix());
-	glLoadMatrixd(cameraMatrix.getPointer());
+		// Draw all six faces of the cube:
+		glBegin(GL_QUADS);
+		glColor3f(0.0, 1.0, 0.0);		// This makes the cube green; the parameters are for red, green and blue. 
+		// To change the color of the other faces you will need to repeat this call before each face is drawn.
+		// Draw front face:
+		glNormal3f(0.0, 0.0, 1.0);
+		glVertex3f(-5.0, 5.0, 5.0);
+		glVertex3f(5.0, 5.0, 5.0);
+		glVertex3f(5.0, -5.0, 5.0);
+		glVertex3f(-5.0, -5.0, 5.0);
 
-	std::string hiThere = "\n";
-	cameraMatrix.print(hiThere);
-	OutputDebugString(hiThere.c_str());
-	//glLoadMatrixd(glmatrix.getPointer());
+		// Draw left side:
+		glNormal3f(-1.0, 0.0, 0.0);
+		glVertex3f(-5.0, 5.0, 5.0);
+		glVertex3f(-5.0, 5.0, -5.0);
+		glVertex3f(-5.0, -5.0, -5.0);
+		glVertex3f(-5.0, -5.0, 5.0);
 
-	// Draw all six faces of the cube:
-	glBegin(GL_QUADS);
-	glColor3f(0.0, 1.0, 0.0);		// This makes the cube green; the parameters are for red, green and blue. 
-	// To change the color of the other faces you will need to repeat this call before each face is drawn.
-	// Draw front face:
-	glNormal3f(0.0, 0.0, 1.0);
-	glVertex3f(-5.0, 5.0, 5.0);
-	glVertex3f(5.0, 5.0, 5.0);
-	glVertex3f(5.0, -5.0, 5.0);
-	glVertex3f(-5.0, -5.0, 5.0);
+		// Draw right side:
+		glNormal3f(1.0, 0.0, 0.0);
+		glVertex3f(5.0, 5.0, 5.0);
+		glVertex3f(5.0, 5.0, -5.0);
+		glVertex3f(5.0, -5.0, -5.0);
+		glVertex3f(5.0, -5.0, 5.0);
 
-	// Draw left side:
-	glNormal3f(-1.0, 0.0, 0.0);
-	glVertex3f(-5.0, 5.0, 5.0);
-	glVertex3f(-5.0, 5.0, -5.0);
-	glVertex3f(-5.0, -5.0, -5.0);
-	glVertex3f(-5.0, -5.0, 5.0);
+		// Draw back face:
+		glNormal3f(0.0, 0.0, -1.0);
+		glVertex3f(-5.0, 5.0, -5.0);
+		glVertex3f(5.0, 5.0, -5.0);
+		glVertex3f(5.0, -5.0, -5.0);
+		glVertex3f(-5.0, -5.0, -5.0);
 
-	// Draw right side:
-	glNormal3f(1.0, 0.0, 0.0);
-	glVertex3f(5.0, 5.0, 5.0);
-	glVertex3f(5.0, 5.0, -5.0);
-	glVertex3f(5.0, -5.0, -5.0);
-	glVertex3f(5.0, -5.0, 5.0);
+		// Draw top side:
+		glNormal3f(0.0, 1.0, 0.0);
+		glVertex3f(-5.0, 5.0, 5.0);
+		glVertex3f(5.0, 5.0, 5.0);
+		glVertex3f(5.0, 5.0, -5.0);
+		glVertex3f(-5.0, 5.0, -5.0);
 
-	// Draw back face:
-	glNormal3f(0.0, 0.0, -1.0);
-	glVertex3f(-5.0, 5.0, -5.0);
-	glVertex3f(5.0, 5.0, -5.0);
-	glVertex3f(5.0, -5.0, -5.0);
-	glVertex3f(-5.0, -5.0, -5.0);
+		// Draw bottom side:
+		glNormal3f(0.0, -1.0, 0.0);
+		glVertex3f(-5.0, -5.0, -5.0);
+		glVertex3f(5.0, -5.0, -5.0);
+		glVertex3f(5.0, -5.0, 5.0);
+		glVertex3f(-5.0, -5.0, 5.0);
+		glEnd();
+	}
 
-	// Draw top side:
-	glNormal3f(0.0, 1.0, 0.0);
-	glVertex3f(-5.0, 5.0, 5.0);
-	glVertex3f(5.0, 5.0, 5.0);
-	glVertex3f(5.0, 5.0, -5.0);
-	glVertex3f(-5.0, 5.0, -5.0);
+	
 
-	// Draw bottom side:
-	glNormal3f(0.0, -1.0, 0.0);
-	glVertex3f(-5.0, -5.0, -5.0);
-	glVertex3f(5.0, -5.0, -5.0);
-	glVertex3f(5.0, -5.0, 5.0);
-	glVertex3f(-5.0, -5.0, 5.0);
-	glEnd();
+	
 
 	glFlush();
 	glutSwapBuffers();
