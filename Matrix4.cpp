@@ -78,6 +78,8 @@ double* Matrix4::getPointer()
   return &m[0][0];
 }
 
+
+
 // set matrix to identity matrix
 void Matrix4::identity()
 {

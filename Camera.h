@@ -20,6 +20,7 @@ public:
 	Vector3 eVector; // Center of projection
 	Vector3 dVector; // Look at point
 	Matrix4* Camera::getGLMatrix();
+	Matrix4* Camera::invert();
 };
 
 #endif

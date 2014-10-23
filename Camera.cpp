@@ -25,10 +25,10 @@ Matrix4* Camera::getGLMatrix() {
 	upVector.normalize();
 
 	for (int i = 0; i < 3; i++) {
-		m[0][i] = xAxis.m[i];
-		m[1][i] = yAxis.m[i];
-		m[2][i] = zAxis.m[i];
-		m[3][i] = this->eVector.m[i];
+		m[i][0] = xAxis.m[i];
+		m[i][1] = yAxis.m[i];
+		m[i][2] = zAxis.m[i];
+		m[3][i] = -this->eVector.m[i];
 	}
 	m[0][3] = 0;
 	m[1][3] = 0;

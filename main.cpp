@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
   // Initialize cube matrix:
   Globals::cube.getMatrix().identity();
 
-
   // Test Methods
-
   Camera cam;
   cam.dVector = Vector3(3, 4, 5);
   
   glutKeyboardFunc(Window::processNormalKeys);
+  glutSpecialFunc(Window::processFunctionKeys);
+
   glutMainLoop();
   return 0;
 }
