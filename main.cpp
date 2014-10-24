@@ -25,7 +25,7 @@ namespace Globals
 };
 
 
-vector<float> dragonNums;
+vector<float> imageNums[2];
 
 
 int main(int argc, char *argv[])
@@ -76,14 +76,17 @@ int main(int argc, char *argv[])
   
   //Reading file
   ifstream infile;
-  float username;
-
+  float buffer;
+  string fileName[2] = { "dragon.xyz", "bunny.xyz" };
   FILE * fp;
-  fp = fopen("dragon.xyz", "r+");
-  while (fscanf(fp, "%f ", &username) != EOF) {
-	  dragonNums.push_back(username);
+  for (int i = 0; i < sizeof(fileName) / sizeof(*fileName); ++i) {
+	  fp = fopen(fileName[i].c_str(), "r+");
+	  while (fscanf(fp, "%f ", &buffer) != EOF) {
+		  imageNums[i].push_back(buffer);
+	  }
+	  fclose(fp);
   }
-  fclose(fp);
+  
   glutMainLoop();
   return 0;
 }

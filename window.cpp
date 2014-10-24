@@ -18,9 +18,13 @@ using namespace std;
 
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
-extern vector<float> dragonNums;
+extern vector<float> imageNums[2];
 
-int viewMode = 2; // 0 = ball, 1/2 = house, 3 = bunny, 4 = dragon
+int viewMode = 3; // 0 = ball, 1/2 = house, 3 = bunny, 4 = dragon
+int cameraDistance = 20;
+int fov = 60;
+int prevViewMode = -1;
+
 
 //----------------------------------------------------------------------------
 // Callback method of keyboard input
@@ -134,8 +138,8 @@ void Window::reshapeCallback(int w, int h)
 	glViewport(0, 0, w, h);  // set new viewport size
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0, double(width) / (double)height, 1.0, 1000.0); // set perspective projection viewing frustum
-	glTranslatef(0, 0, -20);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
+	gluPerspective(fov, double(width) / (double)height, 1.0, 1000.0); // set perspective projection viewing frustum
+	glTranslatef(0, 0, -cameraDistance);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -201,6 +205,13 @@ void Window::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);  // make sure we're in Modelview mode
 
+
+	int shouldPrint = true;
+	if (viewMode == prevViewMode) {
+		shouldPrint = false;
+	}
+	prevViewMode = viewMode;
+
 	if (viewMode == 1 || viewMode == 2) {
 		glDisable(GL_LIGHTING);
 		// Tell OpenGL what ModelView matrix to use:
@@ -245,12 +256,15 @@ void Window::displayCallback()
 		glEnd();
 	}
 	else if(viewMode == 0) {
+		glEnable(GL_LIGHTING);
+
 		Matrix4 glmatrix;
 		glmatrix = Globals::cube.getMatrix();
 		glLoadMatrixd(glmatrix.getPointer());
 		
 		// Draw all six faces of the cube:
 		glBegin(GL_QUADS);
+
 		glColor3f(0.0, 1.0, 0.0);		// This makes the cube green; the parameters are for red, green and blue. 
 		// To change the color of the other faces you will need to repeat this call before each face is drawn.
 		// Draw front face:
@@ -296,58 +310,107 @@ void Window::displayCallback()
 		glVertex3f(-5.0, -5.0, 5.0);
 		glEnd();
 	}
-	else if (viewMode == 3) {
+	else if (viewMode == 3 || viewMode == 4) {
 		//Load dragon
-		
 		glEnable(GL_BLEND);
+		glDisable(GL_LIGHTING);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_POINT_SMOOTH);
 		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-		glBegin(GL_POINTS);
+		int imageNumber = viewMode - 3;
+		float maxX = FLT_MIN;
+		float maxY = FLT_MIN;
+		float maxZ = FLT_MIN;
 
-		float maxX = -10000;
-		float maxY = -10000;
-		float maxZ = -10000;
+		float minX = FLT_MAX;
+		float minY = FLT_MAX;
+		float minZ = FLT_MAX;
 
-		float minX = 10000;
-		float minY = 10000;
-		float minZ = 10000;
-
-		for (std::vector<float>::size_type i = 0; i < dragonNums.size(); i+=6) {
-			if (dragonNums[i + 3] > maxX) {
-				maxX = dragonNums[i + 3];
+		for (std::vector<float>::size_type i = 0; i < imageNums[imageNumber].size(); i += 6) {
+			if (imageNums[imageNumber][i] > maxX) {
+				maxX = imageNums[imageNumber][i];
 			}
-			if (dragonNums[i + 4] > maxY) {
-				maxY = dragonNums[i + 4];
+			if (imageNums[imageNumber][i + 1] > maxY) {
+				maxY = imageNums[imageNumber][i + 1];
 			}
-			if (dragonNums[i + 5] > maxZ) {
-				maxZ = dragonNums[i + 5];
+			if (imageNums[imageNumber][i + 2] > maxZ) {
+				maxZ = imageNums[imageNumber][i + 3];
 			}
-			if (dragonNums[i + 3] < minX) {
-				minX = dragonNums[i + 3];
+			if (imageNums[imageNumber][i] < minX) {
+				minX = imageNums[imageNumber][i];
 			}
-			if (dragonNums[i + 4] < minY) {
-				minY = dragonNums[i + 4];
+			if (imageNums[imageNumber][i + 1] < minY) {
+				minY = imageNums[imageNumber][i + 1];
 			}
-			if (dragonNums[i + 5] < minZ) {
-				minZ = dragonNums[i + 5];
+			if (imageNums[imageNumber][i + 2] < minZ) {
+				minZ = imageNums[imageNumber][i + 2];
 			}
-			glNormal3d(dragonNums[i+3], dragonNums[i+4], dragonNums[i+5]);
-			glVertex3d(dragonNums[i], dragonNums[i+1], dragonNums[i+2]);
 		}
-		glEnd();
-
 
 		//Finding translation to the center
 		float meanX = (maxX + minX) / 2;
 		float meanY = (maxY + minY) / 2;
 		float meanZ = (maxZ + minZ) / 2;
 
-		Matrix4 translate;
-		translate.makeTranslate(meanX, meanY, meanZ);
-		glLoadMatrixd(translate.getPointer());
+		if (shouldPrint)
+			printf("(Min X = %f, Min Y = %f, Min Z = %f, \n Max X = %f, Max Y = %f, Max Z = %f) \n", minX, minY, minZ, maxX, maxY, maxZ);
 
-		printf("%f, %f, %f\n", meanX, meanY, meanZ);
+		string comment = "";
+		Matrix4 translate;
+		translate.makeTranslate(-meanX, -meanY, -meanZ);
+		translate.print(comment);
+
+		if (shouldPrint)
+			cout << "Translate Matrix:: " << comment << "\n \n";
+
+		double windowSize = (cameraDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
+		double scaleFactor = windowSize / ((maxX - minX));
+
+		comment = "";
+		Matrix4 scale;
+		scale.makeScale(scaleFactor, scaleFactor, scaleFactor);
+		scale.print(comment);
+
+		if (shouldPrint)
+			cout << "Scale Matrix:: " << comment << "\n \n";
+
+		Matrix4 finalMatrix;
+		finalMatrix.identity();
+		finalMatrix = scale * translate;
+
+		comment = "";
+		finalMatrix.print(comment);
+	
+		glLoadMatrixd(finalMatrix.getPointer());
+		if (shouldPrint)
+			cout << "Final Matrix:: " << comment << "\n \n";
+
+
+		glBegin(GL_POINTS);
+		for (std::vector<float>::size_type i = 0; i < imageNums[imageNumber].size(); i+=6) {
+			if (imageNums[imageNumber][i] > maxX) {
+				maxX = imageNums[imageNumber][i];
+			}
+			if (imageNums[imageNumber][i + 1] > maxY) {
+				maxY = imageNums[imageNumber][i + 1];
+			}
+			if (imageNums[imageNumber][i + 2] > maxZ) {
+				maxZ = imageNums[imageNumber][i + 3];
+			}
+			if (imageNums[imageNumber][i] < minX) {
+				minX = imageNums[imageNumber][i];
+			}
+			if (imageNums[imageNumber][i + 1] < minY) {
+				minY = imageNums[imageNumber][i + 1];
+			}
+			if (imageNums[imageNumber][i + 2] < minZ) {
+				minZ = imageNums[imageNumber][i + 2];
+			}
+			glNormal3d(imageNums[imageNumber][i+3], imageNums[imageNumber][i+4], imageNums[imageNumber][i+5]);
+			glVertex3d(imageNums[imageNumber][i], imageNums[imageNumber][i+1], imageNums[imageNumber][i+2]);
+			glColor3f(imageNums[imageNumber][i + 3], imageNums[imageNumber][i + 4], imageNums[imageNumber][i + 5]);
+		}
+		glEnd();
 	};
 
 	glFlush();
