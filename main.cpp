@@ -13,6 +13,10 @@
 #include "Vector4.h"
 #include "Camera.h"
 
+#include <vector>
+#include <fstream>
+#include <iostream>
+
 using namespace std;
 
 namespace Globals
@@ -20,6 +24,8 @@ namespace Globals
   Cube cube;
 };
 
+
+vector<float> dragonNums;
 
 
 int main(int argc, char *argv[])
@@ -67,6 +73,17 @@ int main(int argc, char *argv[])
   glutKeyboardFunc(Window::processNormalKeys);
   glutSpecialFunc(Window::processFunctionKeys);
 
+  
+  //Reading file
+  ifstream infile;
+  float username;
+
+  FILE * fp;
+  fp = fopen("dragon.xyz", "r+");
+  while (fscanf(fp, "%f ", &username) != EOF) {
+	  dragonNums.push_back(username);
+  }
+  fclose(fp);
   glutMainLoop();
   return 0;
 }

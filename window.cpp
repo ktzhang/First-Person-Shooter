@@ -12,14 +12,15 @@
 #include <stdlib.h>
 #include <iostream>
 #include <Windows.h>
+#include <vector>
 
 using namespace std;
 
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
+extern vector<float> dragonNums;
 
-
-int viewMode = 2; // 0 = ball, 1/2 = house
+int viewMode = 2; // 0 = ball, 1/2 = house, 3 = bunny, 4 = dragon
 
 //----------------------------------------------------------------------------
 // Callback method of keyboard input
@@ -102,6 +103,12 @@ void Window::processFunctionKeys(int key, int x, int y) {
 	}
 	else if (key == GLUT_KEY_F3) {
 		viewMode = 2;
+	} 
+	else if (key == GLUT_KEY_F4) {
+		viewMode = 3;
+	}
+	else if (key == GLUT_KEY_F5) {
+		viewMode = 4;
 	}
 }
 
@@ -194,7 +201,7 @@ void Window::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);  // make sure we're in Modelview mode
 
-	if (viewMode != 0) {
+	if (viewMode == 1 || viewMode == 2) {
 		glDisable(GL_LIGHTING);
 		// Tell OpenGL what ModelView matrix to use:
 		CameraVectors cameraVectors[2];
@@ -208,7 +215,7 @@ void Window::displayCallback()
 			camera[i].upVector = cameraVectors[i].upVector;
 		}
 
-		Matrix4 cameraMatrix = *(camera[viewMode-1].getGLMatrix());
+		Matrix4 cameraMatrix = *(camera[viewMode - 1].getInvert());
 		glLoadMatrixd(cameraMatrix.getPointer());
 		std::string hiThere = "\n";
 		cameraMatrix.print(hiThere);
@@ -237,7 +244,7 @@ void Window::displayCallback()
 		}
 		glEnd();
 	}
-	else {
+	else if(viewMode == 0) {
 		Matrix4 glmatrix;
 		glmatrix = Globals::cube.getMatrix();
 		glLoadMatrixd(glmatrix.getPointer());
@@ -289,6 +296,59 @@ void Window::displayCallback()
 		glVertex3f(-5.0, -5.0, 5.0);
 		glEnd();
 	}
+	else if (viewMode == 3) {
+		//Load dragon
+		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_POINT_SMOOTH);
+		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		glBegin(GL_POINTS);
+
+		float maxX = -10000;
+		float maxY = -10000;
+		float maxZ = -10000;
+
+		float minX = 10000;
+		float minY = 10000;
+		float minZ = 10000;
+
+		for (std::vector<float>::size_type i = 0; i < dragonNums.size(); i+=6) {
+			if (dragonNums[i + 3] > maxX) {
+				maxX = dragonNums[i + 3];
+			}
+			if (dragonNums[i + 4] > maxY) {
+				maxY = dragonNums[i + 4];
+			}
+			if (dragonNums[i + 5] > maxZ) {
+				maxZ = dragonNums[i + 5];
+			}
+			if (dragonNums[i + 3] < minX) {
+				minX = dragonNums[i + 3];
+			}
+			if (dragonNums[i + 4] < minY) {
+				minY = dragonNums[i + 4];
+			}
+			if (dragonNums[i + 5] < minZ) {
+				minZ = dragonNums[i + 5];
+			}
+			glNormal3d(dragonNums[i+3], dragonNums[i+4], dragonNums[i+5]);
+			glVertex3d(dragonNums[i], dragonNums[i+1], dragonNums[i+2]);
+		}
+		glEnd();
+
+
+		//Finding translation to the center
+		float meanX = (maxX + minX) / 2;
+		float meanY = (maxY + minY) / 2;
+		float meanZ = (maxZ + minZ) / 2;
+
+		Matrix4 translate;
+		translate.makeTranslate(meanX, meanY, meanZ);
+		glLoadMatrixd(translate.getPointer());
+
+		printf("%f, %f, %f\n", meanX, meanY, meanZ);
+	};
 
 	glFlush();
 	glutSwapBuffers();
