@@ -20,11 +20,14 @@ int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
 extern vector<float> imageNums[2];
 
-int viewMode = 3; // 0 = ball, 1/2 = house, 3 = bunny, 4 = dragon
+int viewMode = 4; // 0 = ball, 1/2 = house, 3 = bunny, 4 = dragon
 int cameraDistance = 20;
 int fov = 60;
 int prevViewMode = -1;
-
+double imageScale = 1;
+int rotate = 0;
+int imageSpinAngle = 0;
+int rotateFactor = 0;
 
 //----------------------------------------------------------------------------
 // Callback method of keyboard input
@@ -32,11 +35,22 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 {
 	double transFactor = 0.5;
 	double orbitDeg = 10;
-	double scaleFactor = 0.1;
+	double scaleFactorTransform = 0.1;
 	switch (key) {
 		//'t' for spinning clockwise or counter clockwise
 	case 116:
-		Globals::cube.changeSpinDirection();
+		if (viewMode == 3 || viewMode == 4) {
+			if (rotateFactor == 1) {
+				rotateFactor = 0;
+			}
+			else {
+				rotateFactor = 1;
+			}
+
+		}
+		else if (viewMode == 0) {
+			Globals::cube.changeSpinDirection();
+		}
 		break;
 
 		//'x' left 
@@ -87,12 +101,22 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 		// 's' scale down
 	case 115:
-		Globals::cube.scaleCube(-scaleFactor);
+		if (viewMode == 3 || viewMode == 4) {
+			imageScale -= scaleFactorTransform;
+		}
+		else if (viewMode == 0) {
+			Globals::cube.scaleCube(-scaleFactorTransform);
+		}
 		break;
 
 		// 'S' scale up
 	case 83:
-		Globals::cube.scaleCube(scaleFactor);
+		if (viewMode == 3 || viewMode == 4) {
+			imageScale += scaleFactorTransform;
+		}
+		else if (viewMode == 0) {
+			Globals::cube.scaleCube(scaleFactorTransform);
+		}
 		break;
 	}
 }
@@ -109,10 +133,10 @@ void Window::processFunctionKeys(int key, int x, int y) {
 		viewMode = 2;
 	} 
 	else if (key == GLUT_KEY_F4) {
-		viewMode = 3;
+		viewMode = 4;
 	}
 	else if (key == GLUT_KEY_F5) {
-		viewMode = 4;
+		viewMode = 3;
 	}
 }
 
@@ -204,14 +228,13 @@ void Window::displayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);  // make sure we're in Modelview mode
-
-
 	int shouldPrint = true;
 	if (viewMode == prevViewMode) {
 		shouldPrint = false;
 	}
 	prevViewMode = viewMode;
 
+	// house
 	if (viewMode == 1 || viewMode == 2) {
 		glDisable(GL_LIGHTING);
 		// Tell OpenGL what ModelView matrix to use:
@@ -255,15 +278,16 @@ void Window::displayCallback()
 		}
 		glEnd();
 	}
-	else if(viewMode == 0) {
-		glEnable(GL_LIGHTING);
 
+	// cube
+	else if(viewMode == 0) {
 		Matrix4 glmatrix;
 		glmatrix = Globals::cube.getMatrix();
 		glLoadMatrixd(glmatrix.getPointer());
 		
 		// Draw all six faces of the cube:
 		glBegin(GL_QUADS);
+		glEnable(GL_LIGHTING);
 
 		glColor3f(0.0, 1.0, 0.0);		// This makes the cube green; the parameters are for red, green and blue. 
 		// To change the color of the other faces you will need to repeat this call before each face is drawn.
@@ -310,6 +334,8 @@ void Window::displayCallback()
 		glVertex3f(-5.0, -5.0, 5.0);
 		glEnd();
 	}
+
+	// images
 	else if (viewMode == 3 || viewMode == 4) {
 		//Load dragon
 		glEnable(GL_BLEND);
@@ -317,16 +343,19 @@ void Window::displayCallback()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_POINT_SMOOTH);
 		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		glBegin(GL_POINTS);
+
 		int imageNumber = viewMode - 3;
-		float maxX = FLT_MIN;
-		float maxY = FLT_MIN;
-		float maxZ = FLT_MIN;
 
-		float minX = FLT_MAX;
-		float minY = FLT_MAX;
-		float minZ = FLT_MAX;
+		float maxX = -10000;
+		float maxY = -10000;
+		float maxZ = -10000;
 
-		for (std::vector<float>::size_type i = 0; i < imageNums[imageNumber].size(); i += 6) {
+		float minX = 10000;
+		float minY = 10000;
+		float minZ = 10000;
+
+		for (std::vector<float>::size_type i = 0; i < imageNums[imageNumber].size(); i+=6) {
 			if (imageNums[imageNumber][i] > maxX) {
 				maxX = imageNums[imageNumber][i];
 			}
@@ -345,7 +374,12 @@ void Window::displayCallback()
 			if (imageNums[imageNumber][i + 2] < minZ) {
 				minZ = imageNums[imageNumber][i + 2];
 			}
+			glColor3f(imageNums[imageNumber][i + 3], imageNums[imageNumber][i + 4], imageNums[imageNumber][i + 5]);
+			glNormal3d(imageNums[imageNumber][i+3], imageNums[imageNumber][i+4], imageNums[imageNumber][i+5]);
+			glVertex3d(imageNums[imageNumber][i], imageNums[imageNumber][i+1], imageNums[imageNumber][i+2]);
+			
 		}
+		glEnd();
 
 		//Finding translation to the center
 		float meanX = (maxX + minX) / 2;
@@ -368,50 +402,30 @@ void Window::displayCallback()
 
 		comment = "";
 		Matrix4 scale;
-		scale.makeScale(scaleFactor, scaleFactor, scaleFactor);
+		scale.makeScale(imageScale * scaleFactor, imageScale * scaleFactor, imageScale* scaleFactor);
 		scale.print(comment);
 
 		if (shouldPrint)
 			cout << "Scale Matrix:: " << comment << "\n \n";
 
+		Matrix4 rotate;
+		if (rotateFactor) {
+			imageSpinAngle += 1;
+		}
+		rotate.makeRotateY(imageSpinAngle * rotateFactor);
+
 		Matrix4 finalMatrix;
 		finalMatrix.identity();
-		finalMatrix = scale * translate;
+		finalMatrix = scale * translate * rotate;
 
 		comment = "";
 		finalMatrix.print(comment);
-	
+
+
+		//if (viewMode ==3 )
 		glLoadMatrixd(finalMatrix.getPointer());
-		if (shouldPrint)
 			cout << "Final Matrix:: " << comment << "\n \n";
-
-
-		glBegin(GL_POINTS);
-		for (std::vector<float>::size_type i = 0; i < imageNums[imageNumber].size(); i+=6) {
-			if (imageNums[imageNumber][i] > maxX) {
-				maxX = imageNums[imageNumber][i];
-			}
-			if (imageNums[imageNumber][i + 1] > maxY) {
-				maxY = imageNums[imageNumber][i + 1];
-			}
-			if (imageNums[imageNumber][i + 2] > maxZ) {
-				maxZ = imageNums[imageNumber][i + 3];
-			}
-			if (imageNums[imageNumber][i] < minX) {
-				minX = imageNums[imageNumber][i];
-			}
-			if (imageNums[imageNumber][i + 1] < minY) {
-				minY = imageNums[imageNumber][i + 1];
-			}
-			if (imageNums[imageNumber][i + 2] < minZ) {
-				minZ = imageNums[imageNumber][i + 2];
-			}
-			glNormal3d(imageNums[imageNumber][i+3], imageNums[imageNumber][i+4], imageNums[imageNumber][i+5]);
-			glVertex3d(imageNums[imageNumber][i], imageNums[imageNumber][i+1], imageNums[imageNumber][i+2]);
-			glColor3f(imageNums[imageNumber][i + 3], imageNums[imageNumber][i + 4], imageNums[imageNumber][i + 5]);
-		}
-		glEnd();
-	};
+	}
 
 	glFlush();
 	glutSwapBuffers();
