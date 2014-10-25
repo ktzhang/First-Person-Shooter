@@ -424,6 +424,7 @@ void Window::displayCallback()
 
 		//if (viewMode ==3 )
 		glLoadMatrixd(finalMatrix.getPointer());
+		if (shouldPrint)
 			cout << "Final Matrix:: " << comment << "\n \n";
 	}
 
