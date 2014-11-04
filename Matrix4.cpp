@@ -42,19 +42,10 @@ Matrix4& Matrix4::operator=(const Matrix4& m2)
 
 Matrix4 Matrix4::operator*(const Matrix4& m2) {
 	Matrix4 n;
-
 	for (int i = 0; i < 4; i++){
 		for (int j = 0; j < 4; j++){
 			for (int x = 0; x < 4; x++){
 				n.m[j][i] += this->m[x][i] * m2.m[j][x];
-			}
-		}
-	}
-
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			for (int k = 0; k < 4; k++) {
-				//n[]
 			}
 		}
 	}
@@ -200,4 +191,26 @@ void Matrix4::print(std::string& comment) {
 		+ to_string(m[1][3]) + " "
 		+ to_string(m[2][3]) + " "
 		+ to_string(m[3][3]) + " |");
+}
+
+void Matrix4::printToSt() {
+	std::string comment;
+	comment.append("\n| "
+		+ to_string(m[0][0]) + " "
+		+ to_string(m[1][0]) + " "
+		+ to_string(m[2][0]) + " "
+		+ to_string(m[3][0]) + " |\n| "
+		+ to_string(m[0][1]) + " "
+		+ to_string(m[1][1]) + " "
+		+ to_string(m[2][1]) + " "
+		+ to_string(m[3][1]) + " |\n| "
+		+ to_string(m[0][2]) + " "
+		+ to_string(m[1][2]) + " "
+		+ to_string(m[2][2]) + " "
+		+ to_string(m[3][2]) + " |\n| "
+		+ to_string(m[0][3]) + " "
+		+ to_string(m[1][3]) + " "
+		+ to_string(m[2][3]) + " "
+		+ to_string(m[3][3]) + " |");
+	std::cout << comment;
 }

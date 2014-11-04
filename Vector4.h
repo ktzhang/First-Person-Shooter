@@ -22,6 +22,8 @@ public:
 
 	void dehomogenize(); //dehomogenize the vector (scale it so that its fourth component is equal to one)
 	void print(std::string& comment);// : print m[0], y and z components of the vector after a comment string
+	std::string toString();
+
 };
 
 #endif

@@ -2,6 +2,12 @@
 #include "math.h"
 #include "Vector3.h"
 
+
+/**
+ * Camera class contains method to generate a camera object and return 
+ * Matrix4 objects
+ *
+ **/
 Camera::Camera() {
 	upVector = Vector3(0, 0, 0);
 	eVector = Vector3(0, 0, 0);

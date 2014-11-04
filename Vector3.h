@@ -23,6 +23,8 @@ public:
 		m[2] = z;
 	};	// constructor with three parameters for the vector coordinates
 	
+	Vector3::Vector3(double input[]);
+
 	Vector3 operator+(const Vector3& vector);			// overload operator '+' for addition
 	Vector3 operator-(const Vector3& vector); //overload operator '-' for subtraction
 

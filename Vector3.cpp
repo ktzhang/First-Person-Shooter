@@ -1,6 +1,12 @@
 #include "Vector3.h"
 #include "math.h"
 
+Vector3::Vector3(double input[]) {
+	for (int i = 0; i < Vector3::numElements; i++) {
+		this->m[i] = input[i];
+	}
+}
+
 Vector3 Vector3::operator+(const Vector3& vector) {
 	for (int i = 0; i < Vector3::numElements; i++) {
 		this->m[i] = vector.m[i] + this->m[i];
@@ -9,10 +15,11 @@ Vector3 Vector3::operator+(const Vector3& vector) {
 }
 
 Vector3 Vector3::operator-(const Vector3& vector) {
+	double temp[Vector3::numElements];
 	for (int i = 0; i < Vector3::numElements; i++) {
-		this->m[i] = this->m[i]- vector.m[i];
+		temp[i] = this->m[i] - vector.m[i];
 	}
-	return *this;
+	return Vector3(temp);
 }
 
 void Vector3::negate() {
