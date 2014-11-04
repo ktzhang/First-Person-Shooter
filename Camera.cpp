@@ -16,6 +16,8 @@ Camera::Camera() {
 Matrix4* Camera::getInvert() {
 	matrix = Matrix4();
 
+	Vector3 tempEVector = eVector;
+
 	Vector3 zAxis = eVector - dVector;
 	zAxis.normalize();
 
@@ -30,6 +32,7 @@ Matrix4* Camera::getInvert() {
 		m[i][1] = yAxis.m[i];
 		m[i][2] = zAxis.m[i];
 	}
+
 	m[0][3] = 0;
 	m[1][3] = 0;
 	m[2][3] = 0;
@@ -40,7 +43,7 @@ Matrix4* Camera::getInvert() {
 
 	Matrix4 rotation = Matrix4(m);
 	Matrix4 transpose = Matrix4();
-	transpose.makeTranslate(-eVector.m[0], -eVector.m[1], -eVector.m[2]);
+	transpose.makeTranslate(-tempEVector.m[0], -tempEVector.m[1], -tempEVector.m[2]);
 	matrix = rotation * transpose;
 
 	return &matrix;

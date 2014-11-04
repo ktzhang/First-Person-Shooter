@@ -161,9 +161,9 @@ void Window::reshapeCallback(int w, int h)
 	height = h;
 	glViewport(0, 0, w, h);  // set new viewport size
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	//glLoadIdentity();
 	gluPerspective(fov, double(width) / (double)height, 1.0, 1000.0); // set perspective projection viewing frustum
-	glTranslatef(0, 0, -cameraDistance);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
+	glTranslatef(0, 0, -20);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -424,7 +424,7 @@ void Window::displayCallback()
 
 		//if (viewMode ==3 )
 		glLoadMatrixd(finalMatrix.getPointer());
-		if (shouldPrint)
+		//if (shouldPrint)
 			cout << "Final Matrix:: " << comment << "\n \n";
 	}
 

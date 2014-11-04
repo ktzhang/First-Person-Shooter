@@ -10,7 +10,7 @@ Vector3 Vector3::operator+(const Vector3& vector) {
 
 Vector3 Vector3::operator-(const Vector3& vector) {
 	for (int i = 0; i < Vector3::numElements; i++) {
-		this->m[i] = vector.m[i] + this->m[i];
+		this->m[i] = this->m[i]- vector.m[i];
 	}
 	return *this;
 }
