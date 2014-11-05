@@ -1,19 +1,19 @@
 #include "Reader.h"
 using namespace std;
 
-Reader::Reader(std::string input)  
-{
-	this->fileName = input;
-	populateFiles();
-	convertToVectors();
-}
+//Reader::Reader(std::string input)
+//{
+//	fileName = input;
+//	populateFiles();
+//	convertToVectors();
+//}
 
 void Reader::populateFiles()
 {
-	if (this->fileName.empty()) return;
+	if (fileName.empty()) return;
 	float buffer;
 	FILE * fp;
-	fp = fopen(this->fileName.c_str(), "r+");
+	fp = fopen(fileName.c_str(), "r+");
 	while (fscanf(fp, "%f ", &buffer) != EOF) {
 		imageNums.push_back(buffer);
 	}
@@ -46,18 +46,22 @@ void Reader::convertToVectors()
 		normalVertices.push_back(imageNums[i + 4]);
 		normalVertices.push_back(imageNums[i + 5]);
 
+		normalVectors.push_back(Vector4(imageNums[i + 3], imageNums[i + 4], imageNums[i + 5], 1));
+
 		positionVertices.push_back(imageNums[i]);
 		positionVertices.push_back(imageNums[i + 1]);
 		positionVertices.push_back(imageNums[i + 2]);
+
+		positionVectors.push_back(Vector4(imageNums[i], imageNums[i + 1], imageNums[i + 2], 1));
 	}
 	calculateMean();
 }
 
-void Reader::calculateMean() 
+void Reader::calculateMean()
 {
-	this->meanX = (this->maxX + this->minX) / 2;
-	this->meanY = (this->maxY + this->minY) / 2;
-	this->meanZ = (this->maxZ + this->minZ) / 2;
+	meanX = (maxX + minX) / 2;
+	meanY = (maxY + minY) / 2;
+	meanZ = (maxZ + minZ) / 2;
 
 }
 

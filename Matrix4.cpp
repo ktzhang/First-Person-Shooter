@@ -57,9 +57,11 @@ Vector4 Matrix4::operator*(const Vector4& v) { // : multiply matrix with vector
 	Vector4 v2(0, 0, 0, 0);
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			v2.m[i] = this->m[j][i] * v.m[j];
+			v2.m[i] += this->m[j][i] * v.m[j];
+			//std::cout << "\n adding " << this->m[j][i] << " with " << v.m[j];
 		}
 	}
+
 	return v2;
 }
 

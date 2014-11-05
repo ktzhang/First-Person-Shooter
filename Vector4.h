@@ -11,6 +11,13 @@ public:
 	static const int numElements = 4;
 	double m[numElements];
 
+	Vector4::Vector4() {
+		m[0] = 0;
+		m[1] = 0;
+		m[2] = 0;
+		m[3] = 0;
+	}
+
 	Vector4::Vector4(double x, double y, double z, double w) {
 		m[0] = x;
 		m[1] = y;

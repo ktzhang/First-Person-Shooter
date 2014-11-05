@@ -10,6 +10,7 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <vector>
+#include "Reader.h"
 #include <fstream>
 
 
@@ -23,16 +24,16 @@ static Matrix4 modelMatrix;
 static Camera cameraMatrix;
 static Matrix4 projMatrix;
 static Matrix4 viewportMatrix;
-static vector<float> imageNums[2]; // Stores the number of images in a vector
 
 
 double cameraDistance = 20;
-
+Reader bunny;
+Reader dragon;
 
 void loadData()
 {
-	//Reading file
-	
+	bunny = Reader("bunny.xyz");
+	dragon = Reader("dragon.xyz");
 }
 
 // Clear frame buffer
@@ -62,65 +63,109 @@ void rasterizeVertex(Vector4 input, Color color)
 {
 	Matrix4* tempCamera = cameraMatrix.getInvert();
 
-	//Matrix4 cameraMove;
-	//cameraMove.identity();
-	//cameraMove.makeTranslate(0, 0, -cameraDistance);
+	Matrix4* cameraMove = new Matrix4();
+	cameraMove->identity();
+	cameraMove->makeTranslate(0, 0, -20);
 
-	Vector4 finalVector = Vector4(1, 1, 1, 1);
 	//Order of multiplying matrix
-	//Vector4 finalVector = projMatrix * cameraMove * *(tempCamera) * input;
+	//Vector4 * finalVector = new Vector4();
+	
+	Vector4* finalVector = new Vector4(0, 0, 0, 0);
+	*finalVector = projMatrix * *(cameraMove) * *(tempCamera) * input;
+	finalVector->dehomogenize();
+
+	Matrix4 multMatrix = projMatrix * *(cameraMove)* *(tempCamera);
+	//*finalVector = input * *(tempCamera)* cameraMove * projMatrix;
+	multMatrix.printToSt();
+
+	/*cout << "matrix \n";
+	multMatrix.printToSt();
+
+	cout << input.toString();
 
 	cout << "Proj Matrix \n";
 	projMatrix.printToSt();
 
 	cout << "Cam Matrix \n";
-	//cameraMove.printToSt();
+	cameraMove->printToSt();
 
 	cout << "Temp cam Matrix \n";
 	tempCamera->printToSt();
 
 	cout << "Model \n";
-	//modelMatrix.printToSt();
+	modelMatrix.printToSt();*/
 
 	//Vector4 finalVector = input * modelMatrix * *(tempCamera) * cameraMove * projMatrix;
-	finalVector.dehomogenize();
+	//finalVector->dehomogenize();
 
-	double xCoord = finalVector.m[0] / finalVector.m[3];
-	double yCoord = finalVector.m[1] / finalVector.m[3];
+	cout << "\n" << finalVector->toString();
 
+	double xCoord = finalVector->m[0] / finalVector->m[3];
+	double yCoord = finalVector->m[1] / finalVector->m[3];
 
 	//Finally drawing points on the canvas
 	drawPoint(xCoord, yCoord, color.r, color.g, color.b);
 }
 void rasterize()
 {
+
+
+	//Test matrix multiplication
+	Matrix4 test;
+	test.identity();
+	test.makeTranslate(0, 0, 30);
+	test.printToSt();
+
+	Vector4 v(1, 2, 3, 4);
+	v = test*v;
+
+	cout << "\n" << v.toString();
+
 	//Test rasterization - rasterizing a house
-	int vertexNum[3];
-	int vertexIndex;
-	int colorIndex;
+	//int vertexNum[3];
+	//int vertexIndex;
+	//int colorIndex;
 
-	for (int i = 0; i < 60; i += 3) {
-		vertexNum[0] = indices[i];
-		vertexNum[1] = indices[i + 1];
-		vertexNum[2] = indices[i + 2];
-		printf("%d %d %d \n", vertexNum[0], vertexNum[1], vertexNum[2]);
-		//Getting the color of one index
-		colorIndex = 3 * vertexNum[0];
+	//for (int i = 0; i < 60; i += 3) {
+	//	vertexNum[0] = indices[i];
+	//	vertexNum[1] = indices[i + 1];
+	//	vertexNum[2] = indices[i + 2];
+	//	printf("%d %d %d \n", vertexNum[0], vertexNum[1], vertexNum[2]);
+	//	//Getting the color of one index
+	//	colorIndex = 3 * vertexNum[0];
+	//	Color color;
+	//	color.r = colors[colorIndex];
+	//	color.g = colors[colorIndex + 1];
+	//	color.b = colors[colorIndex + 2];
+
+
+
+	//	for (int j = 0; j < 3; j++) {
+	//		vertexIndex = vertexNum[j] * 3;
+	//		rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
+	//		printf("vertex (%d - %f, %f, %f) \n", vertexIndex,
+	//			vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
+	//	}
+	//}
+
+
+
+	vector<string>::iterator it; // declare an iterator to a vector of strings
+	// now start at from the beginning
+	// and keep iterating over the element till you find
+	// nth element...or reach the end of vector.
+
+	vector<Vector4> posVectors = bunny.getPosVectors();
+	vector<Vector4> normalVectors = bunny.getNormalVectors();
+
+	int i = 0;
+	for (std::vector<Vector4>::size_type i = 0; i < posVectors.size(); i += 3) {
 		Color color;
-		color.r = colors[colorIndex];
-		color.g = colors[colorIndex + 1];
-		color.b = colors[colorIndex + 2];
-
-
-
-		for (int j = 0; j < 3; j++) {
-			vertexIndex = vertexNum[j] * 3;
-			rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
-			printf("vertex (%d - %f, %f, %f) \n", vertexIndex,
-				vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
-		}
+		color.r = normalVectors[i].m[0];
+		color.g = normalVectors[i].m[1];
+		color.b = normalVectors[i].m[2];
+		rasterizeVertex(posVectors[i], color);
 	}
-
 
 	//Draw point for each triangle
 	// Put your main rasterization loop here

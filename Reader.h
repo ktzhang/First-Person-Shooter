@@ -2,13 +2,12 @@
 
 #include <string>
 #include <vector>
+#include "Vector4.h"
+
+
+using namespace std;
 class Reader
 {
-public:
-	Reader(std::string input);
-	~Reader();
-
-private:
 	float maxX = FLT_MAX;
 	float maxY = FLT_MAX;
 	float maxZ = FLT_MAX;
@@ -20,18 +19,8 @@ private:
 	float meanX;
 	float meanY;
 	float meanZ;
+
 	
-	float getMeanX() {
-		return meanX;
-	}
-
-	float getMeanY() {
-		return meanY;
-	}
-
-	float getMeanZ() {
-		return meanZ;
-	}
 
 	string fileName;
 	vector<float> imageNums; // Stores the number of images in a vector
@@ -40,8 +29,47 @@ private:
 	vector<float> positionVertices;
 
 
+	vector<Vector4> positionVectors;
+	vector<Vector4> normalVectors;
+
 	void populateFiles();
 	void convertToVectors();
 	void calculateMean();
+
+public:
+	Reader() {};
+	Reader::Reader(std::string input) : fileName(input){
+		populateFiles();
+		convertToVectors();
+	};
+	~Reader();
+
+	float Reader::getMeanX() {
+		return meanX;
+	}
+
+	float Reader::getMeanY() {
+		return meanY;
+	}
+
+	float Reader::getMeanZ() {
+		return meanZ;
+	}
+
+	vector<float> getPosVertices() {
+		return positionVertices;
+	}
+
+	vector<float> getNormalVertices() {
+		return normalVertices;
+	}
+
+	vector<Vector4> getPosVectors() {
+		return positionVectors;
+	}
+
+	vector<Vector4> getNormalVectors() {
+		return normalVectors;
+	}
 };
 
