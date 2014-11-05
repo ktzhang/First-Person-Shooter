@@ -20,10 +20,20 @@ static int window_width = 512, window_height = 512;
 static float* pixels = new float[window_width * window_height * 3];
 
 // Class variables
-static Matrix4 modelMatrix;
 static Camera cameraMatrix;
 static Matrix4 projMatrix;
 static Matrix4 viewportMatrix;
+static Matrix4* modelMatrix;
+
+double windowHeight;
+double windowWidth;
+
+double fovDeg = 0;
+double fovRad = 0;
+double scaleFactor;
+
+int shouldRotate = 0;
+int rotateDeg = 0;
 
 
 double cameraDistance = 20;
@@ -64,10 +74,10 @@ void rasterizeVertex(Vector4 input, Color color)
 	Matrix4* tempCamera = cameraMatrix.getInvert();
 	
 	Vector4* finalVector = new Vector4(0, 0, 0, 0);
-	*finalVector = viewportMatrix * projMatrix * *(tempCamera) * input;
+	*finalVector = viewportMatrix * projMatrix * *(tempCamera) * *modelMatrix * input;
 	//finalVector->dehomogenize();
 
-	Matrix4 multMatrix = viewportMatrix * projMatrix * *(tempCamera);
+	Matrix4 multMatrix = viewportMatrix * projMatrix * *(tempCamera) * *modelMatrix;
 	//*finalVector = input * *(tempCamera)* cameraMove * projMatrix;
 	//multMatrix.printToSt();
 	
@@ -76,6 +86,9 @@ void rasterizeVertex(Vector4 input, Color color)
 		cout << "\nInput : " << input.toString() << "\n";
 		cout << "matrix";
 		multMatrix.printToSt();
+
+		cout << "\n Model Matrix";
+		//modelMatrix.printToSt();
 
 		cout << "\n ViewPort Matrix";
 		viewportMatrix.printToSt();
@@ -87,9 +100,6 @@ void rasterizeVertex(Vector4 input, Color color)
 		tempCamera->printToSt();
 
 	}
-
-//	cout << "\n" << finalVector->toString();
-
 	double xCoord = finalVector->m[0] / finalVector->m[3];
 	double yCoord = finalVector->m[1] / finalVector->m[3];
 
@@ -104,11 +114,9 @@ void rasterize()
 {
 	//Test rasterization - rasterizing a house
 	if (false) {
-
 		int vertexNum[3];
 		int vertexIndex;
 		int colorIndex;
-
 		for (int i = 0; i < 60; i += 3) {
 			vertexNum[0] = indices[i];
 			vertexNum[1] = indices[i + 1];
@@ -120,9 +128,6 @@ void rasterize()
 			color.r = colors[colorIndex];
 			color.g = colors[colorIndex + 1];
 			color.b = colors[colorIndex + 2];
-
-
-
 			for (int j = 0; j < 3; j++) {
 				vertexIndex = vertexNum[j] * 3;
 				rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
@@ -137,7 +142,10 @@ void rasterize()
 	// now start at from the beginning
 	// and keep iterating over the element till you find
 	// nth element...or reach the end of vector.
-
+	double objSize = bunny.getSize();
+	double meanX = bunny.getMeanX();
+	double meanY = bunny.getMeanY();
+	double meanZ = bunny.getMeanZ();
 	vector<Vector4> posVectors = bunny.getPosVectors();
 	vector<Vector4> normalVectors = bunny.getNormalVectors();
 
@@ -147,6 +155,27 @@ void rasterize()
 		color.r = normalVectors[i].m[0];
 		color.g = normalVectors[i].m[1];
 		color.b = normalVectors[i].m[2];
+
+		//Set scale factor
+		double windowSize = (cameraDistance * tan(fovRad/2) * 2);
+		scaleFactor = windowSize / objSize;
+		//scaleFactor = windowWidth / objSize;
+		scaleFactor = 200;
+
+		Matrix4 scaleMatrix;
+		scaleMatrix.identity();
+		scaleMatrix.makeScale(scaleFactor, scaleFactor, scaleFactor);
+
+		Matrix4 moveMatrix;
+		moveMatrix.makeTranslate(-meanX, -meanY, -meanZ);
+
+		Matrix4 rotateMatrix;
+		rotateMatrix.makeRotateY(rotateDeg);
+
+		modelMatrix = new Matrix4();
+		modelMatrix->identity();
+		*modelMatrix = scaleMatrix * moveMatrix * rotateMatrix;
+
 		rasterizeVertex(posVectors[i], color);
 	}
 
@@ -155,30 +184,24 @@ void rasterize()
 	// It should go over the point model and call drawPoint for every point in it
 }
 
-// Called whenever the window size changes
-void reshapeCallback(int new_width, int new_height)
-{
-	window_width = new_width;
-	window_height = new_height;
 
-	setProjectionMatrix();
-	setViewportMatrix();
-
-	delete[] pixels;
-	pixels = new float[window_width * window_height * 3];
-	displayCallback();
-}
 
 void keyboardCallback(unsigned char key, int, int)
 {
 	cerr << "Key pressed: " << key << endl;
+
+	switch (key) {
+	case 'r':
+		rotateDeg += 30;
+		displayCallback();
+	}
 }
 
 void displayCallback()
 {
 	clearBuffer();
 	rasterize();
-
+	cout << "Display";
 	// glDrawPixels writes a block of pixels to the framebuffer
 	glDrawPixels(window_width, window_height, GL_RGB, GL_FLOAT, pixels);
 
@@ -197,20 +220,18 @@ void setCameraMatrix()
 	cameraVectors[0] = { Vector3(0, 10, 10), Vector3(0, 0, 0), Vector3(0, 1, 0) };
 	cameraVectors[1] = { Vector3(-15, 5, 10), Vector3(-5, 0, 0), Vector3(0, 1, 0.5) };
 	
-	
 	Camera camera[2];
 	for (int i = 0; i < 2; i++) {
 		camera[i].eVector = cameraVectors[i].centerVector;
 		camera[i].dVector = cameraVectors[i].dVector;
 		camera[i].upVector = cameraVectors[i].upVector;
 	}
-
 	cameraMatrix = camera[0];
 }
 
-void setModelMatrix() 
+double degToRad(double deg)
 {
-	modelMatrix.identity();
+	return deg * 180 / M_PI;
 }
 
 void setProjectionMatrix() 
@@ -222,6 +243,9 @@ void setProjectionMatrix()
 	double nearV = 10.0;
 	double farV = 1000.0;
 
+	fovRad = 2 * atan((top - bottom) / nearV);
+	fovDeg = degToRad(fovRad);
+
 	double matrixInput[4][4] = {
 		{ 2 * nearV / (right - left), 0, (right + left) / (right - left), 0 },
 		{ 0, 2 * nearV / (top - bottom), (top + bottom) / (top - bottom), 0 },
@@ -231,7 +255,6 @@ void setProjectionMatrix()
 
 	projMatrix.identity();
 	projMatrix = Matrix4(matrixInput);
-
 
 	projMatrix.transpose();
 
@@ -261,6 +284,25 @@ void setViewportMatrix()
 	viewportMatrix.transpose();
 }
 
+// Called whenever the window size changes
+void reshapeCallback(int new_width, int new_height)
+{
+	window_width = new_width;
+	window_height = new_height;
+
+	windowHeight = new_height;
+	windowWidth = new_width;
+
+	setProjectionMatrix();
+	setViewportMatrix();
+	setCameraMatrix();
+
+
+	delete[] pixels;
+	pixels = new float[window_width * window_height * 3];
+	displayCallback();
+}
+
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 
@@ -279,3 +321,4 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keyboardCallback);
 	glutMainLoop();
 }
+

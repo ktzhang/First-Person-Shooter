@@ -30,7 +30,7 @@ void Reader::convertToVectors()
 			maxY = imageNums[i + 1];
 		}
 		if (imageNums[i + 2] > maxZ) {
-			maxZ = imageNums[i + 3];
+			maxZ = imageNums[i + 2];
 		}
 		if (imageNums[i] < minX) {
 			minX = imageNums[i];
@@ -62,7 +62,6 @@ void Reader::calculateMean()
 	meanX = (maxX + minX) / 2;
 	meanY = (maxY + minY) / 2;
 	meanZ = (maxZ + minZ) / 2;
-
 }
 
 Reader::~Reader()

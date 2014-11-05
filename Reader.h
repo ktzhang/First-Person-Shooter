@@ -3,24 +3,22 @@
 #include <string>
 #include <vector>
 #include "Vector4.h"
+#include <iostream>
 
 
 using namespace std;
 class Reader
 {
-	float maxX = FLT_MAX;
-	float maxY = FLT_MAX;
-	float maxZ = FLT_MAX;
-
-	float minX = FLT_MIN;
-	float minY = FLT_MIN;
-	float minZ = FLT_MIN;
+	float maxX = FLT_MIN;
+	float maxY = FLT_MIN;
+	float maxZ = FLT_MIN;
+	float minX = FLT_MAX;
+	float minY = FLT_MAX;
+	float minZ = FLT_MAX;
 
 	float meanX;
 	float meanY;
 	float meanZ;
-
-	
 
 	string fileName;
 	vector<float> imageNums; // Stores the number of images in a vector
@@ -54,6 +52,11 @@ public:
 
 	float Reader::getMeanZ() {
 		return meanZ;
+	}
+
+	float Reader::getSize() {
+		std::cout << "Max x " << maxX << " Min X" << minX;
+		return maxX - minX;
 	}
 
 	vector<float> getPosVertices() {
