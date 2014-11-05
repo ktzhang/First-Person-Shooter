@@ -62,81 +62,75 @@ void drawPoint(int x, int y, float r, float g, float b)
 void rasterizeVertex(Vector4 input, Color color) 
 {
 	Matrix4* tempCamera = cameraMatrix.getInvert();
-
-	Matrix4* cameraMove = new Matrix4();
-	cameraMove->identity();
-	cameraMove->makeTranslate(0, 0, -20);
-
-	//Order of multiplying matrix
-	//Vector4 * finalVector = new Vector4();
 	
 	Vector4* finalVector = new Vector4(0, 0, 0, 0);
-	*finalVector = viewportMatrix * projMatrix * *(cameraMove) * *(tempCamera) * input;
+	*finalVector = viewportMatrix * projMatrix * *(tempCamera) * input;
 	//finalVector->dehomogenize();
 
-	Matrix4 multMatrix = projMatrix * *(cameraMove)* *(tempCamera);
+	Matrix4 multMatrix = viewportMatrix * projMatrix * *(tempCamera);
 	//*finalVector = input * *(tempCamera)* cameraMove * projMatrix;
 	//multMatrix.printToSt();
+	
+	int display = 0;
+	if (display) {
+		cout << "\nInput : " << input.toString() << "\n";
+		cout << "matrix";
+		multMatrix.printToSt();
 
-	/*cout << "matrix \n";
-	multMatrix.printToSt();
+		cout << "\n ViewPort Matrix";
+		viewportMatrix.printToSt();
 
-	cout << input.toString();
+		cout << "\n Proj Matrix";
+		projMatrix.printToSt();
 
-	cout << "Proj Matrix \n";
-	projMatrix.printToSt();
+		cout << "\n Temp cam Matrix";
+		tempCamera->printToSt();
 
-	cout << "Cam Matrix \n";
-	cameraMove->printToSt();
-
-	cout << "Temp cam Matrix \n";
-	tempCamera->printToSt();
-
-	cout << "Model \n";
-	modelMatrix.printToSt();*/
-
-	//Vector4 finalVector = input * modelMatrix * *(tempCamera) * cameraMove * projMatrix;
-	//finalVector->dehomogenize();
+	}
 
 //	cout << "\n" << finalVector->toString();
 
 	double xCoord = finalVector->m[0] / finalVector->m[3];
 	double yCoord = finalVector->m[1] / finalVector->m[3];
 
-	//cout << "x coord = " << xCoord << " - y coord = " << yCoord;
-
+	if (display) {
+		cout << "\nx coord = " << xCoord << " - y coord = " << yCoord;
+		cout << "\n--------------\n";
+	}
 	//Finally drawing points on the canvas
 	drawPoint(xCoord, yCoord, color.r, color.g, color.b);
 }
 void rasterize()
 {
 	//Test rasterization - rasterizing a house
-	//int vertexNum[3];
-	//int vertexIndex;
-	//int colorIndex;
+	if (false) {
 
-	//for (int i = 0; i < 60; i += 3) {
-	//	vertexNum[0] = indices[i];
-	//	vertexNum[1] = indices[i + 1];
-	//	vertexNum[2] = indices[i + 2];
-	//	printf("%d %d %d \n", vertexNum[0], vertexNum[1], vertexNum[2]);
-	//	//Getting the color of one index
-	//	colorIndex = 3 * vertexNum[0];
-	//	Color color;
-	//	color.r = colors[colorIndex];
-	//	color.g = colors[colorIndex + 1];
-	//	color.b = colors[colorIndex + 2];
+		int vertexNum[3];
+		int vertexIndex;
+		int colorIndex;
+
+		for (int i = 0; i < 60; i += 3) {
+			vertexNum[0] = indices[i];
+			vertexNum[1] = indices[i + 1];
+			vertexNum[2] = indices[i + 2];
+			//printf("%d %d %d \n", vertexNum[0], vertexNum[1], vertexNum[2]);
+			//Getting the color of one index
+			colorIndex = 3 * vertexNum[0];
+			Color color;
+			color.r = colors[colorIndex];
+			color.g = colors[colorIndex + 1];
+			color.b = colors[colorIndex + 2];
 
 
 
-	//	for (int j = 0; j < 3; j++) {
-	//		vertexIndex = vertexNum[j] * 3;
-	//		rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
-	//		printf("vertex (%d - %f, %f, %f) \n", vertexIndex,
-	//			vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
-	//	}
-	//}
-
+			for (int j = 0; j < 3; j++) {
+				vertexIndex = vertexNum[j] * 3;
+				rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
+				printf("\n vertex (%d - %f, %f, %f) \n", vertexIndex,
+					vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
+			}
+		}
+	}
 
 
 	vector<string>::iterator it; // declare an iterator to a vector of strings
@@ -237,7 +231,15 @@ void setProjectionMatrix()
 
 	projMatrix.identity();
 	projMatrix = Matrix4(matrixInput);
+
+
 	projMatrix.transpose();
+
+	Matrix4 cameraMove;
+	cameraMove.identity();
+	cameraMove.makeTranslate(0, 0, -cameraDistance);
+
+	projMatrix = projMatrix * cameraMove;
 }
 
 void setViewportMatrix() 
