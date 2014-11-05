@@ -71,12 +71,12 @@ void rasterizeVertex(Vector4 input, Color color)
 	//Vector4 * finalVector = new Vector4();
 	
 	Vector4* finalVector = new Vector4(0, 0, 0, 0);
-	*finalVector = projMatrix * *(cameraMove) * *(tempCamera) * input;
-	finalVector->dehomogenize();
+	*finalVector = viewportMatrix * projMatrix * *(cameraMove) * *(tempCamera) * input;
+	//finalVector->dehomogenize();
 
 	Matrix4 multMatrix = projMatrix * *(cameraMove)* *(tempCamera);
 	//*finalVector = input * *(tempCamera)* cameraMove * projMatrix;
-	multMatrix.printToSt();
+	//multMatrix.printToSt();
 
 	/*cout << "matrix \n";
 	multMatrix.printToSt();
@@ -98,29 +98,18 @@ void rasterizeVertex(Vector4 input, Color color)
 	//Vector4 finalVector = input * modelMatrix * *(tempCamera) * cameraMove * projMatrix;
 	//finalVector->dehomogenize();
 
-	cout << "\n" << finalVector->toString();
+//	cout << "\n" << finalVector->toString();
 
 	double xCoord = finalVector->m[0] / finalVector->m[3];
 	double yCoord = finalVector->m[1] / finalVector->m[3];
+
+	//cout << "x coord = " << xCoord << " - y coord = " << yCoord;
 
 	//Finally drawing points on the canvas
 	drawPoint(xCoord, yCoord, color.r, color.g, color.b);
 }
 void rasterize()
 {
-
-
-	//Test matrix multiplication
-	Matrix4 test;
-	test.identity();
-	test.makeTranslate(0, 0, 30);
-	test.printToSt();
-
-	Vector4 v(1, 2, 3, 4);
-	v = test*v;
-
-	cout << "\n" << v.toString();
-
 	//Test rasterization - rasterizing a house
 	//int vertexNum[3];
 	//int vertexIndex;
