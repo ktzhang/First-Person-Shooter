@@ -21,6 +21,7 @@ void ZBuffer::setValue(int x, int y, double value) {
 }
 
 bool ZBuffer::checkAndReplace(int x, int y, double value) {
+	if (x >= sizeX || y >= sizeY) return false;
 	if (zBuffer[x][y] > value) {
 		zBuffer[x][y] = value;
 		return true;

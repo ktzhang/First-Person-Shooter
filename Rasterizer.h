@@ -68,7 +68,7 @@ void displayCallback();
 void keyboardCallback(unsigned char key, int, int);
 void loadData();
 void clearBuffer();
-void drawPoint(int x, int y, float r, float g, float b);
+void drawPoint(int x, int y, float r, float g, float b, double zDepth);
 
 void rasterizeVertex(Vector4 input, Color color);
 void rasterize();

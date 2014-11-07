@@ -47,6 +47,7 @@ Reader *currentObj = &bunny;
 int shadingEnabled = 0;
 int zBufferEnabled = 0;
 int pointSizeEnabled = 0;
+int sphericalCoordEnabled = 0;
 
 void loadData()
 {
@@ -66,49 +67,61 @@ void clearBuffer()
 	}
 }
 
+void drawPointSize(int x, int y, float r, float g, float b, double zDepth) {
+	int size = 0;
+	if (pointSizeEnabled) {
+		if (zDepth < 1) {
+			size = 0;
+		}
+		if (zDepth < 0.666) {
+			size = 0;
+		}
+		if (zDepth < 0.5) {
+			size = 0;
+		}
+		if (zDepth < 0.3) {
+			size = 0;
+		}
+		for (int newY = y - size; newY <= y + size; newY++) {
+			for (int newX = x - size; newX < x + size; newX++) {
+				drawPoint(newX, newY, r, g, b, zDepth);
+			}
+		}
+		if (!sphericalCoordEnabled) {
+			for (int newY = y - size; newY <= y + size; newY++) {
+				for (int newX = x - size; newX < x + size; newX++) {
+					drawPoint(newX, newY, r, g, b, zDepth);
+				}
+			}
+		} 
+		if (sphericalCoordEnabled) {
+			for (int newY = y - size; newY <= y + size; newY++) {
+				for (int newX = x - size; newX < x + size; newX++) {
+					if (((newY - y) * (newY - y) + (newX - x) * (newX - x)) <= size * size) {
+						drawPoint(newX, newY, r, g, b, zDepth);
+					}
+				}
+			}
+
+		}
+	}
+	else {
+		drawPoint(x, y, r, g, b, zDepth);
+	}
+
+}
 // Draw a point into the frame buffer
 void drawPoint(int x, int y, float r, float g, float b, double zDepth)
 {
 	int offset = y*window_width * 3 + x * 3;
-
 	int size;
-	if (zDepth < 1) {
-		size = 0;
+	
+	if (zBufferEnabled && !zBuffer.checkAndReplace(x, y, zDepth)) {
+		return;
 	}
-	if (zDepth < 0.666) {
-		size = 1;
-	}
-	if (zDepth < 0.5) {
-		size = 2;
-	} 
-	if (zDepth < 0.3) {
-		size = 3;
-	}
-	//size++;
-	if (pointSizeEnabled) {
-		// Horizontal painting
-		for (int newY = y-size; newY <= y+size; newY++) {
-			for (int newX = x-size; newX < x+size; newX++) {
-				if (zBufferEnabled && !zBuffer.checkAndReplace(newX, newY, zDepth)) {
-					continue;
-				}
-				offset = newY*window_width * 3 + newX * 3;
-				pixels[offset] = r;
-				pixels[offset + 1] = g;
-				pixels[offset + 2] = b;
-			}
-		}
-	}
-	else {
-		if (zBufferEnabled && !zBuffer.checkAndReplace(x, y, zDepth)) {
-
-		} else {
-			pixels[offset] = r;
-			pixels[offset + 1] = g;
-			pixels[offset + 2] = b;
-		}
-	}
-
+	pixels[offset] = r;
+	pixels[offset + 1] = g;
+	pixels[offset + 2] = b;
 }
 
 
@@ -157,7 +170,7 @@ void rasterizeVertex(Vector4 input, Color color)
 	}
 
 	
-	drawPoint(xCoord, yCoord, color.r, color.g, color.b, zDepth);
+	drawPointSize(xCoord, yCoord, color.r, color.g, color.b, zDepth);
 	
 
 }
@@ -234,6 +247,7 @@ void rasterize()
 		newNormal.normalize();
 		double dotProduct = (newLightPos.dot(newNormal, newLightPos));
 		double colorValue = (lightIntensity / M_PI) * colorValueLi * dotProduct;
+
 		Color color;
 		if (shadingEnabled) {
 			color.r = colorValue;
@@ -292,6 +306,9 @@ void keyboardCallback(unsigned char key, int, int)
 		pointSizeEnabled = !pointSizeEnabled;
 		displayCallback();
 		break;
+	case '5':
+		sphericalCoordEnabled = !sphericalCoordEnabled;
+		displayCallback();
 	}
 }
 
