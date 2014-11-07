@@ -59,6 +59,10 @@ public:
 		return maxX - minX;
 	}
 
+	float Reader::getNumPoints() {
+		return positionVectors.size();
+	}
+
 	vector<float> getPosVertices() {
 		return positionVertices;
 	}

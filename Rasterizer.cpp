@@ -12,6 +12,7 @@
 #include <vector>
 #include "Reader.h"
 #include <fstream>
+#include "ZBuffer.h"
 
 
 using namespace std;
@@ -25,20 +26,26 @@ static Matrix4 projMatrix;
 static Matrix4 viewportMatrix;
 static Matrix4* modelMatrix;
 
-double windowHeight;
-double windowWidth;
-
 double fovDeg = 0;
 double fovRad = 0;
 double scaleFactor;
 
+Vector3 lightSource = Vector3(10, 10, 10);
+
 int shouldRotate = 0;
 int rotateDeg = 0;
 
-
+ZBuffer zBuffer;
 double cameraDistance = 20;
 Reader bunny;
 Reader dragon;
+Reader *currentObj = &bunny;
+
+//States
+int zBufferEnabled = 0;
+
+
+
 
 void loadData()
 {
@@ -74,7 +81,7 @@ void rasterizeVertex(Vector4 input, Color color)
 	Matrix4* tempCamera = cameraMatrix.getInvert();
 	
 	Vector4* finalVector = new Vector4(0, 0, 0, 0);
-	*finalVector = viewportMatrix * projMatrix * *(tempCamera) * *modelMatrix * input;
+	*finalVector = viewportMatrix * projMatrix  * *modelMatrix * input;
 	//finalVector->dehomogenize();
 
 	Matrix4 multMatrix = viewportMatrix * projMatrix * *(tempCamera) * *modelMatrix;
@@ -100,15 +107,35 @@ void rasterizeVertex(Vector4 input, Color color)
 		tempCamera->printToSt();
 
 	}
-	double xCoord = finalVector->m[0] / finalVector->m[3];
-	double yCoord = finalVector->m[1] / finalVector->m[3];
+
+	double zDepth = finalVector->m[2] / finalVector->m[3];
+
+	// Rounding to the nearest int
+	int xCoord = (finalVector->m[0] / finalVector->m[3])+0.5;
+	int yCoord = (finalVector->m[1] / finalVector->m[3])+0.5;
 
 	if (display) {
 		cout << "\nx coord = " << xCoord << " - y coord = " << yCoord;
 		cout << "\n--------------\n";
 	}
-	//Finally drawing points on the canvas
-	drawPoint(xCoord, yCoord, color.r, color.g, color.b);
+	
+	if (zBufferEnabled) {
+		int counter = 0;
+		zBuffer.getValue(xCoord, yCoord);
+		if (zBuffer.checkAndReplace(xCoord, yCoord, zDepth)) {
+			//Finally drawing points on the canvas
+			drawPoint(xCoord, yCoord, color.r, color.g, color.b);
+		}
+		else {
+			counter++;
+		}
+		cout << "Number of points not drawn: " << counter;
+
+	}
+	else {
+		drawPoint(xCoord, yCoord, color.r, color.g, color.b);
+	}
+
 }
 void rasterize()
 {
@@ -131,23 +158,22 @@ void rasterize()
 			for (int j = 0; j < 3; j++) {
 				vertexIndex = vertexNum[j] * 3;
 				rasterizeVertex(Vector4(vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2], 1), color);
-				printf("\n vertex (%d - %f, %f, %f) \n", vertexIndex,
-					vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
+				//printf("\n vertex (%d - %f, %f, %f) \n", vertexIndex,
+				//	vertices[vertexIndex], vertices[vertexIndex + 1], vertices[vertexIndex + 2]);
 			}
 		}
 	}
-
 
 	vector<string>::iterator it; // declare an iterator to a vector of strings
 	// now start at from the beginning
 	// and keep iterating over the element till you find
 	// nth element...or reach the end of vector.
-	double objSize = bunny.getSize();
-	double meanX = bunny.getMeanX();
-	double meanY = bunny.getMeanY();
-	double meanZ = bunny.getMeanZ();
-	vector<Vector4> posVectors = bunny.getPosVectors();
-	vector<Vector4> normalVectors = bunny.getNormalVectors();
+	double objSize = currentObj->getSize();
+	double meanX = currentObj->getMeanX();
+	double meanY = currentObj->getMeanY();
+	double meanZ = currentObj->getMeanZ();
+	vector<Vector4> posVectors = currentObj->getPosVectors();
+	vector<Vector4> normalVectors = currentObj->getNormalVectors();
 
 	int i = 0;
 	for (std::vector<Vector4>::size_type i = 0; i < posVectors.size(); i += 3) {
@@ -155,12 +181,12 @@ void rasterize()
 		color.r = normalVectors[i].m[0];
 		color.g = normalVectors[i].m[1];
 		color.b = normalVectors[i].m[2];
-
+	
 		//Set scale factor
 		double windowSize = (cameraDistance * tan(fovRad/2) * 2);
 		scaleFactor = windowSize / objSize;
 		//scaleFactor = windowWidth / objSize;
-		scaleFactor = 200;
+		scaleFactor = 100;
 
 		Matrix4 scaleMatrix;
 		scaleMatrix.identity();
@@ -175,6 +201,17 @@ void rasterize()
 		modelMatrix = new Matrix4();
 		modelMatrix->identity();
 		*modelMatrix = scaleMatrix * moveMatrix * rotateMatrix;
+
+		//Coloring the model
+		Vector4 po = posVectors[i];
+		po = *(modelMatrix) * po;
+		Vector3 currentPos = Vector3(po.m[0], po.m[1], po.m[2]);
+		Vector3 newLight = lightSource - currentPos;
+
+		double colorValue = 100 / (newLight.length() * newLight.length());
+		color.r = colorValue;
+		color.g = colorValue;
+		color.b = colorValue;
 
 		rasterizeVertex(posVectors[i], color);
 	}
@@ -194,12 +231,28 @@ void keyboardCallback(unsigned char key, int, int)
 	case 'r':
 		rotateDeg += 30;
 		displayCallback();
+		break;
+	case '1':
+		currentObj = &bunny;
+		displayCallback();
+		break;
+	case '2':
+		currentObj = &dragon;
+		displayCallback();
+		break;
+	case '3':
+		zBufferEnabled = 1;
+		displayCallback();
+		break;
+	
 	}
 }
+
 
 void displayCallback()
 {
 	clearBuffer();
+	if (zBufferEnabled)	zBuffer.resetBuffer();
 	rasterize();
 	cout << "Display";
 	// glDrawPixels writes a block of pixels to the framebuffer
@@ -227,6 +280,7 @@ void setCameraMatrix()
 		camera[i].upVector = cameraVectors[i].upVector;
 	}
 	cameraMatrix = camera[0];
+	
 }
 
 double degToRad(double deg)
@@ -284,19 +338,22 @@ void setViewportMatrix()
 	viewportMatrix.transpose();
 }
 
+void idleCallback()
+{
+
+}
+
 // Called whenever the window size changes
 void reshapeCallback(int new_width, int new_height)
 {
 	window_width = new_width;
 	window_height = new_height;
 
-	windowHeight = new_height;
-	windowWidth = new_width;
-
 	setProjectionMatrix();
 	setViewportMatrix();
 	setCameraMatrix();
 
+	zBuffer = ZBuffer(window_width, window_height);
 
 	delete[] pixels;
 	pixels = new float[window_width * window_height * 3];
@@ -314,11 +371,15 @@ int main(int argc, char** argv) {
 	setViewportMatrix();
 	setCameraMatrix();
 
+	zBuffer = ZBuffer(window_width, window_height);
+
 	loadData();
 
 	glutReshapeFunc(reshapeCallback);
 	glutDisplayFunc(displayCallback);
 	glutKeyboardFunc(keyboardCallback);
+	glutIdleFunc(idleCallback);
+
 	glutMainLoop();
 }
 
