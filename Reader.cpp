@@ -46,7 +46,7 @@ void Reader::convertToVectors()
 		normalVertices.push_back(imageNums[i + 4]);
 		normalVertices.push_back(imageNums[i + 5]);
 
-		normalVectors.push_back(Vector4(imageNums[i + 3], imageNums[i + 4], imageNums[i + 5], 1));
+		normalVectors.push_back(Vector4(imageNums[i + 3], imageNums[i + 4], imageNums[i + 5], 0));
 
 		positionVertices.push_back(imageNums[i]);
 		positionVertices.push_back(imageNums[i + 1]);

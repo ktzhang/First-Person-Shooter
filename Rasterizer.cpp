@@ -30,20 +30,23 @@ double fovDeg = 0;
 double fovRad = 0;
 double scaleFactor;
 
-Vector3 lightSource = Vector3(10, 10, 10);
+Vector3 lightSource = Vector3(-10, 10, 10);
+int lightIntensity = 400;
 
 int shouldRotate = 0;
 int rotateDeg = 0;
-
+int scale = 100;
 ZBuffer zBuffer;
 double cameraDistance = 20;
 Reader bunny;
 Reader dragon;
 Reader *currentObj = &bunny;
 
+
 //States
+int shadingEnabled = 0;
 int zBufferEnabled = 0;
-int pointSizeEnabled = 1;
+int pointSizeEnabled = 0;
 
 void loadData()
 {
@@ -64,27 +67,31 @@ void clearBuffer()
 }
 
 // Draw a point into the frame buffer
-void drawPoint(int x, int y, float r, float g, float b, double inputSize)
+void drawPoint(int x, int y, float r, float g, float b, double zDepth)
 {
 	int offset = y*window_width * 3 + x * 3;
 
 	int size;
-	if (inputSize < 1) {
-		size = 3;
+	if (zDepth < 1) {
+		size = 0;
 	}
-	else if (inputSize < 0.666) {
-		size = 2;
-	}
-	else if (inputSize < 0.333) {
+	if (zDepth < 0.666) {
 		size = 1;
 	}
-
-
+	if (zDepth < 0.5) {
+		size = 2;
+	} 
+	if (zDepth < 0.3) {
+		size = 3;
+	}
 	//size++;
 	if (pointSizeEnabled) {
 		// Horizontal painting
 		for (int newY = y-size; newY <= y+size; newY++) {
 			for (int newX = x-size; newX < x+size; newX++) {
+				if (zBufferEnabled && !zBuffer.checkAndReplace(newX, newY, zDepth)) {
+					continue;
+				}
 				offset = newY*window_width * 3 + newX * 3;
 				pixels[offset] = r;
 				pixels[offset + 1] = g;
@@ -93,9 +100,13 @@ void drawPoint(int x, int y, float r, float g, float b, double inputSize)
 		}
 	}
 	else {
-		pixels[offset] = r;
-		pixels[offset + 1] = g;
-		pixels[offset + 2] = b;
+		if (zBufferEnabled && !zBuffer.checkAndReplace(x, y, zDepth)) {
+
+		} else {
+			pixels[offset] = r;
+			pixels[offset + 1] = g;
+			pixels[offset + 2] = b;
+		}
 	}
 
 }
@@ -144,20 +155,10 @@ void rasterizeVertex(Vector4 input, Color color)
 		cout << "\nx coord = " << xCoord << " - y coord = " << yCoord;
 		cout << "\n--------------\n";
 	}
-	
-	double size = zDepth;
 
-	if (zBufferEnabled) {
-		int counter = 0;
-		zBuffer.getValue(xCoord, yCoord);
-		if (zBuffer.checkAndReplace(xCoord, yCoord, zDepth)) {
-			//Finally drawing points on the canvas
-			drawPoint(xCoord, yCoord, color.r, color.g, color.b, size);
-		}
-	}
-	else {
-		drawPoint(xCoord, yCoord, color.r, color.g, color.b, size);
-	}
+	
+	drawPoint(xCoord, yCoord, color.r, color.g, color.b, zDepth);
+	
 
 }
 void rasterize()
@@ -200,16 +201,11 @@ void rasterize()
 
 	int i = 0;
 	for (std::vector<Vector4>::size_type i = 0; i < posVectors.size(); i += 3) {
-		Color color;
-		color.r = normalVectors[i].m[0];
-		color.g = normalVectors[i].m[1];
-		color.b = normalVectors[i].m[2];
-	
 		//Set scale factor
 		double windowSize = (cameraDistance * tan(fovRad/2) * 2);
 		scaleFactor = windowSize / objSize;
 		//scaleFactor = windowWidth / objSize;
-		scaleFactor = 100;
+		scaleFactor = scale;
 
 		Matrix4 scaleMatrix;
 		scaleMatrix.identity();
@@ -229,13 +225,26 @@ void rasterize()
 		Vector4 po = posVectors[i];
 		po = *(modelMatrix) * po;
 		Vector3 currentPos = Vector3(po.m[0], po.m[1], po.m[2]);
-		Vector3 newLight = lightSource - currentPos;
+		Vector3 newLightPos = lightSource - currentPos;
+		double colorValueLi = 1 / (newLightPos.length() * newLightPos.length());
 
-		double colorValue = 100 / (newLight.length() * newLight.length());
-		color.r = colorValue;
-		color.g = colorValue;
-		color.b = colorValue;
-
+		newLightPos.normalize();
+		Vector4 adjustedNormal = *(modelMatrix)* normalVectors[i];
+		Vector3 newNormal = Vector3(adjustedNormal.m[0], adjustedNormal.m[1], adjustedNormal.m[2]);
+		newNormal.normalize();
+		double dotProduct = (newLightPos.dot(newNormal, newLightPos));
+		double colorValue = (lightIntensity / M_PI) * colorValueLi * dotProduct;
+		Color color;
+		if (shadingEnabled) {
+			color.r = colorValue;
+			color.g = colorValue;
+			color.b = colorValue;
+		}
+		else {
+			color.r = 1;
+			color.g = 1;
+			color.b = 1;
+		}
 		rasterizeVertex(posVectors[i], color);
 	}
 
@@ -255,12 +264,24 @@ void keyboardCallback(unsigned char key, int, int)
 		rotateDeg += 30;
 		displayCallback();
 		break;
+	case 'R':
+		rotateDeg -= 30;
+		displayCallback();
+		break;
+	case 's':
+		scale += 10;
+		displayCallback();
+		break;
+	case 'S':
+		scale -= 10;
+		displayCallback();
+		break;
 	case '1':
-		currentObj = &bunny;
+		shadingEnabled = 0;
 		displayCallback();
 		break;
 	case '2':
-		currentObj = &dragon;
+		shadingEnabled = 1;
 		displayCallback();
 		break;
 	case '3':
@@ -274,6 +295,16 @@ void keyboardCallback(unsigned char key, int, int)
 	}
 }
 
+void processFunctionKeys(int key, int x, int y) {
+	if (key == GLUT_KEY_F1) {
+		currentObj = &bunny;
+		displayCallback();
+	}
+	else if (key == GLUT_KEY_F2) {
+		currentObj = &dragon;
+		displayCallback();
+	}
+}
 
 void displayCallback()
 {
@@ -404,6 +435,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(reshapeCallback);
 	glutDisplayFunc(displayCallback);
 	glutKeyboardFunc(keyboardCallback);
+	glutSpecialFunc(processFunctionKeys);
 	glutIdleFunc(idleCallback);
 
 	glutMainLoop();
