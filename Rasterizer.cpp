@@ -71,30 +71,32 @@ void drawPointSize(int x, int y, float r, float g, float b, double zDepth) {
 	int size = 0;
 	if (pointSizeEnabled) {
 		if (zDepth < 1) {
-			size = 0;
+			size = 1;
 		}
 		if (zDepth < 0.666) {
-			size = 0;
+			size = 2;
 		}
 		if (zDepth < 0.5) {
-			size = 0;
+			size = 3;
+		}
+		if (zDepth < 0.4) {
+			size = 4;
 		}
 		if (zDepth < 0.3) {
-			size = 0;
+			size = 5;
 		}
-		for (int newY = y - size; newY <= y + size; newY++) {
-			for (int newX = x - size; newX < x + size; newX++) {
-				drawPoint(newX, newY, r, g, b, zDepth);
-			}
+		if (zDepth < 0.2) {
+			size = 7;
 		}
 		if (!sphericalCoordEnabled) {
+
 			for (int newY = y - size; newY <= y + size; newY++) {
 				for (int newX = x - size; newX < x + size; newX++) {
 					drawPoint(newX, newY, r, g, b, zDepth);
 				}
 			}
-		} 
-		if (sphericalCoordEnabled) {
+		}
+		else {
 			for (int newY = y - size; newY <= y + size; newY++) {
 				for (int newX = x - size; newX < x + size; newX++) {
 					if (((newY - y) * (newY - y) + (newX - x) * (newX - x)) <= size * size) {
