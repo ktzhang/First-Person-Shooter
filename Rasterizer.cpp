@@ -43,9 +43,7 @@ Reader *currentObj = &bunny;
 
 //States
 int zBufferEnabled = 0;
-
-
-
+int pointSizeEnabled = 1;
 
 void loadData()
 {
@@ -66,12 +64,29 @@ void clearBuffer()
 }
 
 // Draw a point into the frame buffer
-void drawPoint(int x, int y, float r, float g, float b)
+void drawPoint(int x, int y, float r, float g, float b, double size)
 {
 	int offset = y*window_width * 3 + x * 3;
-	pixels[offset] = r;
-	pixels[offset + 1] = g;
-	pixels[offset + 2] = b;
+
+	size = 2;
+	size++;
+	if (pointSizeEnabled) {
+		// Horizontal painting
+		for (int newY = y-size; newY <= y+size; newY++) {
+			for (int newX = x-size; newX < x+size; newX++) {
+				offset = newY*window_width * 3 + newX * 3;
+				pixels[offset] = r;
+				pixels[offset + 1] = g;
+				pixels[offset + 2] = b;
+			}
+		}
+	}
+	else {
+		pixels[offset] = r;
+		pixels[offset + 1] = g;
+		pixels[offset + 2] = b;
+	}
+
 }
 
 
@@ -119,21 +134,18 @@ void rasterizeVertex(Vector4 input, Color color)
 		cout << "\n--------------\n";
 	}
 	
+	double size = zDepth;
+
 	if (zBufferEnabled) {
 		int counter = 0;
 		zBuffer.getValue(xCoord, yCoord);
 		if (zBuffer.checkAndReplace(xCoord, yCoord, zDepth)) {
 			//Finally drawing points on the canvas
-			drawPoint(xCoord, yCoord, color.r, color.g, color.b);
+			drawPoint(xCoord, yCoord, color.r, color.g, color.b, size);
 		}
-		else {
-			counter++;
-		}
-		cout << "Number of points not drawn: " << counter;
-
 	}
 	else {
-		drawPoint(xCoord, yCoord, color.r, color.g, color.b);
+		drawPoint(xCoord, yCoord, color.r, color.g, color.b, size);
 	}
 
 }
@@ -241,10 +253,13 @@ void keyboardCallback(unsigned char key, int, int)
 		displayCallback();
 		break;
 	case '3':
-		zBufferEnabled = 1;
+		zBufferEnabled = !zBufferEnabled;
 		displayCallback();
 		break;
-	
+	case '4':
+		pointSizeEnabled = !pointSizeEnabled;
+		displayCallback();
+		break;
 	}
 }
 
