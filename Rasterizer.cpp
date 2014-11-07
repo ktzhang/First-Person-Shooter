@@ -64,12 +64,23 @@ void clearBuffer()
 }
 
 // Draw a point into the frame buffer
-void drawPoint(int x, int y, float r, float g, float b, double size)
+void drawPoint(int x, int y, float r, float g, float b, double inputSize)
 {
 	int offset = y*window_width * 3 + x * 3;
 
-	size = 2;
-	size++;
+	int size;
+	if (inputSize < 1) {
+		size = 3;
+	}
+	else if (inputSize < 0.666) {
+		size = 2;
+	}
+	else if (inputSize < 0.333) {
+		size = 1;
+	}
+
+
+	//size++;
 	if (pointSizeEnabled) {
 		// Horizontal painting
 		for (int newY = y-size; newY <= y+size; newY++) {
