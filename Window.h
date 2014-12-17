@@ -10,7 +10,6 @@
 #include "Geode.h"
 #include "Material.h"
 #include "Cone.h"
-#include "TreeObject.h"
 
 extern Reader* reader;
 
@@ -18,19 +17,18 @@ extern Reader* reader;
 
 class Window	  // OpenGL output window related routines
 {
-  public:
-    static int width, height; 	    
+public:
+	static int width, height;
 	// window size
-	
 
 	static void init();
 
 	static void processNormalKeys(unsigned char key, int x, int y);
 	static void processFunctionKeys(int key, int x, int y);
 
-    static void idleCallback(void);
-    static void reshapeCallback(int, int);
-    static void displayCallback(void);
+	static void idleCallback(void);
+	static void reshapeCallback(int, int);
+	static void displayCallback(void);
 
 	static void processMotionFunction(int x, int y);
 	static void processMouseFunction(int button, int state, int x, int y);
@@ -49,11 +47,12 @@ class Window	  // OpenGL output window related routines
 	static void displaySpotlight(int x, int y, int z, double angle, Vector3 origin);
 	static void spotlightSave();
 	static void displaySpotlightCone();
-	static void genList();
 
 	static void rayModelCalc(int x, int y);
 	static int rayIntersectsTriangle(Vector3 p, Vector3 d,
 		Vector3 v0, Vector3 v1, Vector3 v2);
+
+	static void genList();
 
 	static Vector3 trackBallMapping(Point point);
 };
