@@ -25,6 +25,7 @@
 #include "TreeObject.h"
 #include "Floor.h"
 #include "ForestGroup.h"
+#include "EnemyBox.h"
 
 #include <chrono>
 
@@ -105,17 +106,36 @@ double increment2 = 0.0;
 double increment3 = 3.19* M_PI / 2;
 double increment4 = 3.19* M_PI / 2;
 
+
+std::vector<EnemyBox> enemies;
+
 void Window::init() {
 	/*bunny = new Reader("bunny.obj");
 	dragon = new Reader("dragon.obj", Color{ 0.9, 0.9, 0.3 });
 	bear = new Reader("bear.obj");
 	reader = bunny;*/
 
-	finalMatrix.identity();
-	finalSpotlight.identity();
-	spotlightMatrix.identity();
-	totalRotateSpotlight.identity();
-	origin = Vector3(0, 0, 0);
+	//finalMatrix.identity();
+	//finalSpotlight.identity();
+	//spotlightMatrix.identity();
+	//totalRotateSpotlight.identity();
+	//origin = Vector3(0, 0, 0);
+
+	int initialEnemies = 3;
+	Vector3 singleEnemyPos;
+	double x, y, z, enemyBorderSize, enemyBorderFactor;
+	for (int i = 0; i < initialEnemies; i++) {
+		EnemyBox singleEnemy = EnemyBox();
+		//enemyBorderSize = singleEnemy.shrinkFactor * Cube::SIDELEN / 2;
+		//enemyBorderFactor = (Skybox::BOXLEN - enemyBorderSize) - (Skybox::BOXLEN / 2);
+		x = (double)rand() / (RAND_MAX);
+		y = (double)rand() / (RAND_MAX);
+		z = (double)rand() / (RAND_MAX);
+		cout << "x, y, z" << x << " " << y << " " << z;
+		singleEnemyPos = Vector3(x, y, z);
+		singleEnemy.pos = singleEnemyPos;
+		enemies.push_back(singleEnemy);
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -378,10 +398,6 @@ void Window::genList() {
 	}
 	forestGroup = new ForestGroup();
 	forestGroup->prerender();
-
-
-
-
 }
 
 //----------------------------------------------------------------------------
@@ -421,6 +437,18 @@ void Window::displayCallback()
 	
 	Floor floor = Floor();
 	objTrans.addChild(&floor);
+
+//	cout << enemies.size();
+	for (std::vector<EnemyBox>::iterator it = enemies.begin(); it != enemies.end(); ++it) {
+		objTrans.addChild(&(*it));
+	}
+
+	objTrans.addChild(&enemies[0]);
+	EnemyBox enemyBox = EnemyBox();
+//	objTrans.addChild(&enemyBox);
+
+
+
 
 
 
