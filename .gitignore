@@ -1,4 +1,6 @@
+Cube.sdf
 Debug
 GL
 glut
+Release/
 *.opensdf
