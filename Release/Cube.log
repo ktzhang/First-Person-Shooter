@@ -1,10 +1,8 @@
-﻿Build started 12/16/2014 11:02:45 PM.
+﻿Build started 12/16/2014 11:05:15 PM.
      1>Project "C:\Dropbox\School\CSE167\Final\Cube.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"c:\glut\glut-3.7.6-bin" /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Skybox.cpp window.cpp
-         Skybox.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"c:\glut\glut-3.7.6-bin" /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt window.cpp
          window.cpp
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Release\Cube.exe" /INCREMENTAL /NOLOGO /LIBPATH:"c:\glut\glut-3.7.6-bin" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Release\Cube.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\Cube.lib" /MACHINE:X86 /SAFESEH Release\Camera.obj
          Release\Cone.obj
@@ -31,10 +29,9 @@
          Release\window.obj
          Release\ZBuffer.obj
      1>LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
-     1>main.obj : error LNK2019: unresolved external symbol "public: static void __cdecl Window::genList(void)" (?genList@Window@@SAXXZ) referenced in function _main
-     1>Release\Cube.exe : fatal error LNK1120: 1 unresolved externals
-     1>Done Building Project "C:\Dropbox\School\CSE167\Final\Cube.vcxproj" (Build target(s)) -- FAILED.
+         Cube.vcxproj -> C:\Dropbox\School\CSE167\Final\Release\Cube.exe
+     1>Done Building Project "C:\Dropbox\School\CSE167\Final\Cube.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:02.33
+Time Elapsed 00:00:01.94
