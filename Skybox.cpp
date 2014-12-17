@@ -19,7 +19,6 @@ void Skybox::render() {
 	glEnable(GL_TEXTURE_2D);
 	glColor3f(1, 1, 1);
 
-
 	// set the current drawing color to white to use original texture colors
 	glBindTexture(GL_TEXTURE_2D, *front);
 
