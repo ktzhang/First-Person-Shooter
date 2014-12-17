@@ -9,8 +9,8 @@
 class Cube : public Geode
 {
 	Color color;
-	const int CUBE_SIZE = 1;
 	public:
+		double sideLen;
 		Cube();   // Constructor
 		Cube(Color color);
 		~Cube(){};

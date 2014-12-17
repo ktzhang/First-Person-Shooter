@@ -25,6 +25,7 @@
 #include "TreeObject.h"
 #include "Floor.h"
 #include "ForestGroup.h"
+#include "EnemyBox.h"
 
 #include <chrono>
 
@@ -378,10 +379,6 @@ void Window::genList() {
 	}
 	forestGroup = new ForestGroup();
 	forestGroup->prerender();
-
-
-
-
 }
 
 //----------------------------------------------------------------------------
@@ -421,6 +418,12 @@ void Window::displayCallback()
 	
 	Floor floor = Floor();
 	objTrans.addChild(&floor);
+
+
+	EnemyBox enemyBox = EnemyBox();
+	objTrans.addChild(&enemyBox);
+
+
 
 
 
