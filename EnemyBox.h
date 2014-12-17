@@ -8,7 +8,9 @@ class EnemyBox : public Group {
 private:
 
 public:
+	double shrinkFactor = 0.01;
 	MatrixTransform* enemy;
+	double sidelen;
 	Vector3 pos;
 	EnemyBox();
 	EnemyBox(Vector3 startPos);

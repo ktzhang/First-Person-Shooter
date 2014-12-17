@@ -7,9 +7,8 @@
 using namespace std;
 
 class Skybox : public Geode {
-	const int CONE_HEIGHT = 2;
-	const int CONE_BASE = 1;
 public:
+	static const double SIDELEN;
 	Skybox() {};
 	void render();
 	//void prerender();

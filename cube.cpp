@@ -10,10 +10,11 @@
 #include "Cube.h"
 #include <math.h>       /* sqrt */
 
+const double Cube::SIDELEN = 10;
 
 using namespace std;
 Cube::Cube() {
-	sideLen = 10.0;
+	sideLen = SIDELEN;
 	this->color = { 1, 1, 1 };
 }
 

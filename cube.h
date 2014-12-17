@@ -10,6 +10,7 @@ class Cube : public Geode
 {
 	Color color;
 	public:
+		static const double SIDELEN;
 		double sideLen;
 		Cube();   // Constructor
 		Cube(Color color);
