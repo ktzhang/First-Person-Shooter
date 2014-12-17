@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="window.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Geode.cpp">
+      <Filter>Model\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Group.cpp">
+      <Filter>Model\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixTransform.cpp">
+      <Filter>Model\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Model\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Reader.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="ZBuffer.cpp">
+      <Filter>Core Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Model\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Cone.cpp">
+      <Filter>Model\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="cube.cpp">
+      <Filter>Model\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>Model\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeObject.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="GLee.c">
+      <Filter>lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="window.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Geode.h">
+      <Filter>Model\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Group.h">
+      <Filter>Model\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixTransform.h">
+      <Filter>Model\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Model\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Reader.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="ZBuffer.h">
+      <Filter>Core Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Model\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>Model\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="cube.h">
+      <Filter>Model\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>Model\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeObject.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Water.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="GLee.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Model">
+      <UniqueIdentifier>{782d24a5-25bd-4689-bced-114941de7150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core Classes">
+      <UniqueIdentifier>{50cd8657-93e3-4076-b5ac-f0c8b6167fbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Core">
+      <UniqueIdentifier>{055e36bd-cfd6-4512-bfbb-c4732b9caee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Shapes">
+      <UniqueIdentifier>{7eb3b7d2-e592-465c-a740-41f0b0b906fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{b0daabfd-281a-4704-8ab0-cd556dbc7c3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{470f790a-301d-4bc8-9d8c-c406582be910}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

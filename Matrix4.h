@@ -4,17 +4,21 @@
 #include <string>
 #include "Vector3.h"
 #include "Vector4.h"
+#include <iostream>
+
+
 
 #define M_PI 3.14159265358979323846
 
 class Matrix4
 {
   protected:
-    double m[4][4];   // matrix elements; first index is for rows, second for columns (row-major)
     
   public:
+    double m[4][4];   // matrix elements; first index is for rows, second for columns (row-major)
     Matrix4(); 
 	Matrix4(double[4][4]);
+	Matrix4::Matrix4(double n[16]);
     Matrix4& operator=(const Matrix4&);
     double* getPointer(); 
 	Matrix4 Matrix4::operator*(const Matrix4& m2); // : multiply matrix with matrix
@@ -28,6 +32,9 @@ class Matrix4
 	void Matrix4::makeScale(double sx, double sy, double sz); // : make a non - uniform scaling matrix
 	void Matrix4::makeTranslate(double tx, double ty, double tz); // : make a translation matrix
 	void Matrix4::print(std::string& comment);// : print the matrix(display all 16 matrix components numerically on the screen in a 4x4 array)
+	void Matrix4::printToSt();
+
+	
 };
 
 #endif
