@@ -25,6 +25,15 @@ Matrix4::Matrix4(double n[4][4]) {
 	}
 }
 
+Matrix4::Matrix4(double n[16]) {
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; j++) {
+			m[i][j] = n[i * 4 + j];
+		}
+	}
+}
+
 Matrix4& Matrix4::operator=(const Matrix4& m2)
 {
   if (this != &m2)
@@ -42,19 +51,10 @@ Matrix4& Matrix4::operator=(const Matrix4& m2)
 
 Matrix4 Matrix4::operator*(const Matrix4& m2) {
 	Matrix4 n;
-
 	for (int i = 0; i < 4; i++){
 		for (int j = 0; j < 4; j++){
 			for (int x = 0; x < 4; x++){
 				n.m[j][i] += this->m[x][i] * m2.m[j][x];
-			}
-		}
-	}
-
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			for (int k = 0; k < 4; k++) {
-				//n[]
 			}
 		}
 	}
@@ -66,9 +66,11 @@ Vector4 Matrix4::operator*(const Vector4& v) { // : multiply matrix with vector
 	Vector4 v2(0, 0, 0, 0);
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			v2.m[i] = this->m[j][i] * v.m[j];
+			v2.m[i] += this->m[j][i] * v.m[j];
+			//std::cout << "\n adding " << this->m[j][i] << " with " << v.m[j];
 		}
 	}
+
 	return v2;
 }
 
@@ -124,8 +126,8 @@ void Matrix4::makeRotateX(double angle) {
 // angle is expected in degrees
 void Matrix4::makeRotateY(double angle)
 {
-  angle = angle / 180.0 * M_PI;  // convert from degrees to radians
-  identity();
+	angle = angle / 180.0 * M_PI;  // convert from degrees to radians
+	identity();
 	m[0][0] = cos(angle);
 	m[0][2] = sin(angle);
 	m[2][0] = -sin(angle);
@@ -147,6 +149,7 @@ void Matrix4::makeRotateZ(double angle)
 // : Make a rotation matrix about an arbitrary axis
 void Matrix4::makeRotate(double angle, const Vector3& axis) {
 	angle = angle / 180.0 * M_PI;  // convert from degrees to radians
+	identity();
 	double t = 1 - cos(angle);
 	double s = sin(angle);
 	double c = cos(angle);
@@ -200,4 +203,26 @@ void Matrix4::print(std::string& comment) {
 		+ to_string(m[1][3]) + " "
 		+ to_string(m[2][3]) + " "
 		+ to_string(m[3][3]) + " |");
+}
+
+void Matrix4::printToSt() {
+	std::string comment;
+	comment.append("\n| "
+		+ to_string(m[0][0]) + " "
+		+ to_string(m[1][0]) + " "
+		+ to_string(m[2][0]) + " "
+		+ to_string(m[3][0]) + " |\n| "
+		+ to_string(m[0][1]) + " "
+		+ to_string(m[1][1]) + " "
+		+ to_string(m[2][1]) + " "
+		+ to_string(m[3][1]) + " |\n| "
+		+ to_string(m[0][2]) + " "
+		+ to_string(m[1][2]) + " "
+		+ to_string(m[2][2]) + " "
+		+ to_string(m[3][2]) + " |\n| "
+		+ to_string(m[0][3]) + " "
+		+ to_string(m[1][3]) + " "
+		+ to_string(m[2][3]) + " "
+		+ to_string(m[3][3]) + " |");
+	std::cout << comment;
 }

@@ -7,78 +7,68 @@
 #include <Windows.h>
 
 #include <GL/glut.h>
-
-#include "Window.h"
 #include "Cube.h"
-#include "Matrix4.h"
-#include "main.h"
-#include "Vector3.h"
-#include "Vector4.h"
+#include <math.h>       /* sqrt */
 
 
 using namespace std;
-
-Cube::Cube()
-{
-	reset();
+Cube::Cube() {
+	this->color = { 1, 1, 1 };
+	sphereOrigin = Vector3(0, 0, 0);
+	sphereRadius = sqrt(2 * CUBE_SIZE*CUBE_SIZE)/2;
 }
 
-Matrix4& Cube::getMatrix()
-{
-  return model2world;
+Cube::Cube(Color color) {
+	this->color = color;
+	sphereOrigin = Vector3(0, 0, 0);
+	sphereRadius = sqrt(2 * CUBE_SIZE*CUBE_SIZE) / 2;
 }
 
+void Cube::render() {
+	// Pushing and popping the matrix
+	glBegin(GL_QUADS);
+	glColor3f(0.0, 1.0, 0.0);		// This makes the cube green; the parameters are for red, green and blue. 
+	// To change the color of the other faces you will need to repeat this call before each face is drawn.
+	// Draw front face:
+	glNormal3f(0.0, 0.0, 1.0);
+	glVertex3f(-5.0, 5.0, 5.0);
+	glVertex3f(5.0, 5.0, 5.0);
+	glVertex3f(5.0, -5.0, 5.0);
+	glVertex3f(-5.0, -5.0, 5.0);
 
-void Cube::changeSpinDirection() {
-	spinDirection = -spinDirection;
-}
+	// Draw left side:
+	glNormal3f(-1.0, 0.0, 0.0);
+	glVertex3f(-5.0, 5.0, 5.0);
+	glVertex3f(-5.0, 5.0, -5.0);
+	glVertex3f(-5.0, -5.0, -5.0);
+	glVertex3f(-5.0, -5.0, 5.0);
 
-void Cube::reset() {
-	spinDirection = -1;
-	spinAngle = 0.0;
-	scale = 1;
-	orbitAngle = 0.0;
-	origin[0] = 0;
-	origin[1] = 0;
-	origin[2] = 0;
-}
+	// Draw right side:
+	glNormal3f(1.0, 0.0, 0.0);
+	glVertex3f(5.0, 5.0, 5.0);
+	glVertex3f(5.0, 5.0, -5.0);
+	glVertex3f(5.0, -5.0, -5.0);
+	glVertex3f(5.0, -5.0, 5.0);
 
-void Cube::animate() {
-	//Translate
-	Matrix4 translateMatrix;
-	translateMatrix.makeTranslate(origin[0], origin[1], origin[2]);
+	// Draw back face:
+	glNormal3f(0.0, 0.0, -1.0);
+	glVertex3f(-5.0, 5.0, -5.0);
+	glVertex3f(5.0, 5.0, -5.0);
+	glVertex3f(5.0, -5.0, -5.0);
+	glVertex3f(-5.0, -5.0, -5.0);
 
-	Matrix4 rotateMatrix;
-	rotateMatrix.makeRotateY(spinAngle += spinDirection * 1);   // This creates the matrix to rotate the cube
+	// Draw top side:
+	glNormal3f(0.0, 1.0, 0.0);
+	glVertex3f(-5.0, 5.0, 5.0);
+	glVertex3f(5.0, 5.0, 5.0);
+	glVertex3f(5.0, 5.0, -5.0);
+	glVertex3f(-5.0, 5.0, -5.0);
 
-	Matrix4 orbitMatrix;
-	orbitMatrix.makeRotateZ(orbitAngle);
-
-	Matrix4 scaleMatrix;
-	scaleMatrix.makeScale(scale, scale, scale);
-
-	model2world = translateMatrix * orbitMatrix  * scaleMatrix * rotateMatrix;
-	
-	//model2world = scale;
-}
-
-void Cube::spin(double deg) {  // deg is in degrees{
-	spinAngle += deg;
-	if (spinAngle > 360.0 || spinAngle < -360.0) spinAngle = 0.0;
-}
-
-void Cube::orbitCube(double deg) {
-	orbitAngle += deg;
-	if (orbitAngle > 360.0 || orbitAngle < -360.0) orbitAngle = 0.0;
-}
-
-void Cube::scaleCube(double amount) {
-	scale += amount;
-}
-
-void Cube::translateCube(double x, double y, double z) {
-	origin[0] = origin[0] + x;
-	origin[1] = origin[1] + y;
-	origin[2] = origin[2] + z;
-	OutputDebugString(to_string(origin[0]).c_str());
+	// Draw bottom side:
+	glNormal3f(0.0, -1.0, 0.0);
+	glVertex3f(-5.0, -5.0, -5.0);
+	glVertex3f(5.0, -5.0, -5.0);
+	glVertex3f(5.0, -5.0, 5.0);
+	glVertex3f(-5.0, -5.0, 5.0);
+	glEnd();
 }

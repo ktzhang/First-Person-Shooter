@@ -2,28 +2,19 @@
 #define _CUBE_H_
 
 #include "Matrix4.h"
+#include "Geode.h"
+#include "window.h"
+#include "Header.h"
 
-class Cube
+class Cube : public Geode
 {
-  protected:
-    Matrix4 model2world;            // model matrix (transforms model coordinates to world coordinates)
-	double spinAngle;                   // rotation angle [degrees]
-	double orbitAngle;				// rotation angle orbit
-	double origin[3];
-	double scale;
-
-  public:
-    Cube();   // Constructor
-	int spinDirection;
-
-    Matrix4& getMatrix();
-    void Cube::spin(double);      // spin cube [degrees]
-	void Cube::translateCube(double x, double y, double z);
-	void Cube::animate();
-	void Cube::changeSpinDirection();
-	void Cube::orbitCube(double deg);
-	void Cube::scaleCube(double amount);
-	void Cube::reset();
+	Color color;
+	const int CUBE_SIZE = 1;
+	public:
+		Cube();   // Constructor
+		Cube(Color color);
+		~Cube(){};
+		void Cube::render();
 };
 
 #endif

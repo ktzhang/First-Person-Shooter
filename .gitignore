@@ -2,3 +2,4 @@ Debug
 GL
 glut
 *.opensdf
+/Release/
