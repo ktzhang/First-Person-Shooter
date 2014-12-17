@@ -376,10 +376,23 @@ void Window::displayCallback()
 	Group world = Group();
 	MatrixTransform objTrans = MatrixTransform(finalMatrix);
 	world.addChild(&objTrans);
-	objTrans.addChild(treeObj);
 
+
+	double treeShrinkFactor = 0.0005;
+	Matrix4 treeShrinkMatrix;
+	treeShrinkMatrix.identity();
+	treeShrinkMatrix.makeScale(treeShrinkFactor, treeShrinkFactor, treeShrinkFactor);
+	MatrixTransform treeTrans = MatrixTransform(treeShrinkMatrix);
+	treeTrans.addChild(treeObj);
+	objTrans.addChild(&treeTrans);
+
+
+	Matrix4 skyMatrix;
+	skyMatrix.makeTranslate(0, 1, 0);
+	MatrixTransform skyTrans = MatrixTransform(skyMatrix);
 	Skybox sky = Skybox();
-	objTrans.addChild(&sky);
+	skyTrans.addChild(&sky);
+	objTrans.addChild(&skyTrans);
 
 	Matrix4 identity = Matrix4();
 	identity.identity();
@@ -387,7 +400,6 @@ void Window::displayCallback()
 	
 	Floor floor = Floor();
 	objTrans.addChild(&floor);
-
 
 
 
@@ -399,7 +411,7 @@ void Window::displayCallback()
 	Sphere pointLightSphere = Sphere();
 	pointLightTrans.addChild(&pointLightSphere);
 	if (enablePointLight)
-		world.addChild(&pointLightTrans);
+		//world.addChild(&pointLightTrans);
 
 	world.draw(identity);
 
@@ -548,9 +560,12 @@ void Window::calculateInitialObjectMatrix() {
 	Matrix4 rotate;
 	rotate.identity();
 	rotate.makeRotateX(-30);
+	Matrix4 translate;
+	translate.identity();
+	//translate.makeTranslate(0, 10, 0);
 
 	finalMatrix.identity();
-	finalMatrix = finalMatrix * rotate * zoom;
+	finalMatrix = finalMatrix * rotate * translate *zoom;
 }
 
 void Window::applyGlobalMatrix() {
