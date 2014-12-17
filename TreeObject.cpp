@@ -178,7 +178,6 @@ MatrixTransform TreeObject::drawBranch(Matrix4 trans, char letter, double ratio)
 	return *transform;
 }
 
-GLuint glutIndex;
 void TreeObject::prerender() {
 	glutIndex = glGenLists(1);
 	glNewList(glutIndex, GL_COMPILE);

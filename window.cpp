@@ -355,11 +355,12 @@ struct CameraVectors {
 };
 
 TreeObject *treeObj;
+ForestGroup *forestGroup;
 double forestX[10];
 double forestY[10];
 
 void Window::genList() {
-	treeObj = new TreeObject(5, 3.0, 25, 1.0);
+	treeObj = new TreeObject(3, 3.0, 25, 1.0);
 	treeObj->setAxiom("F");
 	//treeObj.addRule('F', "FFF", 1);
 	//treeObj->addRule('F', "FF-[-F+F]+[+F-F]", 1);
@@ -375,6 +376,12 @@ void Window::genList() {
 		forestX[i] = randX * 2 - 1;
 		forestY[i] = randY * 2 - 1;
 	}
+	forestGroup = new ForestGroup();
+	forestGroup->prerender();
+
+
+
+
 }
 
 //----------------------------------------------------------------------------
@@ -398,8 +405,8 @@ void Window::displayCallback()
 	//treeTrans.addChild(treeObj);
 	//objTrans.addChild(&treeTrans);
 
-	ForestGroup treeForest;
-	objTrans.addChild(&treeForest);
+	//ForestGroup treeForest;
+	objTrans.addChild(forestGroup);
 
 	Matrix4 skyMatrix;
 	skyMatrix.makeTranslate(0, 1, 0);

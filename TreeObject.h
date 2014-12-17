@@ -7,10 +7,10 @@
 #include <stack>
 #include "Vector3.h"
 #include "Group.h"
+#include <GL/glut.h>
 
 class TreeObject :
-	public Group
-{
+	public Group {
 	double ratioStep;
 	double angle;
 	//Map containing all the rules
@@ -21,6 +21,8 @@ class TreeObject :
 	string axiom;
 	Vector3 currentPos;
 	Group* treeObj;
+	int glutIndex;
+
 
 private:
 	//Draws each rule 

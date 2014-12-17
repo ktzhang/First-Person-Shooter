@@ -12,6 +12,7 @@ class Skybox : public Geode {
 public:
 	Skybox() {};
 	void render();
+	//void prerender();
 	~Skybox() {};
 };
 
