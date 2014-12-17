@@ -10,12 +10,16 @@ using namespace std;
 
 
 EnemyBox::EnemyBox() {
-	enemy = new Group();
+	/*Matrix4 identity;
+	identity.identity();
+	enemy = new MatrixTransform(identity);*/
 	pos = Vector3(0, 0, 0);
 }
 
 EnemyBox::EnemyBox(Vector3 startPos) {
-	enemy = new Group();
+	//Matrix4 identity;
+	//identity.identity();
+	//enemy = new MatrixTransform(identity);
 	pos = startPos;
 }
 
@@ -25,14 +29,14 @@ void EnemyBox::prerender() {
 
 void EnemyBox::draw(Matrix4 matrix) {
 	double shrinkFactor = 0.01;
-	Cube cube = Cube();
+	Cube* cube =  new Cube();
 	Matrix4 translate;
-	translate.makeTranslate(pos.m[0], pos.m[1] + cube.sideLen / 2, pos.m[2]);
+	translate.makeTranslate(pos.m[0], pos.m[1] + cube->sideLen / 2, pos.m[2]);
 	Matrix4 cubeShrink;
 	cubeShrink.makeScale(shrinkFactor, shrinkFactor, shrinkFactor);
-	MatrixTransform matrixTransform = MatrixTransform(cubeShrink * translate);
-	matrixTransform.addChild(&cube);
-	enemy->addChild(&matrixTransform);
+	enemy = new MatrixTransform(cubeShrink * translate);
+	enemy->addChild(cube);
+	//enemy->addChild(&matrixTransform);
 	enemy->draw(matrix.getPointer());
 }
 
@@ -45,5 +49,7 @@ void EnemyBox::drawBoundingSpheres(Matrix4 worldMatrix) {
 }
 
 EnemyBox::~EnemyBox() {
-	delete enemy;
+	if (enemy != nullptr) {
+		//delete enemy;
+	}
 }

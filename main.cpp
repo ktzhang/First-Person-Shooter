@@ -430,8 +430,8 @@ int main(int argc, char *argv[])
 	glActiveTexture(GL_TEXTURE5);
 	front = loadTexture("Skybox_Water222_front.ppm");
 
+	Window::init();
 	Window::genList();
-
 	//create_cube_map("Skybox_Water222_front.ppm", "Skybox_Water222_back.ppm", "Skybox_Water222_top.ppm", "Skybox_Water222_top.ppm", "Skybox_Water222_left.ppm", "Skybox_Water222_right.ppm", tex_cube);
 	initGL();
 	glutMainLoop();

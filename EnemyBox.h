@@ -5,10 +5,10 @@
 
 
 class EnemyBox : public Group {
-	Group* enemy;
 private:
 
 public:
+	MatrixTransform* enemy;
 	Vector3 pos;
 	EnemyBox();
 	EnemyBox(Vector3 startPos);
