@@ -23,6 +23,7 @@
 #include "Skybox.h"
 #include "Water.h"
 #include "TreeObject.h"
+#include "Floor.h"
 
 #include <chrono>
 
@@ -55,7 +56,6 @@ int size = 30;
 int m_ROTSCALE = 5;
 double m_ZOOMSCALE = 0.0009;
 double spotLightAngle = 10;
-int waveEnabled = 1;
 //Variables for camera
 double zCamera = 0;
 double zoomCamera = 1;
@@ -88,7 +88,6 @@ int lightMotionEnabled = 0;
 int rayModelEnabled = 0;
 
 int enablePointLight = 1;
-int enableMultiWave = 0;
 //Material Variables
 int materialType = 1;
 
@@ -105,15 +104,11 @@ double increment2 = 0.0;
 double increment3 = 3.19* M_PI / 2;
 double increment4 = 3.19* M_PI / 2;
 
-
-double waveOffset = 0.0;
-
-
 void Window::init() {
-	bunny = new Reader("bunny.obj");
+	/*bunny = new Reader("bunny.obj");
 	dragon = new Reader("dragon.obj", Color{ 0.9, 0.9, 0.3 });
 	bear = new Reader("bear.obj");
-	reader = bunny;
+	reader = bunny;*/
 
 	finalMatrix.identity();
 	finalSpotlight.identity();
@@ -163,7 +158,6 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 	case 'w':
 		//spotlightSave();
-		waveEnabled = !waveEnabled;
 
 		break;
 	case 'W':
@@ -198,7 +192,6 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		cout << "\nLightMotionEnabled = " << lightMotionEnabled;
 		break;
 	case 'm':
-		enableMultiWave = !enableMultiWave;
 		/*	lightMotionEnabled = 0;
 		cout << "\nLightMotionEnabled = " << lightMotionEnabled;*/
 		break;
@@ -214,11 +207,9 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 
 	case 'h':
-		waveOffset += 0.1;
 		break;
 
 	case 'H':
-		waveOffset -= 0.1;
 		break;
 		// 'z' in
 	case 122:
@@ -353,7 +344,6 @@ void Window::reshapeCallback(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 	windowSize = (cameraDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
 	calculateInitialObjectMatrix();
-	waveOffset = 0;
 	genList();
 }
 
@@ -362,100 +352,6 @@ struct CameraVectors {
 	Vector3 dVector;
 	Vector3 upVector;
 };
-
-void calculatePlanes(Camera camera) {
-	Vector3 dVectorDirection = camera.dVector - camera.eVector;
-	dVectorDirection.normalize();
-
-	//Near Plane
-	Vector3 scaledVectorNear = dVectorDirection;
-	scaledVectorNear.normalize();
-	scaledVectorNear.scale(nearDistance);
-	Vector3 nearPoint = camera.eVector + scaledVectorNear;
-	Vector3 nearVectorDirection = dVectorDirection;
-	nearVectorDirection.scale(-1);
-	nearVectorDirection.normalize();
-
-	//Far Plane
-	Vector3 scaledVectorFar = dVectorDirection;
-	scaledVectorFar.normalize();
-	scaledVectorFar.scale(farDistance);
-	Vector3 farPoint = camera.eVector + scaledVectorFar;
-	Vector3 farVectorDirection = dVectorDirection;
-	farVectorDirection.normalize();
-
-
-	//Calculating widths of stuff
-	double nearSize = (nearDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
-	double farSize = (farDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
-
-	//Right Plane 
-	Vector3 rightVector = Vector3();
-	rightVector = rightVector.cross(dVectorDirection, camera.upVector);
-	rightVector.normalize();
-
-	rightVector.scale(nearSize / 2);
-	Vector3 temp = (nearPoint + rightVector);
-	Vector3 aDirection = temp - camera.eVector;
-	aDirection.normalize();
-	Vector3 rightPlaneNormal = Vector3();
-	rightPlaneNormal = rightPlaneNormal.cross(aDirection, camera.upVector);
-	rightPlaneNormal.normalize();
-
-	//Left Plane
-	Vector3 leftVector = Vector3();
-	leftVector = leftVector.cross(camera.upVector, dVectorDirection);
-	leftVector.normalize();
-
-	leftVector.scale(nearSize / 2);
-	Vector3 bDirection = (nearPoint + leftVector) - camera.eVector;
-	bDirection.normalize();
-	Vector3 leftPlaneNormal = Vector3();
-	leftPlaneNormal = leftPlaneNormal.cross(camera.upVector, bDirection);
-	leftPlaneNormal.normalize();
-
-	Vector3 leftVectorNew = Vector3();
-	leftVectorNew = leftVectorNew.cross(camera.upVector, dVectorDirection);
-	leftVectorNew.normalize();
-
-	//Top Plane
-	Vector3 topVector = camera.upVector;
-	topVector.normalize();
-
-	topVector.scale(nearSize / 2);
-	Vector3 tDirection = (nearPoint + topVector) - camera.eVector;
-	tDirection.normalize();
-	Vector3 topPlaneNormal = Vector3();
-	topPlaneNormal = topPlaneNormal.cross(tDirection, leftVectorNew);
-	topPlaneNormal.normalize();
-
-	//bottom Plane
-	Vector3 bottomVector = camera.upVector;
-	bottomVector.scale(-1);
-	bottomVector.normalize();
-
-	bottomVector.scale(nearSize / 2);
-	Vector3 botDirection = (nearPoint + bottomVector) - camera.eVector;
-	botDirection.normalize();
-	Vector3 bottomPlaneNormal = Vector3();
-	bottomPlaneNormal = bottomPlaneNormal.cross(leftVectorNew, botDirection);
-	bottomPlaneNormal.normalize();
-
-
-	planes[0] = nearPoint;
-	planes[1] = nearVectorDirection;
-	planes[2] = farPoint;
-	planes[3] = farVectorDirection;
-	planes[4] = camera.eVector;
-	planes[5] = rightPlaneNormal;
-	planes[6] = camera.eVector;
-	planes[7] = leftPlaneNormal;
-	planes[8] = camera.eVector;
-	planes[9] = topPlaneNormal;
-	planes[10] = camera.eVector;
-	planes[11] = bottomPlaneNormal;
-
-}
 
 
 TreeObject *treeObj;
@@ -473,11 +369,6 @@ void Window::genList() {
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
 {
-	//cerr << "display callback" << endl;
-
-	double incAmount = 0.02;
-	double offset = 0.495;
-
 	setMaterialType(3);
 	/* clear the color buffer (resets everything to black) */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -487,15 +378,18 @@ void Window::displayCallback()
 	world.addChild(&objTrans);
 	objTrans.addChild(treeObj);
 
-
 	Skybox sky = Skybox();
 	objTrans.addChild(&sky);
-
 
 	Matrix4 identity = Matrix4();
 	identity.identity();
 
-	//Drawing world
+	
+	Floor floor = Floor();
+	objTrans.addChild(&floor);
+
+
+
 
 	//Point light source
 	Matrix4 pointLightMatrix = Matrix4();
@@ -650,7 +544,7 @@ void Window::displaySpotlight(int x, int y, int z, double angle, Vector3 origin)
 void Window::calculateInitialObjectMatrix() {
 	Matrix4 zoom;
 	zoom.identity();
-	zoom.makeScale(3, 3, 3);
+	zoom.makeScale(10, 10, 10);
 	Matrix4 rotate;
 	rotate.identity();
 	rotate.makeRotateX(-30);
