@@ -24,7 +24,6 @@
 #include "Water.h"
 #include "TreeObject.h"
 
-
 #include <chrono>
 
 using namespace std;
@@ -355,6 +354,7 @@ void Window::reshapeCallback(int w, int h)
 	windowSize = (cameraDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
 	calculateInitialObjectMatrix();
 	waveOffset = 0;
+	genList();
 }
 
 struct CameraVectors {
@@ -466,9 +466,8 @@ void Window::genList() {
 	//treeObj->addRule('F', "FF-[-F+F]+[+F-F]", 1);
 	//treeObj->addRule('X', "FF+[+F]+[-F]", 1);
 	treeObj->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
-//treeObj->prerender();
+	treeObj->prerender();
 }
-
 
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
@@ -486,13 +485,87 @@ void Window::displayCallback()
 	Group world = Group();
 	MatrixTransform objTrans = MatrixTransform(finalMatrix);
 	world.addChild(&objTrans);
+	objTrans.addChild(treeObj);
+
 
 	Skybox sky = Skybox();
 	objTrans.addChild(&sky);
 
 
 	Group bottom = Group();
-//	objTrans.addChild(treeObj);
+	objTrans.addChild(&bottom);
+
+
+	Matrix4 water1MatS = Matrix4();
+	water1MatS.makeScale(.5, .5, .5);
+	Matrix4 water1MatT = Matrix4();
+	water1MatT.makeTranslate(offset, 0.1 + waveOffset, offset);
+	Matrix4 water1Mat;
+	water1Mat.identity();
+	if (enableMultiWave) {
+		water1Mat = water1MatT * water1MatS;
+	}
+	else {
+		water1MatT.identity();
+		water1MatT.makeTranslate(0, 0.1 + waveOffset, 0);
+		water1Mat = water1MatT;
+	}
+	MatrixTransform water1T = MatrixTransform(water1Mat);
+	Water water = Water();
+	increment1 += incAmount;
+	water.initialize(increment1, waveEnabled);
+	water1T.addChild(&water);
+	bottom.addChild(&water1T);
+
+
+
+	Matrix4 water2MatS = Matrix4();
+	water2MatS.makeScale(.5, .5, .5);
+	Matrix4 water2MatT = Matrix4();
+	water2MatT.makeTranslate(-offset, 0.1 + waveOffset, offset);
+	Matrix4 water2Mat;
+	water2Mat.identity();
+	water2Mat = water2MatT * water2MatS;
+	MatrixTransform water2T = MatrixTransform(water2Mat);
+	Water water2 = Water();
+	increment2 += incAmount;
+	if (enableMultiWave) {
+		water2.initialize(increment2, waveEnabled);
+		water2T.addChild(&water2);
+		bottom.addChild(&water2T);
+	}
+
+	Matrix4 water3MatS = Matrix4();
+	water3MatS.makeScale(.5, .5, .5);
+	Matrix4 water3MatT = Matrix4();
+	water3MatT.makeTranslate(offset, 0.1 + waveOffset, -offset);
+	Matrix4 water3Mat;
+	water3Mat.identity();
+	water3Mat = water3MatT * water3MatS;
+	MatrixTransform water3T = MatrixTransform(water3Mat);
+	Water water3 = Water();
+	increment3 += incAmount;
+	if (enableMultiWave) {
+		water3.initialize(increment3, waveEnabled);
+		water3T.addChild(&water3);
+		bottom.addChild(&water3T);
+	}
+
+	Matrix4 water4MatS = Matrix4();
+	water4MatS.makeScale(.5, .5, .5);
+	Matrix4 water4MatT = Matrix4();
+	water4MatT.makeTranslate(-offset, 0.1 + waveOffset, -offset);
+	Matrix4 water4Mat;
+	water4Mat.identity();
+	water4Mat = water4MatT * water4MatS;
+	MatrixTransform water4T = MatrixTransform(water4Mat);
+	Water water4 = Water();
+	increment4 += incAmount;
+	if (enableMultiWave) {
+		water4.initialize(increment4, waveEnabled);
+		water4T.addChild(&water4);
+		bottom.addChild(&water4T);
+	}
 
 
 
