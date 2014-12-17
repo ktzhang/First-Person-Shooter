@@ -21,8 +21,9 @@
 #include "MatrixTransform.h"
 #include "Robot.h"
 #include "Skybox.h"
-#include "TreeObject.h"
 #include "Water.h"
+
+
 #include <chrono>
 
 using namespace std;
@@ -31,11 +32,13 @@ using namespace std::chrono;
 const int ROTATE = 0;
 const int ZOOM = 1;
 
+
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
 
 extern vector<float> imageNums[2];
 extern GLuint p;
+
 extern GLuint texture[6];
 Matrix4 finalMatrix;
 Matrix4 finalSpotlight;
@@ -49,7 +52,7 @@ double nearDistance = 1;
 double farDistance = 1000;
 int factor = 10;
 int size = 30;
-int m_ROTSCALE = 5; 
+int m_ROTSCALE = 5;
 double m_ZOOMSCALE = 0.0009;
 double spotLightAngle = 10;
 int waveEnabled = 1;
@@ -104,7 +107,6 @@ double increment4 = 3.19* M_PI / 2;
 
 
 double waveOffset = 0.0;
-TreeObject* treeObj;
 
 
 void Window::init() {
@@ -180,12 +182,15 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		//spotlightSave();
 		spotlightX -= 1;
 		displaySpotlightCone();
+
 		break;
 	case 'e':
 		rotateObjectX(20);
 		break;
 	case 'E':
 		rotateObjectX(-20);
+
+
 		break;
 
 	case 'l':
@@ -194,7 +199,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		break;
 	case 'm':
 		enableMultiWave = !enableMultiWave;
-	/*	lightMotionEnabled = 0;
+		/*	lightMotionEnabled = 0;
 		cout << "\nLightMotionEnabled = " << lightMotionEnabled;*/
 		break;
 		// 'y' down 
@@ -206,7 +211,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 89:
 		zCamera -= 1;
 		break;
-	
+
 
 	case 'h':
 		waveOffset += 0.1;
@@ -215,14 +220,19 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 'H':
 		waveOffset -= 0.1;
 		break;
-	case 'z':
+		// 'z' in
+	case 122:
+		//imageScale *= 0.8;
 		scaleObject(0.8);
 		break;
-	case 'Z':
+
+		// 'Z' out
+	case 90:
+		//imageScale *= 1 / 0.8;
 		scaleObject(1 / 0.8);
 		break;
 
-	case 'k' :
+	case 'k':
 		rayModelEnabled = !rayModelEnabled;
 		cout << "\nRay Model Enabled = " << rayModelEnabled;
 		break;
@@ -253,6 +263,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 'p':
 		enablePointLight = !enablePointLight;
 		cout << "\nShaders enabled: " << enableShaders;
+
 		break;
 	}
 
@@ -343,7 +354,6 @@ void Window::reshapeCallback(int w, int h)
 	windowSize = (cameraDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
 	calculateInitialObjectMatrix();
 	waveOffset = 0;
-	Window::genList();
 }
 
 struct CameraVectors {
@@ -447,16 +457,6 @@ void calculatePlanes(Camera camera) {
 }
 
 
-void Window::genList() {
-	treeObj = new TreeObject(5, 3.0, 25, 1.0);
-	treeObj->setAxiom("F");
-	//treeObj.addRule('F', "FFF", 1);
-	//treeObj->addRule('F', "FF-[-F+F]+[+F-F]", 1);
-	//treeObj->addRule('X', "FF+[+F]+[-F]", 1);
-	treeObj->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
-
-	treeObj->prerender();
-}
 
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
@@ -471,25 +471,96 @@ void Window::displayCallback()
 	/* clear the color buffer (resets everything to black) */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glDisable(GL_LIGHTING);
-
 	Group world = Group();
 	MatrixTransform objTrans = MatrixTransform(finalMatrix);
-	objTrans.addChild(treeObj);
 	world.addChild(&objTrans);
 
 	Skybox sky = Skybox();
 	objTrans.addChild(&sky);
-//	objTrans.addChild(new Cube());
-	//glLoadMatrixd(finalMatrix.getPointer());
-	
-	//objTrans.addChild(treeObj);
-	//objTrans.addChild(treeObj);
-	//objTrans.addChild(&treeObj2);
+
+
+	Group bottom = Group();
+	objTrans.addChild(&bottom);
+
+
+	Matrix4 water1MatS = Matrix4();
+	water1MatS.makeScale(.5, .5, .5);
+	Matrix4 water1MatT = Matrix4();
+	water1MatT.makeTranslate(offset, 0.1 + waveOffset, offset);
+	Matrix4 water1Mat;
+	water1Mat.identity();
+	if (enableMultiWave) {
+		water1Mat = water1MatT * water1MatS;
+	}
+	else {
+		water1MatT.identity();
+		water1MatT.makeTranslate(0, 0.1 + waveOffset, 0);
+		water1Mat = water1MatT;
+	}
+	MatrixTransform water1T = MatrixTransform(water1Mat);
+	Water water = Water();
+	increment1 += incAmount;
+	water.initialize(increment1, waveEnabled);
+	water1T.addChild(&water);
+	bottom.addChild(&water1T);
+
+
+
+	Matrix4 water2MatS = Matrix4();
+	water2MatS.makeScale(.5, .5, .5);
+	Matrix4 water2MatT = Matrix4();
+	water2MatT.makeTranslate(-offset, 0.1 + waveOffset, offset);
+	Matrix4 water2Mat;
+	water2Mat.identity();
+	water2Mat = water2MatT * water2MatS;
+	MatrixTransform water2T = MatrixTransform(water2Mat);
+	Water water2 = Water();
+	increment2 += incAmount;
+	if (enableMultiWave) {
+		water2.initialize(increment2, waveEnabled);
+		water2T.addChild(&water2);
+		bottom.addChild(&water2T);
+	}
+
+	Matrix4 water3MatS = Matrix4();
+	water3MatS.makeScale(.5, .5, .5);
+	Matrix4 water3MatT = Matrix4();
+	water3MatT.makeTranslate(offset, 0.1 + waveOffset, -offset);
+	Matrix4 water3Mat;
+	water3Mat.identity();
+	water3Mat = water3MatT * water3MatS;
+	MatrixTransform water3T = MatrixTransform(water3Mat);
+	Water water3 = Water();
+	increment3 += incAmount;
+	if (enableMultiWave) {
+		water3.initialize(increment3, waveEnabled);
+		water3T.addChild(&water3);
+		bottom.addChild(&water3T);
+	}
+
+	Matrix4 water4MatS = Matrix4();
+	water4MatS.makeScale(.5, .5, .5);
+	Matrix4 water4MatT = Matrix4();
+	water4MatT.makeTranslate(-offset, 0.1 + waveOffset, -offset);
+	Matrix4 water4Mat;
+	water4Mat.identity();
+	water4Mat = water4MatT * water4MatS;
+	MatrixTransform water4T = MatrixTransform(water4Mat);
+	Water water4 = Water();
+	increment4 += incAmount;
+	if (enableMultiWave) {
+		water4.initialize(increment4, waveEnabled);
+		water4T.addChild(&water4);
+		bottom.addChild(&water4T);
+	}
+
+
+
 
 	Matrix4 identity = Matrix4();
 	identity.identity();
-	//identity.makeTranslate(1, 1, 1);
+
+	//Drawing world
 
 	//Point light source
 	Matrix4 pointLightMatrix = Matrix4();
@@ -499,7 +570,7 @@ void Window::displayCallback()
 	Sphere pointLightSphere = Sphere();
 	pointLightTrans.addChild(&pointLightSphere);
 	if (enablePointLight)
-		//world.addChild(&pointLightTrans);
+		world.addChild(&pointLightTrans);
 
 	world.draw(identity);
 
@@ -606,7 +677,7 @@ void Window::displayLights(double x, double y, double z) {
 }
 
 void Window::displaySpotlight(int x, int y, int z, double angle, Vector3 origin) {
-	
+
 
 	//glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
 	//glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
@@ -620,7 +691,7 @@ void Window::displaySpotlight(int x, int y, int z, double angle, Vector3 origin)
 	//glEnable(GL_LIGHT1);
 	Vector3 position = Vector3(x, y, z);
 	Vector3 direction = origin - position;
-	
+
 	Matrix4 identity = Matrix4();
 	identity.identity();
 	glLoadMatrixd(identity.getPointer());
@@ -649,10 +720,6 @@ void Window::calculateInitialObjectMatrix() {
 	rotate.identity();
 	rotate.makeRotateX(-30);
 
-	Matrix4 move;
-	rotate.identity();
-
-
 	finalMatrix.identity();
 	finalMatrix = finalMatrix * rotate * zoom;
 }
@@ -672,30 +739,32 @@ void Window::rayModelCalc(int x, int y) {
 	vector<Triangle> triangleVectors = reader->getTriangles();
 	int iVector0, iVector1, iVector2, touches;
 	for (std::vector<int>::size_type i = 0; i != triangleVectors.size(); i++) {
-			iVector0 = triangleVectors[i].vector[0] - 1;
-			iVector1 = triangleVectors[i].vector[1] - 1;
-			iVector2 = triangleVectors[i].vector[2] - 1;
-			Vector4 posX = { posVectors[iVector0].m[0], posVectors[iVector0].m[1], posVectors[iVector0].m[2], 1 };
-			Vector4 posY = { posVectors[iVector1].m[0], posVectors[iVector1].m[1], posVectors[iVector2].m[2], 1 };
-			Vector4 posZ = { posVectors[iVector2].m[0], posVectors[iVector2].m[1], posVectors[iVector2].m[2], 1 };
-		
-			posX = finalMatrix * posX;
-			posY = finalMatrix * posY;
-			posZ = finalMatrix * posZ;
+		iVector0 = triangleVectors[i].vector[0] - 1;
+		iVector1 = triangleVectors[i].vector[1] - 1;
+		iVector2 = triangleVectors[i].vector[2] - 1;
+		Vector4 posX = { posVectors[iVector0].m[0], posVectors[iVector0].m[1], posVectors[iVector0].m[2], 1 };
+		Vector4 posY = { posVectors[iVector1].m[0], posVectors[iVector1].m[1], posVectors[iVector2].m[2], 1 };
+		Vector4 posZ = { posVectors[iVector2].m[0], posVectors[iVector2].m[1], posVectors[iVector2].m[2], 1 };
 
-			Vector3 posXNew = Vector3(posX.m[0], posX.m[1], posX.m[2]);
-			Vector3 posYNew = Vector3(posY.m[0], posY.m[1], posY.m[2]);
-			Vector3 posZNew = Vector3(posZ.m[0], posZ.m[1], posZ.m[2]);
+		posX = finalMatrix * posX;
+		posY = finalMatrix * posY;
+		posZ = finalMatrix * posZ;
 
-			touches = rayIntersectsTriangle(p, d, posXNew, posYNew, posZNew);
-			if (touches) {
-				//cout << "YESSSSSSSSSSSSSSSSSSS I TOUCHED";
-			}
+		Vector3 posXNew = Vector3(posX.m[0], posX.m[1], posX.m[2]);
+
+		Vector3 posYNew = Vector3(posY.m[0], posY.m[1], posY.m[2]);
+
+		Vector3 posZNew = Vector3(posZ.m[0], posZ.m[1], posZ.m[2]);
+
+		touches = rayIntersectsTriangle(p, d, posXNew, posYNew, posZNew);
+		if (touches) {
+			//cout << "YESSSSSSSSSSSSSSSSSSS I TOUCHED";
+		}
 	}
 }
 
 
-int Window::rayIntersectsTriangle(Vector3 p, Vector3 d,	Vector3 v0, Vector3 v1, Vector3 v2) {
+int Window::rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vector3 v1, Vector3 v2) {
 	Vector3 e1, e2, h, s, q;
 	float a, f, u, v;
 	e1 = v1 - v0;
@@ -824,7 +893,7 @@ void Window::processMotionFunction(int x, int y) {
 			else {
 				spotlightX = curPoint.m[0] * 10;
 				spotlightY = curPoint.m[1] * 10;
-				spotlightZ = 12+ curPoint.m[2] * 5;
+				spotlightZ = 12 + curPoint.m[2] * 5;
 				displaySpotlightCone();
 			}
 

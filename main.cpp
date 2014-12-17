@@ -20,7 +20,6 @@
 
 #include "Reader.h"
 #include "Water.h"
-
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -207,6 +206,9 @@ GLuint* leftCube;
 GLuint* back;
 GLuint* front;
 
+
+
+
 bool load_cube_map_side(GLuint texture, GLenum side_target, string file_name) {
 
 	unsigned char* tdata;  // texture pixel data
@@ -237,8 +239,7 @@ void create_cube_map(
 		GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-		};
-
+	};
 
 	unsigned char* tdata;  // texture pixel data
 	int twidth, theight;   // texture width/height [pixels]
@@ -249,58 +250,77 @@ void create_cube_map(
 	glGenTextures(1, tex_cube);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, *tex_cube);
 	//for (int i = 0; i < 6; i++) {
-		tdata = loadPPM("Skybox_Water222_right.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_right.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[0], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[0], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		tdata = loadPPM("Skybox_Water222_left.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_left.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[1], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[1], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		tdata = loadPPM("Skybox_Water222_top.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_top.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[2], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[2], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		tdata = loadPPM("Skybox_Water222_top.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_top.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[3], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[3], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		tdata = loadPPM("Skybox_Water222_front.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_front.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[4], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[4], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		tdata = loadPPM("Skybox_Water222_back.ppm", twidth, theight);
-		if (tdata == NULL) return;
-		// Create ID for texture
-		// Set this texture to be the one we are working with
+	tdata = loadPPM("Skybox_Water222_back.ppm", twidth, theight);
+	if (tdata == NULL) return;
+	// Create ID for texture
+	// Set this texture to be the one we are working with
 
-		// Generate the texture
-		glTexImage2D(axis[5], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+	// Generate the texture
+	glTexImage2D(axis[5], 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	//}
+
+
+
+	//// load each image and copy into a side of the cube-map texture
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, front);
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, back);
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, top);
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, bottom);
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, left);
+	//load_cube_map_side(*tex_cube, GL_TEXTURE_CUBE_MAP_POSITIVE_X, right);
+	//// format cube map texture
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
 // load image file into texture object
@@ -364,7 +384,6 @@ int main(int argc, char *argv[])
 	glEnable(GL_LIGHT0);
 
 
-	Window::genList();
 
 	/* set the window size to 512 x 512 */
 	//glutInitWindowSize(512, 512);
@@ -377,7 +396,6 @@ int main(int argc, char *argv[])
 
 	/* create the window */
 	//glutCreateWindow("Texturing Example");
-
 
 	/* set the glut display callback function
 	this is the function GLUT will call every time
@@ -412,6 +430,7 @@ int main(int argc, char *argv[])
 	glActiveTexture(GL_TEXTURE5);
 	front = loadTexture("Skybox_Water222_front.ppm");
 
+	Window::genList();
 
 	//create_cube_map("Skybox_Water222_front.ppm", "Skybox_Water222_back.ppm", "Skybox_Water222_top.ppm", "Skybox_Water222_top.ppm", "Skybox_Water222_left.ppm", "Skybox_Water222_right.ppm", tex_cube);
 	initGL();
