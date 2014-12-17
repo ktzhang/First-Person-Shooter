@@ -492,84 +492,6 @@ void Window::displayCallback()
 	objTrans.addChild(&sky);
 
 
-	Group bottom = Group();
-	objTrans.addChild(&bottom);
-
-
-	Matrix4 water1MatS = Matrix4();
-	water1MatS.makeScale(.5, .5, .5);
-	Matrix4 water1MatT = Matrix4();
-	water1MatT.makeTranslate(offset, 0.1 + waveOffset, offset);
-	Matrix4 water1Mat;
-	water1Mat.identity();
-	if (enableMultiWave) {
-		water1Mat = water1MatT * water1MatS;
-	}
-	else {
-		water1MatT.identity();
-		water1MatT.makeTranslate(0, 0.1 + waveOffset, 0);
-		water1Mat = water1MatT;
-	}
-	MatrixTransform water1T = MatrixTransform(water1Mat);
-	Water water = Water();
-	increment1 += incAmount;
-	water.initialize(increment1, waveEnabled);
-	water1T.addChild(&water);
-	bottom.addChild(&water1T);
-
-
-
-	Matrix4 water2MatS = Matrix4();
-	water2MatS.makeScale(.5, .5, .5);
-	Matrix4 water2MatT = Matrix4();
-	water2MatT.makeTranslate(-offset, 0.1 + waveOffset, offset);
-	Matrix4 water2Mat;
-	water2Mat.identity();
-	water2Mat = water2MatT * water2MatS;
-	MatrixTransform water2T = MatrixTransform(water2Mat);
-	Water water2 = Water();
-	increment2 += incAmount;
-	if (enableMultiWave) {
-		water2.initialize(increment2, waveEnabled);
-		water2T.addChild(&water2);
-		bottom.addChild(&water2T);
-	}
-
-	Matrix4 water3MatS = Matrix4();
-	water3MatS.makeScale(.5, .5, .5);
-	Matrix4 water3MatT = Matrix4();
-	water3MatT.makeTranslate(offset, 0.1 + waveOffset, -offset);
-	Matrix4 water3Mat;
-	water3Mat.identity();
-	water3Mat = water3MatT * water3MatS;
-	MatrixTransform water3T = MatrixTransform(water3Mat);
-	Water water3 = Water();
-	increment3 += incAmount;
-	if (enableMultiWave) {
-		water3.initialize(increment3, waveEnabled);
-		water3T.addChild(&water3);
-		bottom.addChild(&water3T);
-	}
-
-	Matrix4 water4MatS = Matrix4();
-	water4MatS.makeScale(.5, .5, .5);
-	Matrix4 water4MatT = Matrix4();
-	water4MatT.makeTranslate(-offset, 0.1 + waveOffset, -offset);
-	Matrix4 water4Mat;
-	water4Mat.identity();
-	water4Mat = water4MatT * water4MatS;
-	MatrixTransform water4T = MatrixTransform(water4Mat);
-	Water water4 = Water();
-	increment4 += incAmount;
-	if (enableMultiWave) {
-		water4.initialize(increment4, waveEnabled);
-		water4T.addChild(&water4);
-		bottom.addChild(&water4T);
-	}
-
-
-
-
 	Matrix4 identity = Matrix4();
 	identity.identity();
 
@@ -737,87 +659,6 @@ void Window::calculateInitialObjectMatrix() {
 	finalMatrix = finalMatrix * rotate * zoom;
 }
 
-void Window::rayModelCalc(int x, int y) {
-	//1 convert from window coords to world coords
-	/*windowSize;*/
-	double percentX = (double)x / (double)glutGet(GLUT_WINDOW_WIDTH);
-	double percentY = (double)y / (double)glutGet(GLUT_WINDOW_HEIGHT);
-	double actualX = (double)windowSize * percentX;
-	double actualY = (double)windowSize * percentY;
-
-	Vector3 p = Vector3(actualX - windowSize / 2, actualY - windowSize / 2, 0);
-	Vector3 d = Vector3(0, 0, 1);
-
-	vector<Vector3> posVectors = reader->getPosVectors();
-	vector<Triangle> triangleVectors = reader->getTriangles();
-	int iVector0, iVector1, iVector2, touches;
-	for (std::vector<int>::size_type i = 0; i != triangleVectors.size(); i++) {
-		iVector0 = triangleVectors[i].vector[0] - 1;
-		iVector1 = triangleVectors[i].vector[1] - 1;
-		iVector2 = triangleVectors[i].vector[2] - 1;
-		Vector4 posX = { posVectors[iVector0].m[0], posVectors[iVector0].m[1], posVectors[iVector0].m[2], 1 };
-		Vector4 posY = { posVectors[iVector1].m[0], posVectors[iVector1].m[1], posVectors[iVector2].m[2], 1 };
-		Vector4 posZ = { posVectors[iVector2].m[0], posVectors[iVector2].m[1], posVectors[iVector2].m[2], 1 };
-
-		posX = finalMatrix * posX;
-		posY = finalMatrix * posY;
-		posZ = finalMatrix * posZ;
-
-		Vector3 posXNew = Vector3(posX.m[0], posX.m[1], posX.m[2]);
-
-		Vector3 posYNew = Vector3(posY.m[0], posY.m[1], posY.m[2]);
-
-		Vector3 posZNew = Vector3(posZ.m[0], posZ.m[1], posZ.m[2]);
-
-		touches = rayIntersectsTriangle(p, d, posXNew, posYNew, posZNew);
-		if (touches) {
-			//cout << "YESSSSSSSSSSSSSSSSSSS I TOUCHED";
-		}
-	}
-}
-
-
-int Window::rayIntersectsTriangle(Vector3 p, Vector3 d, Vector3 v0, Vector3 v1, Vector3 v2) {
-	Vector3 e1, e2, h, s, q;
-	float a, f, u, v;
-	e1 = v1 - v0;
-	e2 = v2 - v0;
-
-	h = h.cross(d, e2);
-	a = e1.dot(e1, h);
-
-	if (a > -0.00001 && a < 0.00001)
-		return(false);
-
-	f = 1 / a;
-	s = p - v0;
-	u = f * (s.dot(s, h));
-
-	if (u < 0.0 || u > 1.0)
-		return(false);
-
-	q = q.cross(s, e1);
-	v = f * d.dot(d, q);
-
-	if (v < 0.0 || u + v > 1.0)
-		return(false);
-
-	// at this stage we can compute t to find out where
-	// the intersection point is on the line
-	float t = f * e2.dot(e2, q);
-
-	if (t > 0.00001) {// ray intersection
-		cout << "\nTX: " << t << " TY: " << u << " TZ: " << v;
-		origin = Vector3(p.m[0], p.m[1], t);
-		displaySpotlightCone();
-		return(true);
-	}
-
-	else // this means that there is a line intersection
-		// but not a ray intersection
-		return (false);
-}
-
 void Window::applyGlobalMatrix() {
 	glLoadMatrixd(finalMatrix.getPointer());
 }
@@ -831,9 +672,7 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 	case 0:
 		Movement = ROTATE;
 		lastPoint = trackBallMapping(point);
-		if (rayModelEnabled && state == 0) {
-			rayModelCalc(x, y);
-		}
+
 		break;
 	case 2:
 		Movement = ZOOM;

@@ -48,10 +48,6 @@ public:
 	static void spotlightSave();
 	static void displaySpotlightCone();
 
-	static void rayModelCalc(int x, int y);
-	static int rayIntersectsTriangle(Vector3 p, Vector3 d,
-		Vector3 v0, Vector3 v1, Vector3 v2);
-
 	static void genList();
 
 	static Vector3 trackBallMapping(Point point);

@@ -379,9 +379,9 @@ int main(int argc, char *argv[])
 	glEnable(GL_COLOR_MATERIAL);
 
 	// Generate light source:
-	glLightfv(GL_LIGHT0, GL_POSITION, position);
+	/*glLightfv(GL_LIGHT0, GL_POSITION, position);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);*/
 
 
 
@@ -415,9 +415,9 @@ int main(int argc, char *argv[])
 	glutMotionFunc(Window::processMotionFunction);
 	glutMouseFunc(Window::processMouseFunction);
 
-	Shader shade = Shader("reflection3.vert", "reflection3.frag");
-	printProgramInfoLog(shade.pid);
-	p = shade.pid;
+	//Shader shade = Shader("reflection3.vert", "reflection3.frag");
+	//printProgramInfoLog(shade.pid);
+	//p = shade.pid;
 
 	glActiveTexture(GL_TEXTURE1);
 	top = loadTexture("Skybox_Water222_top.ppm");

@@ -15,8 +15,11 @@ extern GLuint p;
 
 using namespace std;
 void Skybox::render() {
-	glDisable(GL_LIGHTING);
+	glActiveTexture(GL_TEXTURE0);
+	//glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
+	//glUseProgramObjectARB(p);
+
 	glColor3f(1, 1, 1);
 
 
@@ -71,5 +74,5 @@ void Skybox::render() {
 
 
 	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 }
