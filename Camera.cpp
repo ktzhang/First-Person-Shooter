@@ -53,7 +53,6 @@ Matrix4* Camera::getInvert() {
 	matrix = rotation * transpose;
 
 	return &matrix;
-
 }
 
 Matrix4* Camera::getGLMatrix() {

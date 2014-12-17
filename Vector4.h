@@ -1,7 +1,9 @@
-#include <string>
-
 #ifndef _VECTOR4_H_
 #define _VECTOR4_H_
+
+#include <string>
+#include "Vector3.h"
+
 
 #define M_PI 3.14159265358979323846
 

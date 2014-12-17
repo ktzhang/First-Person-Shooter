@@ -25,6 +25,15 @@ Matrix4::Matrix4(double n[4][4]) {
 	}
 }
 
+Matrix4::Matrix4(double n[16]) {
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; j++) {
+			m[i][j] = n[i * 4 + j];
+		}
+	}
+}
+
 Matrix4& Matrix4::operator=(const Matrix4& m2)
 {
   if (this != &m2)
@@ -117,8 +126,8 @@ void Matrix4::makeRotateX(double angle) {
 // angle is expected in degrees
 void Matrix4::makeRotateY(double angle)
 {
-  angle = angle / 180.0 * M_PI;  // convert from degrees to radians
-  identity();
+	angle = angle / 180.0 * M_PI;  // convert from degrees to radians
+	identity();
 	m[0][0] = cos(angle);
 	m[0][2] = sin(angle);
 	m[2][0] = -sin(angle);
@@ -140,6 +149,7 @@ void Matrix4::makeRotateZ(double angle)
 // : Make a rotation matrix about an arbitrary axis
 void Matrix4::makeRotate(double angle, const Vector3& axis) {
 	angle = angle / 180.0 * M_PI;  // convert from degrees to radians
+	identity();
 	double t = 1 - cos(angle);
 	double s = sin(angle);
 	double c = cos(angle);

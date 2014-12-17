@@ -2,6 +2,7 @@
 
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
+#include "Vector4.h"
 
 #define M_PI 3.14159265358979323846
 
@@ -33,8 +34,11 @@ public:
 	double dot(const Vector3& vector1, const Vector3& vector2); //: dot product, returns result
 	Vector3 cross(const Vector3& vector1, const Vector3& vector2); //: cross product, returns result and puts it in calling vector
 	double length();// : length of the vector
+	double angleBetween( Vector3& vector1,  Vector3& vector2);
+	
 	void normalize();// : normalize the vector(make it so that its length is equal to one)
 	void print(std::string& comment);// : print x, y and z components of the vector after a comment string
+	std::string toString();
 };
 
 #endif

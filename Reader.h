@@ -5,79 +5,84 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include <iostream>
-
+#include "Header.h"
+#include "Geode.h"
+#include <gl\glut.h>
 
 using namespace std;
-class Reader
+class Reader : public Geode
 {
-	float maxX = FLT_MIN;
-	float maxY = FLT_MIN;
-	float maxZ = FLT_MIN;
-	float minX = FLT_MAX;
-	float minY = FLT_MAX;
-	float minZ = FLT_MAX;
-
-	float meanX;
-	float meanY;
-	float meanZ;
+	float* maxes;
+	float* mins;
+	float* means;
+	Color color;
 
 	string fileName;
-	vector<float> imageNums; // Stores the number of images in a vector
-
-	vector<float> normalVertices;
-	vector<float> positionVertices;
-
-
-	vector<Vector4> positionVectors;
+	vector<Vector3> positionVectors;
+	vector<Color> vectorColors;
 	vector<Vector4> normalVectors;
 
+	vector<Triangle> triangleVectors;
+
 	void populateFiles();
-	void convertToVectors();
-	void calculateMean();
+	void calculateMeanPosition();
 
 public:
 	Reader() {};
-	Reader::Reader(std::string input) : fileName(input){
+	Reader::Reader(std::string input, Color color = Color{ 0.9, 0.3, 0.9 }) : fileName(input) {
+		maxes = new float[3]{FLT_MIN, FLT_MIN, FLT_MIN};
+		mins = new float[3]{FLT_MAX, FLT_MAX, FLT_MAX};
+		means = new float[3];
 		populateFiles();
-		convertToVectors();
+		calculateMeanPosition();
+		this->color = color;
 	};
 	~Reader();
 
+	void render();
+
 	float Reader::getMeanX() {
-		return meanX;
+		return means[0];
 	}
 
 	float Reader::getMeanY() {
-		return meanY;
+		return means[1];
 	}
 
 	float Reader::getMeanZ() {
-		return meanZ;
+		return means[2];
 	}
 
-	float Reader::getSize() {
-		std::cout << "Max x " << maxX << " Min X" << minX;
-		return maxX - minX;
+	float* Reader::getMeans() {
+		return means;
 	}
+
+	float* Reader::getMaxes() {
+		return maxes;
+	}
+
+	vector<Triangle> Reader::getTriangles() {
+		return triangleVectors;
+	}
+
+	float* Reader::getMins() {
+		return mins;
+	}
+
 
 	float Reader::getNumPoints() {
 		return positionVectors.size();
 	}
 
-	vector<float> getPosVertices() {
-		return positionVertices;
-	}
-
-	vector<float> getNormalVertices() {
-		return normalVertices;
-	}
-
-	vector<Vector4> getPosVectors() {
+	vector<Vector3> getPosVectors() {
 		return positionVectors;
 	}
 
 	vector<Vector4> getNormalVectors() {
 		return normalVectors;
+	}
+	vector<Color> getColors() {
+		return vectorColors;
 	}
 };
 
