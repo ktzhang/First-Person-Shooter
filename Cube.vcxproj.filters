@@ -72,6 +72,9 @@
     <ClCompile Include="Floor.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="ForestGroup.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
@@ -144,6 +147,9 @@
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="Floor.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ForestGroup.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>

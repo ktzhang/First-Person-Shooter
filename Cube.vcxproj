@@ -89,6 +89,7 @@
     <ClInclude Include="cube.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="ForestGroup.h" />
     <ClInclude Include="Geode.h" />
     <ClInclude Include="GLee.h" />
     <ClInclude Include="Group.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="ForestGroup.cpp" />
     <ClCompile Include="Geode.cpp" />
     <ClCompile Include="GLee.c" />
     <ClCompile Include="Group.cpp" />

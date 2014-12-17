@@ -24,6 +24,7 @@
 #include "Water.h"
 #include "TreeObject.h"
 #include "Floor.h"
+#include "ForestGroup.h"
 
 #include <chrono>
 
@@ -353,8 +354,10 @@ struct CameraVectors {
 	Vector3 upVector;
 };
 
-
 TreeObject *treeObj;
+double forestX[10];
+double forestY[10];
+
 void Window::genList() {
 	treeObj = new TreeObject(5, 3.0, 25, 1.0);
 	treeObj->setAxiom("F");
@@ -363,6 +366,15 @@ void Window::genList() {
 	//treeObj->addRule('X', "FF+[+F]+[-F]", 1);
 	treeObj->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
 	treeObj->prerender();
+
+	double randX, randY;
+
+	for (int i = 0; i < 10; i++) {
+		randX = ((double)rand() / (RAND_MAX));
+		randY = ((double)rand() / (RAND_MAX));
+		forestX[i] = randX * 2 - 1;
+		forestY[i] = randY * 2 - 1;
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -378,14 +390,16 @@ void Window::displayCallback()
 	world.addChild(&objTrans);
 
 
-	double treeShrinkFactor = 0.0005;
-	Matrix4 treeShrinkMatrix;
-	treeShrinkMatrix.identity();
-	treeShrinkMatrix.makeScale(treeShrinkFactor, treeShrinkFactor, treeShrinkFactor);
-	MatrixTransform treeTrans = MatrixTransform(treeShrinkMatrix);
-	treeTrans.addChild(treeObj);
-	objTrans.addChild(&treeTrans);
+	//double treeShrinkFactor = 0.0005;
+	//Matrix4 treeShrinkMatrix;
+	//treeShrinkMatrix.identity();
+	//treeShrinkMatrix.makeScale(treeShrinkFactor, treeShrinkFactor, treeShrinkFactor);
+	//MatrixTransform treeTrans = MatrixTransform(treeShrinkMatrix);
+	//treeTrans.addChild(treeObj);
+	//objTrans.addChild(&treeTrans);
 
+	ForestGroup treeForest;
+	objTrans.addChild(&treeForest);
 
 	Matrix4 skyMatrix;
 	skyMatrix.makeTranslate(0, 1, 0);
