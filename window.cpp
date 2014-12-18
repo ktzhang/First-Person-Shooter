@@ -39,7 +39,7 @@ double Window::t = 1.0;
 
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
-bool Window::enableMouse = false;
+bool Window::enableMouse = true;
 
 extern vector<float> imageNums[2];
 extern GLuint p;
@@ -53,7 +53,7 @@ double maxLimbAngle = 25;
 int fov = 60;
 int cameraDistance = 20;
 double imageScale = 0.8;
-double nearDistance = 1;
+double nearDistance = 0.5;
 double farDistance = 1000;
 int factor = 10;
 int size = 30;
@@ -102,6 +102,7 @@ Reader* dragon;
 Reader* bear;
 Reader* reader;
 
+
 //Wave Stuff
 double increment1 = 0.0;
 double increment2 = 0.0;
@@ -109,6 +110,8 @@ double increment3 = 3.19* M_PI / 2;
 double increment4 = 3.19* M_PI / 2;
 
 CameraController *camera;
+Matrix4 cameraMatrix;
+
 
 std::vector<EnemyBox>* enemies = new vector<EnemyBox>();
 
@@ -125,6 +128,7 @@ void Window::init() {
 	//origin = Vector3(0, 0, 0);
 
 	camera = new CameraController();
+	cameraMatrix.identity();
 }
 
 //----------------------------------------------------------------------------
@@ -142,33 +146,22 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 'b':
 		enableShaders = !enableShaders;
 		break;
+
 	case 'a':
-		lightX += 1;
+		camera->moveLeft();
+		cameraMatrix = camera->getTranslation();
 		break;
-
-	case 'A':
-		lightX -= 1;
-		break;
-
 	case 's':
-		lightY += 1;
+		camera->moveBack();
+		cameraMatrix = camera->getTranslation();
 		break;
-		// 'X' right
-	case 'S':
-		lightY -= 1;
-		break;
-		//'x' left 
 	case 'd':
-		lightY += 1;
+		camera->moveRight();
+		cameraMatrix = camera->getTranslation();
 		break;
-		// 'X' right
-	case 'D':
-		lightY -= 1;
-		break;
-
 	case 'w':
-		//spotlightSave();
-
+		camera->moveForward();
+		cameraMatrix = camera->getTranslation();
 		break;
 	case 'W':
 		//spotlightSave();
@@ -177,10 +170,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 
 		break;
 	case 'q':
-		//spotlightSave();
-		spotlightX += 1;
-		displaySpotlightCone();
-
+		
 		break;
 	case 'Q':
 		//spotlightSave();
@@ -424,7 +414,7 @@ void Window::displayCallback()
 	//glMatrixMode(GL_MODELVIEW);
 	
 	Group world = Group();
-	MatrixTransform objTrans = MatrixTransform(finalMatrix);
+	MatrixTransform objTrans = MatrixTransform(finalMatrix*cameraMatrix);
 	world.addChild(&objTrans);
 
 
@@ -629,8 +619,8 @@ void Window::calculateInitialObjectMatrix() {
 	//rotate.identity();
 	//rotate.makeRotateX(-30);
 	Matrix4 translate;
-	translate.identity();
-	//translate.makeTranslate(0, 10, 0);
+	//translate.identity();
+	translate.makeTranslate(0, -1.2, 0);
 
 	finalMatrix.identity();
 	finalMatrix = finalMatrix  * translate *zoom;
@@ -644,7 +634,13 @@ Vector3 lastPoint;
 int Movement;
 
 void Window::processMouseFunction(int button, int state, int x, int y) {
-	Point point = Point{ x, y };
+	if (state == GLUT_UP) return;
+
+	if (button == GLUT_LEFT_BUTTON){
+		
+	}
+
+	/*Point point = Point{ x, y };
 	switch (button) {
 	case 0:
 		Movement = ROTATE;
@@ -656,7 +652,7 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 		lastPoint = Vector3(point.x, point.y, 0);
 		break;
 	}
-	cout << "\n state" << state << " button" << button << " x" << x << " y" << y;
+	cout << "\n state" << state << " button" << button << " x" << x << " y" << y;*/
 }
 
 Vector3 Window::trackBallMapping(Point point) {

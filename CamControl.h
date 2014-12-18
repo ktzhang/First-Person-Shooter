@@ -12,23 +12,28 @@ public:
 	CameraController();
 
 	void updateMouse(int, int);
-	void moveForward(double);
-	void moveBack(double);
-	void moveLeft(double);
-	void moveRight(double);
+	void moveForward();
+	void moveBack();
+	void moveLeft();
+	void moveRight();
 	void apply();
 	void updatePrev(int, int);
 
 	Matrix4 getRotX();
 	Matrix4 getRotY();
+	Matrix4 getTranslation();
 private:
 	double sensitivity_x;
 	double sensitivity_y;
 	double prev_x, prev_y;
 	double center_x, center_y;
+	double px, pz;
+
+	double step;
+	double angleX, angleY;
 
 	Vector4 axis_x, axis_y;
-	Matrix4 rotX, rotY;
+	Matrix4 rotX, rotY, trans;
 };
 
 #endif

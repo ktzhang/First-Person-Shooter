@@ -81,6 +81,9 @@
     <ClCompile Include="CamControl.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
@@ -162,6 +165,9 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="CamControl.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
