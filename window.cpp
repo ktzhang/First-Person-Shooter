@@ -639,6 +639,7 @@ void Window::calculateInitialObjectMatrix() {
 	//translate.identity();
 	translate.makeTranslate(0, -1.2, 0);
 
+
 	finalMatrix.identity();
 	finalMatrix = finalMatrix  * translate *zoom;
 }
