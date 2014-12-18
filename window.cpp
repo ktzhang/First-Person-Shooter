@@ -28,6 +28,7 @@
 #include "EnemyBox.h"
 #include "CamControl.h"
 #include <chrono>
+#include "Bullet.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -111,7 +112,7 @@ double increment4 = 3.19* M_PI / 2;
 
 CameraController *camera;
 Matrix4 cameraMatrix;
-
+vector<Bullet> *bullets;
 
 std::vector<EnemyBox>* enemies = new vector<EnemyBox>();
 
@@ -129,6 +130,7 @@ void Window::init() {
 
 	camera = new CameraController();
 	cameraMatrix.identity();
+	bullets = new vector<Bullet>();
 }
 
 //----------------------------------------------------------------------------

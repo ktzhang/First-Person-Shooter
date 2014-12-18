@@ -107,3 +107,7 @@ Matrix4 CameraController::getTranslation(){
 	trans.makeTranslate(px, 0, pz);
 	return trans;
 }
+
+Vector3 CameraController::getPosition(){
+	return Vector3(px, 0, pz);
+}
