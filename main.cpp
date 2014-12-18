@@ -427,6 +427,8 @@ int main(int argc, char *argv[])
 	//printProgramInfoLog(shade.pid);
 	//p = shade.pid;
 	glutFullScreen();
+	glutSetCursor(GLUT_CURSOR_NONE);
+
 
 	glActiveTexture(GL_TEXTURE1);
 	top = loadTexture("Skybox_Water222_top.ppm");
