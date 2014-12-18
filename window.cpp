@@ -276,20 +276,33 @@ struct CameraVectors {
 	Vector3 upVector;
 };
 
-TreeObject *treeObj;
+TreeObject *treeObj[10];
 ForestGroup *forestGroup;
 double forestX[10];
 double forestY[10];
 
-void Window::genList() {
-	treeObj = new TreeObject(3, 3.0, 25, 1.0);
-	treeObj->setAxiom("F");
-	//treeObj.addRule('F', "FFF", 1);
-	//treeObj->addRule('F', "FF-[-F+F]+[+F-F]", 1);
-	//treeObj->addRule('X', "FF+[+F]+[-F]", 1);
-	treeObj->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
-	treeObj->prerender();
 
+void Window::genList() {
+	char symbolList[6] = { 'F', '+', '-', '&', '<', 'F' };
+	int randNum;
+	srand(time(NULL));
+
+	for (int i = 0; i < 10; i++) {
+		treeObj[i] = new TreeObject(2, 3.0, 25, 1.0);
+		char ax[7];
+		ax[0] = 'F';
+		for (int j = 0; j < 6; j++) {
+			randNum = (rand() % (5 - 0)) + 0;
+			ax[j+1] = symbolList[randNum];
+		}
+		string str(ax);
+		treeObj[i]->setAxiom(str);
+		//treeObj[i].addRule('F', "FFF", 1);
+		//treeObj[i]->addRule('F', "FF-[-F+F]+[+F-F]", 1);
+		treeObj[i]->addRule('X', "FF+[+F]+[-F]", 1);
+		treeObj[i]->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
+		treeObj[i]->prerender();
+	}
 	double randX, randY;
 
 	for (int i = 0; i < 10; i++) {
