@@ -12,10 +12,10 @@ CameraController::CameraController(){
 
 	axis_x = Vector4(1, 0, 0, 0);
 
-	px = pz = 0;
+	px = py = pz = 0;
 	angleX = 3.14159265259 / 2.0;
 	angleY = 0;
-	step = 0.01;
+	step = 0.02;
 
 	glutWarpPointer(center_x, center_y);
 }
@@ -76,6 +76,15 @@ void CameraController::moveForward(){
 	px += cos(angleX) * step;
 }
 
+void CameraController::moveUp(){
+	py -= step;
+}
+
+void CameraController::moveDown(){
+	py += step;
+}
+
+
 void CameraController::moveBack(){
 	pz -= sin(angleX) * step;
 	px -= cos(angleX) * step;
@@ -100,12 +109,12 @@ Matrix4 CameraController::getRotY(){
 }
 
 Matrix4 CameraController::getTranslation(){
-	trans.makeTranslate(px, 0, pz);
+	trans.makeTranslate(px, py, pz);
 	return trans;
 }
 
 Vector3 CameraController::getPosition(){
-	return Vector3(px, 0, pz);
+	return Vector3(px, py, pz);
 }
 
 double CameraController::getAngleX(){

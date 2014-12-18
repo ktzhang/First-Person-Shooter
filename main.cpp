@@ -390,7 +390,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_LIGHT1);*/
 
 	//glEnable(GL_LIGHTING);
-
+	glDisable(GL_LIGHTING);
 
 
 	/* set the window size to 512 x 512 */

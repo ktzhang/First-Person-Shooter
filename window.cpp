@@ -170,6 +170,14 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		camera->moveForward();
 		cameraMatrix = camera->getTranslation();
 		break;
+	case 'e':
+		camera->moveUp();
+		cameraMatrix = camera->getTranslation();
+		break;
+	case 'q':
+		camera->moveDown();
+		cameraMatrix = camera->getTranslation();
+		break;
 	case 'm':
 		enableMouse = !enableMouse;
 		break;

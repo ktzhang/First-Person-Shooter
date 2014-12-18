@@ -16,6 +16,8 @@ public:
 	void moveBack();
 	void moveLeft();
 	void moveRight();
+	void moveUp();
+	void moveDown();
 	void apply();
 	void updatePrev(int, int);
 
@@ -31,7 +33,7 @@ private:
 	double sensitivity_y;
 	double prev_x, prev_y;
 	double center_x, center_y;
-	double px, pz;
+	double px, py, pz;
 
 	double step;
 	double angleX, angleY;
