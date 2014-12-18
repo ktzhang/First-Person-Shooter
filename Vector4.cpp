@@ -28,6 +28,10 @@ void Vector4::dehomogenize() {
 	this->m[numElements-1] = 1;
 }
 
+double Vector4::length() {
+	return sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2]);
+}
+
 void Vector4::print(std::string& comment) {
 	comment.append("x: " + std::to_string(this->m[0]) + ", y: " + std::to_string(this->m[1]) + ", z: " + std::to_string(this->m[2]) + ", w: " + std::to_string(this->m[3]));
 }
