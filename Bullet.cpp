@@ -46,7 +46,7 @@ void Bullet::drawBoundingSpheres(Matrix4 worldMatrix){
 	Matrix4 shrink;
 	shrink.makeScale(radius, radius, radius);
 
-	sphere->draw(worldMatrix * translate * shrink);
+	sphere->drawBoundingSpheres(worldMatrix * translate * shrink);
 }
 
 int Bullet::getDuration(){

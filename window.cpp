@@ -201,6 +201,9 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 'm':
 		enableMouse = !enableMouse;
 		break;
+	case 'b':
+		boundingBoxEnabled = !boundingBoxEnabled;
+		break;
 	case 'g':
 		genList();
 		break;
@@ -388,7 +391,8 @@ void Window::displayCallback()
 	for (tb = boxes->begin(); tb != boxes->end(); tb++){
 		TargetBox *box = *tb;
 		box->draw(finalMatrix * cameraMatrix);
-		box->drawBoundingSpheres(finalMatrix * cameraMatrix);
+		if (boundingBoxEnabled)
+			box->drawBoundingSpheres(finalMatrix * cameraMatrix);
 	}
 
 	//Bullets!
@@ -397,6 +401,8 @@ void Window::displayCallback()
 	for (bu = bullets->begin(); bu != bullets->end(); bu++){
 		Bullet * bullet = *bu;
 		bullet->draw(finalMatrix * cameraMatrix);
+		if (boundingBoxEnabled)
+			bullet->drawBoundingSpheres(finalMatrix * cameraMatrix);
 		if (bullet->getDuration() > 0){
 			ct++;
 			for (int i = 0; i < boxes->size(); i++){
@@ -413,6 +419,7 @@ void Window::displayCallback()
 	if (ct == 0){
 		bullets->clear();
 	}
+	
 
 	ct = 0;
 	vector<ParticleEffect*>::iterator pa;
@@ -430,44 +437,6 @@ void Window::displayCallback()
 	MatrixTransform objTrans = MatrixTransform(finalMatrix*cameraMatrix);
 	world.addChild(&objTrans);
 
-
-	//double treeShrinkFactor = 0.0005;
-	//Matrix4 treeShrinkMatrix;
-	//treeShrinkMatrix.identity();
-	//treeShrinkMatrix.makeScale(treeShrinkFactor, treeShrinkFactor, treeShrinkFactor);
-	//MatrixTransform treeTrans = MatrixTransform(treeShrinkMatrix);
-	//treeTrans.addChild(treeObj);
-	//objTrans.addChild(&treeTrans);
-
-	//ForestGroup treeForest;
-
-
-
-	//Matrix4 parMat;
-	//parMat.makeTranslate(-0.15, 0.0, -0.2);
-	//MatrixTransform parTrans = MatrixTransform(parMat);
-	//parTrans.addChild(particles);
-	//objTrans.addChild(&parTrans);
-
-
-	//vector<Bullet>::iterator it;
-	//stack<int> stack;
-	//for (it = bullets->begin(); it != bullets->end(); it++){
-
-	//}
-
-
-
-	//if (addBullet){
-	//	Bullet *bullet = new Bullet(Vector3(0,0,0),Vector3(0,0,-1));
-	//	Matrix4 iden;
-	//	iden.identity();
-	//	MatrixTransform bultran = MatrixTransform(iden);
-	//	bultran.addChild(bullet);
-	//	objTrans.addChild(&parTrans);
-
-	//	addBullet = false;
-	//}
 	objTrans.addChild(forestGroup);
 
 	Matrix4 skyMatrix;

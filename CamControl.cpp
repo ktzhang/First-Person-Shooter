@@ -35,7 +35,7 @@ void CameraController::updateMouse(int x, int y){
 	//cout << "prev  x : " << prev_x << endl;
 	//cout << "curr x : " << x << endl;
 	double diffx = (x - prev_x) * sensitivity_x;
-	double diffy = (y - prev_y) * sensitivity_y/5;
+	double diffy = (y - prev_y) * sensitivity_y;
 	double width = glutGet(GLUT_WINDOW_WIDTH);
 	if (x >= width - 2 || x < 2){
 		glutWarpPointer(width / 2, y);

@@ -10,7 +10,7 @@ void Geode::draw(Matrix4 matrix) {
 
 void Geode::drawBoundingSpheres(Matrix4 worldMatrix) { 
 	setModelView(worldMatrix);
-	glColor3f(0, 0, 1);
+	glColor3f(1, 1, 1);
 	glutWireSphere(sphereRadius, 10, 10);
 	unsetModelView();
 }
