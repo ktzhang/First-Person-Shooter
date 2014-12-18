@@ -363,24 +363,29 @@ void Window::displayCallback()
 
 	//Bullets!
 	vector<Bullet*>::iterator bu;
-	int i = 0;
+	int ct = 0;
 	for (bu = bullets->begin(); bu != bullets->end(); bu++){
 		Bullet * bullet = *bu;
 		bullet->draw(finalMatrix * cameraMatrix);
 		if (bullet->getDuration() > 0){
-			i++;
+			ct++;
+			for (int i = 0; i < boxes->size(); i++){
+				Vector3 p1 = boxes->at(i)->pos;
+				Vector3 p2 = bullet->pos;
+				Vector3 p3 = p1 - p2;
+				double dis = p3.length();
+				if (dis <= (boxes->at(i)->scale+(bullet->radius+Bullet::speed)/2.0)){
+					cout << "HITTTT!" << endl;
+					boxes->erase(boxes->begin() + i);
+					break;
+				}
+			}
 		}
 	}
-	if (i == 0){
+	if (ct == 0){
 		bullets->clear();
 	}
 
-
-
-	//gluLookAt(0, 0, -5, cos(t*0.1), 0, sin(t*0.1), 0, 1, 0);
-	//t++;
-
-	//glMatrixMode(GL_MODELVIEW);
 	
 	Group world = Group();
 	MatrixTransform objTrans = MatrixTransform(finalMatrix*cameraMatrix);
@@ -399,11 +404,11 @@ void Window::displayCallback()
 
 
 
-	Matrix4 parMat;
-	parMat.makeTranslate(-0.15, 0.0, -0.2);
-	MatrixTransform parTrans = MatrixTransform(parMat);
-	parTrans.addChild(particles);
-	objTrans.addChild(&parTrans);
+	//Matrix4 parMat;
+	//parMat.makeTranslate(-0.15, 0.0, -0.2);
+	//MatrixTransform parTrans = MatrixTransform(parMat);
+	//parTrans.addChild(particles);
+	//objTrans.addChild(&parTrans);
 
 
 	//vector<Bullet>::iterator it;
@@ -648,15 +653,7 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 		double x = -cos(angleX)*cos(angleY);
 		double y = sin(angleY);
 		double z = -cos(angleY)*sin(angleX);
-		//double z = sqrt(1 - x*x - y*y);
-		/*if (angleX >= 0 || angleX < 3.14159265359 / 2.0){
-		}
-		else{
-			z = -z;
-		}*/
 		Vector3 pos = camera->getPosition();
-		cout << "Position: " << pos.toString() << endl;
-		cout << "Direction: " << x << "   " << y << "   " << z << endl;
 		for (int i = 0; i < 3; i++) pos.m[i] = -pos.m[i];
 		pos.m[1] += 0.12;
 		Bullet *bullet = new Bullet(pos, Vector3(x,y,z),1);

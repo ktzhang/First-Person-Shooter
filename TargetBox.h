@@ -14,6 +14,7 @@ public:
 	void updatePosition();
 	virtual void render();
 
+
 	Vector3 pos;
 	Vector3 dir;
 

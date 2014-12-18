@@ -32,13 +32,28 @@ void CameraController::updatePrev(int x, int y){
 }
 
 void CameraController::updateMouse(int x, int y){
-
+	cout << "UPdated" << endl;
 	//cout << "prev  x : " << prev_x << endl;
 	//cout << "curr x : " << x << endl;
 	double diffx = (x - prev_x) * sensitivity_x;
-	double diffy = (y - prev_y) * sensitivity_y;
+	double diffy = (y - prev_y) * sensitivity_y/5;
+	double width = glutGet(GLUT_WINDOW_WIDTH);
+	if (x >= width - 2 || x < 2){
+		glutWarpPointer(width / 2, y);
+		prev_x = width / 2;
+		prev_y = y;
+		return;
+	}
+	double height = glutGet(GLUT_WINDOW_HEIGHT);
+	if (y >= height - 2 || y < 2){
+		glutWarpPointer(x,height/2.0);
+		prev_x = x;
+		prev_y = height / 2.0;
+		return;
+	}
 	prev_x = x;
 	prev_y = y;
+
 
 	double newX = angleX + diffx * 3.14159265359 / 180.0;
 	double newY = angleY - diffy * 3.14159265359 / 180.0;
