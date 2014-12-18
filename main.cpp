@@ -205,6 +205,7 @@ GLuint* rightCube;
 GLuint* leftCube;
 GLuint* back;
 GLuint* front;
+GLuint* bottom;
 
 
 
@@ -373,16 +374,22 @@ int main(int argc, char *argv[])
 	glMatrixMode(GL_PROJECTION);
 
 	// Generate material properties:
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+	/*glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shininess);*/
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
 	// Generate light source:
 	/*glLightfv(GL_LIGHT0, GL_POSITION, position);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);*/
+	glEnable(GL_LIGHT0);
+
+	glLightfv(GL_LIGHT1, GL_POSITION, position);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT1);*/
+
+	glEnable(GL_LIGHTING);
 
 
 
@@ -431,6 +438,7 @@ int main(int argc, char *argv[])
 	back = loadTexture("Skybox_Water222_back.ppm");
 	glActiveTexture(GL_TEXTURE5);
 	front = loadTexture("Skybox_Water222_front.ppm");
+	bottom = loadTexture("floor__.ppm");
 
 	Window::init();
 	Window::genList();
