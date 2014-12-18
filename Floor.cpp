@@ -18,7 +18,11 @@
 #include "Camera.h"
 
 #include "Vector3.h"
+
+extern GLuint * bottom;
+extern GLuint * top;
 using namespace std;
+
 
 void Floor::render() {
 	glColor3f(1, 1, 1);
@@ -27,17 +31,25 @@ void Floor::render() {
 	float startX;
 	float startZ;
 	float increment = sideLength / numSquares;
+	glActiveTexture(GL_TEXTURE0);
+	//glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+			glColor3f(1, 1, 1);
+
+	glBindTexture(GL_TEXTURE_2D, *bottom);
 	glBegin(GL_QUADS);
 	for (int i = 0; i < numSquares; i++) {
 		for (int j = 0; j < numSquares; j++) {
 			glNormal3f(0, 1, 0);
 			startX = (float)i * increment - sideLength / 2;
 			startZ = (float)j * increment - sideLength / 2;
-			glVertex3f(startX, 0, startZ);
-			glVertex3f(startX+ increment, 0, startZ);
-			glVertex3f(startX + increment, 0, startZ + increment);
-			glVertex3f(startX, 0, startZ + increment);
+			glTexCoord2f(0, 1); glVertex3f(startX, 0, startZ);
+			glTexCoord2f(1, 1); glVertex3f(startX + increment, 0, startZ);
+			glTexCoord2f(1, 0); glVertex3f(startX + increment, 0, startZ + increment);
+			glTexCoord2f(0, 0); glVertex3f(startX, 0, startZ + increment);
 		}
 	}
 	glEnd();
+			//glEnable(GL_BLEND);
 }
