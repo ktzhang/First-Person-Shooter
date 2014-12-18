@@ -4,8 +4,8 @@
 
 ParticleEffect::ParticleEffect(Vector3 pos){
 	srand(time(0));
-	speed = 0.001;
-	count = 400;
+	speed = 0.00095;
+	count = 600;
 	particles = new vector<Particle*>();
 	for (int i = 0; i < count; i++){
 		Particle *current = new Particle;
@@ -15,7 +15,7 @@ ParticleEffect::ParticleEffect(Vector3 pos){
 		double z = double(2 * (rand() % 2) - 1)*(double)(rand() % 1000) * speed / 1000.0;
 		current->dir = Vector3(x, y, z);
 		current->pos = pos;
-		current->duration = 150;
+		current->duration = 120 + rand() % 200;
 		particles->push_back(current);
 	}
 }

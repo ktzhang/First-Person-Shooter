@@ -27,7 +27,6 @@ void Skybox::render() {
 
 	// set the current drawing color to white to use original texture colors
 	glBindTexture(GL_TEXTURE_2D, *front);
-
 	glBegin(GL_QUADS);
 
 	// set the current drawing color to white to use original texture colors

@@ -92,7 +92,7 @@ Vector3 origin;
 int enableShaders = 1;
 int lightMotionEnabled = 0;
 int rayModelEnabled = 0;
-
+int enabledDrawLine = 0;
 int enablePointLight = 1;
 //Material Variables
 int materialType = 1;
@@ -132,6 +132,11 @@ void Window::init() {
 	//totalRotateSpotlight.identity();
 	//origin = Vector3(0, 0, 0);
 
+
+	//if (camera != nullptr) delete camera;
+	//if (bullets != nullptr) delete bullets;
+	//if (effects != nullptr) delete effects;
+	//if (boxes != nullptr) delete boxes;
 	camera = new CameraController();
 	cameraMatrix.identity();
 	bullets = new vector<Bullet*>();
@@ -140,20 +145,20 @@ void Window::init() {
 	boxes = new vector<TargetBox*>();
 	TargetBox *box = new TargetBox(Vector3(0.12, 0.1, 0.2), Vector3(0, 0, 0),0.02,1);
 	boxes->push_back(box);
-
-	for (int i = 0; i < 4; i++){
+	int numBalls = 10;
+	for (int i = 0; i < numBalls; i++){
 		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(1, 0, 0),0.03,1);
 		boxes->push_back(box);
 	}
-	for (int i = 0; i < 4; i++){
+	for (int i = 0; i < numBalls; i++){
 		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 1, 0), 0.03, 1);
 		boxes->push_back(box);
 	}
-	for (int i = 0; i < 4; i++){
+	for (int i = 0; i < numBalls; i++){
 		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 1), 0.03, 1);
 		boxes->push_back(box);
 	}
-	for (int i = 0; i < 6; i++){
+	for (int i = 0; i < numBalls; i++){
 		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 0),0.02, 1);
 		boxes->push_back(box);
 	}
@@ -161,7 +166,7 @@ void Window::init() {
 }
 
 double Window::rd(bool sign){
-	double r = rand() % 1000;
+	double r = rand() % 990;
 	double s = 1;
 	if(sign) s = 2 * (rand() % 2) - 1;
 	return s * r / 1000;
@@ -202,6 +207,14 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		break;
 	case 'b':
 		boundingBoxEnabled = !boundingBoxEnabled;
+		break;
+	case 'n':
+		enabledDrawLine = !enabledDrawLine;
+		break;
+	case 'r':
+		delete camera;
+		init();
+		reshapeCallback(width, height);
 		break;
 	case 'g':
 		genList();
@@ -389,6 +402,13 @@ void Window::genList() {
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
 {
+	if (enabledDrawLine) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	setMaterialType(3);
 	/* clear the color buffer (resets everything to black) */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -664,7 +684,7 @@ int Movement;
 void Window::processMouseFunction(int button, int state, int x, int y) {
 	if (state == GLUT_UP) return;
 
-	if (button == GLUT_LEFT_BUTTON || state == GLUT_DOWN){
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		double angleX = camera->getAngleX();
 		double angleY = camera->getAngleY();
 		double x = -cos(angleX)*cos(angleY);
@@ -691,19 +711,19 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 	}
 	cout << "\n state" << state << " button" << button << " x" << x << " y" << y;*/
 }
-
-Vector3 Window::trackBallMapping(Point point) {
-	Vector3 v;
-	float d;
-	v.m[0] = (2.0 * point.x - width) / width;
-	v.m[1] = (height - 2.0*point.y) / height;
-	v.m[2] = 0.0;
-	d = v.length();
-	d = (d < 1.0) ? d : 1.0;
-	v.m[2] = sqrtf(1.001 - d*d);
-	v.normalize(); // Still need to normalize, since we only capped d, not v.
-	return v;
-}
+//
+//Vector3 Window::trackBallMapping(Point point) {
+//	Vector3 v;
+//	float d;
+//	v.m[0] = (2.0 * point.x - width) / width;
+//	v.m[1] = (height - 2.0*point.y) / height;
+//	v.m[2] = 0.0;
+//	d = v.length();
+//	d = (d < 1.0) ? d : 1.0;
+//	v.m[2] = sqrtf(1.001 - d*d);
+//	v.normalize(); // Still need to normalize, since we only capped d, not v.
+//	return v;
+//}
 
 void Window::processMotionFunction(int x, int y) {
 	

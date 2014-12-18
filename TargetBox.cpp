@@ -41,7 +41,7 @@ void TargetBox::updatePosition(){
 	if (x < -limit || x > limit){
 		dx = 0-dx;
 	}
-	if (y < 0.01 || y > limit){
+	if (y < 0.02 || y > 2*limit){
 		dy = -dy;
 	}
 	if (z < -limit || z > limit){
