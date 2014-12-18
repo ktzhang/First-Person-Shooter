@@ -116,7 +116,7 @@ CameraController *camera;
 Matrix4 cameraMatrix;
 vector<Bullet*> *bullets;
 vector<TargetBox*> *boxes;
-ParticleEffect *particles;
+vector<ParticleEffect*> *effects;
 bool addBullet = false;
 
 std::vector<EnemyBox>* enemies = new vector<EnemyBox>();
@@ -136,17 +136,37 @@ void Window::init() {
 	camera = new CameraController();
 	cameraMatrix.identity();
 	bullets = new vector<Bullet*>();
-	particles = new ParticleEffect();
+	effects = new vector<ParticleEffect*>();
 
 	boxes = new vector<TargetBox*>();
-	TargetBox *box = new TargetBox(Vector3(0, 0.1, 0), Vector3(1, 0, 0),1);
+	TargetBox *box = new TargetBox(Vector3(0.12, 0.1, 0.2), Vector3(0, 0, 0),0.02,1);
 	boxes->push_back(box);
 
-	//box = new TargetBox(Vector3(1.5, 1.25, -0.5), Vector3(0, 0, 1), 2);
-	//boxes->push_back(*box);
+	for (int i = 0; i < 4; i++){
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(1, 0, 0),0.03,1);
+		boxes->push_back(box);
+	}
+	for (int i = 0; i < 4; i++){
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 1, 0), 0.03, 1);
+		boxes->push_back(box);
+	}
+	for (int i = 0; i < 4; i++){
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 1), 0.03, 1);
+		boxes->push_back(box);
+	}
+	for (int i = 0; i < 6; i++){
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 0),0.02, 1);
+		boxes->push_back(box);
+	}
 
 }
 
+double Window::rd(bool sign){
+	double r = rand() % 1000;
+	double s = 1;
+	if(sign) s = 2 * (rand() % 2) - 1;
+	return s * r / 1000;
+}
 //----------------------------------------------------------------------------
 // Callback method of keyboard input
 void Window::processNormalKeys(unsigned char key, int x, int y)
@@ -370,12 +390,10 @@ void Window::displayCallback()
 		if (bullet->getDuration() > 0){
 			ct++;
 			for (int i = 0; i < boxes->size(); i++){
-				Vector3 p1 = boxes->at(i)->pos;
-				Vector3 p2 = bullet->pos;
-				Vector3 p3 = p1 - p2;
-				double dis = p3.length();
-				if (dis <= (boxes->at(i)->scale+(bullet->radius+Bullet::speed)/2.0)){
-					cout << "HITTTT!" << endl;
+				if(collisionDetected(boxes->at(i),bullet)){
+					//cout << "HITTTT!" << endl;
+					ParticleEffect *effect = new ParticleEffect(boxes->at(i)->pos);
+					effects->push_back(effect);
 					boxes->erase(boxes->begin() + i);
 					break;
 				}
@@ -385,6 +403,17 @@ void Window::displayCallback()
 	if (ct == 0){
 		bullets->clear();
 	}
+
+	ct = 0;
+	vector<ParticleEffect*>::iterator pa;
+	for (pa = effects->begin(); pa != effects->end(); pa++){
+		ParticleEffect *effect = *pa;
+		effect->draw(finalMatrix * cameraMatrix);
+		if (effect->alive){
+			ct++;
+		}
+	}
+	if (ct == 0) effects->clear();
 
 	
 	Group world = Group();
@@ -647,7 +676,7 @@ int Movement;
 void Window::processMouseFunction(int button, int state, int x, int y) {
 	if (state == GLUT_UP) return;
 
-	if (button == GLUT_LEFT_BUTTON){
+	if (button == GLUT_LEFT_BUTTON || state == GLUT_DOWN){
 		double angleX = camera->getAngleX();
 		double angleY = camera->getAngleY();
 		double x = -cos(angleX)*cos(angleY);
@@ -655,7 +684,7 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 		double z = -cos(angleY)*sin(angleX);
 		Vector3 pos = camera->getPosition();
 		for (int i = 0; i < 3; i++) pos.m[i] = -pos.m[i];
-		pos.m[1] += 0.12;
+		pos.m[1] += 0.125;
 		Bullet *bullet = new Bullet(pos, Vector3(x,y,z),1);
 		bullets->push_back(bullet);
 	}
@@ -798,3 +827,25 @@ void Window::passiveMouseFunction(int x, int y){
 
 
 
+bool Window::collisionDetected(TargetBox *target, Bullet *bullet){
+	Vector3 p1 = target->pos;
+	Vector3 p2 = bullet->pos;
+	Vector3 dia = p1 - p2;
+	double dis = dia.dot(dia, bullet->dir);
+	if (dis > bullet->speed) return false;
+	Vector3 mid;
+	for (int i = 0; i < 3; i++){
+		mid.m[i] = p2.m[i] + dis*bullet->dir.m[i];
+	}
+	Vector3 fi = p1 - mid;
+	double result = fi.length();
+	return result <= target->scale;
+}
+
+bool Window::collisionDetected2(TargetBox *target, Bullet *bullet){
+	Vector3 p1 = target->pos;
+	Vector3 p2 = bullet->pos;
+	Vector3 p3 = p1 - p2;
+	double dis = p3.length();
+	return dis <= (target->scale + (bullet->radius + Bullet::speed) / 2.0);
+}

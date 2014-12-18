@@ -3,7 +3,7 @@
 const double Bullet::speed = 0.02;
 
 Bullet::Bullet(Vector3 position, Vector3 direction, double l){
-	radius = 0.005;
+	radius = 0.01;
 	pos = position;
 	dir = direction;
 	sphere = new Sphere();
@@ -27,6 +27,7 @@ void Bullet::draw(Matrix4 matrix){
 
 	sphere->draw(matrix * translate * shrink);
 
+/*  cout << "x=" << pos.m[0] << "   y=" << pos.m[1] << "   z=" << pos.m[2] << endl;*/
 }
 
 void Bullet::updateMotion(){
