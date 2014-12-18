@@ -374,9 +374,9 @@ int main(int argc, char *argv[])
 	glMatrixMode(GL_PROJECTION);
 
 	// Generate material properties:
-	/*glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shininess);*/
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	//glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
@@ -389,7 +389,7 @@ int main(int argc, char *argv[])
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT1);*/
 
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 
 
 
