@@ -114,7 +114,7 @@ double increment4 = 3.19* M_PI / 2;
 
 CameraController *camera;
 Matrix4 cameraMatrix;
-vector<Bullet> *bullets;
+vector<Bullet*> *bullets;
 vector<TargetBox*> *boxes;
 ParticleEffect *particles;
 bool addBullet = false;
@@ -135,7 +135,7 @@ void Window::init() {
 
 	camera = new CameraController();
 	cameraMatrix.identity();
-	bullets = new vector<Bullet>();
+	bullets = new vector<Bullet*>();
 	particles = new ParticleEffect();
 
 	boxes = new vector<TargetBox*>();
@@ -151,18 +151,9 @@ void Window::init() {
 // Callback method of keyboard input
 void Window::processNormalKeys(unsigned char key, int x, int y)
 {
-	cout << "          |" << key << " pressed!";
+//	cout << "          |" << key << " pressed!";
 	shouldCallUpdate = 1;
 	switch (key) {
-		//'t' for spinning clockwise or counter clockwise
-	case 'c':
-		cullingEnabled = !cullingEnabled;
-		break;
-
-	case 'b':
-		enableShaders = !enableShaders;
-		break;
-
 	case 'a':
 		camera->moveLeft();
 		cameraMatrix = camera->getTranslation();
@@ -179,103 +170,12 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		camera->moveForward();
 		cameraMatrix = camera->getTranslation();
 		break;
-	case 'W':
-		//spotlightSave();
-		spotlightY -= 1;
-		displaySpotlightCone();
-
-		break;
-	case 'q':
-		
-		break;
-	case 'Q':
-		//spotlightSave();
-		spotlightX -= 1;
-		displaySpotlightCone();
-
-		break;
-	case 'e':
-		rotateObjectX(20);
-		break;
-	case 'E':
-		rotateObjectX(-20);
-
-
-		break;
-
-	case 'l':
-		lightMotionEnabled = 1;
-		cout << "\nLightMotionEnabled = " << lightMotionEnabled;
-		break;
 	case 'm':
 		enableMouse = !enableMouse;
-		/*	lightMotionEnabled = 0;
-		cout << "\nLightMotionEnabled = " << lightMotionEnabled;*/
 		break;
-		// 'y' down 
-	case 121:
-		zCamera += 1;
-		break;
-
-		// 'Y' up
-	case 89:
-		zCamera -= 1;
-		break;
-
-
-	case 'h':
-		break;
-
-	case 'H':
-		break;
-		// 'z' in
-	case 122:
-		//imageScale *= 0.8;
-		scaleObject(0.8);
-		break;
-
-		// 'Z' out
-	case 90:
-		//imageScale *= 1 / 0.8;
-		scaleObject(1 / 0.8);
-		break;
-
-	case 'k':
-		rayModelEnabled = !rayModelEnabled;
-		cout << "\nRay Model Enabled = " << rayModelEnabled;
-		break;
-	case ';':
-		if (materialType == 4) {
-			materialType = 1;
-		}
-		else {
-			materialType++;
-		}
-		cout << " \nMaterial Type = " << materialType;
-		break;
-		// 'r' reset
-	case 114:
-		break;
-
-		// 'o' orbit counterclockwise
-	case 'X':
-		rotateObject(20);
-		break;
-
-		// 'O' orbit clockwise
-	case 'x':
-		rotateObject(-20);
-		break;
-
-
-	case 'p':
-		enablePointLight = !enablePointLight;
-		cout << "\nShaders enabled: " << enableShaders;
-
-		break;
-
 	}
-
+	//Vector3 vec = camera->getPosition();
+	//cout << "Camera position: x=" << vec.m[0] << "  y=" << vec.m[1] << "  z=" << vec.m[2] << endl;
 }
 
 void Window::spotlightSave() {
@@ -433,11 +333,28 @@ void Window::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	vector<TargetBox*>::iterator it;
-	for (it = boxes->begin(); it != boxes->end(); it++){
-		TargetBox *box = *it;
+	//Target boxes
+	vector<TargetBox*>::iterator tb;
+	for (tb = boxes->begin(); tb != boxes->end(); tb++){
+		TargetBox *box = *tb;
 		box->draw(finalMatrix * cameraMatrix);
 	}
+
+	//Bullets!
+	vector<Bullet*>::iterator bu;
+	int i = 0;
+	for (bu = bullets->begin(); bu != bullets->end(); bu++){
+		Bullet * bullet = *bu;
+		bullet->draw(finalMatrix * cameraMatrix);
+		if (bullet->getDuration() > 0){
+			i++;
+		}
+	}
+	if (i == 0){
+		bullets->clear();
+	}
+
+
 
 	//gluLookAt(0, 0, -5, cos(t*0.1), 0, sin(t*0.1), 0, 1, 0);
 	//t++;
@@ -705,8 +622,24 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 	if (state == GLUT_UP) return;
 
 	if (button == GLUT_LEFT_BUTTON){
-		Bullet *bullet = new Bullet(Vector3(0, 0, 0), Vector3(0, 0, -1));
-		bullets->push_back(*bullet);
+		double angleX = camera->getAngleX();
+		double angleY = camera->getAngleY();
+		double x = -cos(angleX)*cos(angleY);
+		double y = sin(angleY);
+		double z = -cos(angleY)*sin(angleX);
+		//double z = sqrt(1 - x*x - y*y);
+		/*if (angleX >= 0 || angleX < 3.14159265359 / 2.0){
+		}
+		else{
+			z = -z;
+		}*/
+		Vector3 pos = camera->getPosition();
+		cout << "Position: " << pos.toString() << endl;
+		cout << "Direction: " << x << "   " << y << "   " << z << endl;
+		for (int i = 0; i < 3; i++) pos.m[i] = -pos.m[i];
+		pos.m[1] += 0.12;
+		Bullet *bullet = new Bullet(pos, Vector3(x,y,z),1);
+		bullets->push_back(bullet);
 	}
 
 	/*Point point = Point{ x, y };

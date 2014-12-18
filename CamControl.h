@@ -23,6 +23,9 @@ public:
 	Matrix4 getRotY();
 	Matrix4 getTranslation();
 	Vector3 getPosition();
+
+	double getAngleX();
+	double getAngleY();
 private:
 	double sensitivity_x;
 	double sensitivity_y;

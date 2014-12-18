@@ -2,28 +2,31 @@
 
 const double Bullet::speed = 0.025;
 
-Bullet::Bullet(Vector3 position, Vector3 direction){
-	radius = 0.01;
+Bullet::Bullet(Vector3 position, Vector3 direction, double l){
+	radius = 0.005;
 	pos = position;
 	dir = direction;
 	sphere = new Sphere();
-	duration = 30;
+	sphere->r = 0.1;
+	sphere->g = 0.08;
+	sphere->b = 0.85;
+	cylinder = new Cylinder();
+	limit = l;
+	duration = 100;
 }
 
 
 void Bullet::draw(Matrix4 matrix){
-	updateMotion();
+	if (duration <= 0) return;
 
+	updateMotion();
 	Matrix4 translate;
 	translate.makeTranslate(pos.m[0], pos.m[1], pos.m[2]);
 	Matrix4 shrink;
 	shrink.makeScale(radius, radius, radius);
 
-	bullet = new MatrixTransform(translate * shrink);
-	bullet->addChild(sphere);
-	bullet->draw(matrix.getPointer());
+	sphere->draw(matrix * translate * shrink);
 
-	delete bullet;
 }
 
 void Bullet::updateMotion(){
@@ -34,13 +37,19 @@ void Bullet::updateMotion(){
 }
 
 void Bullet::update(Matrix4 matrix){
-	bullet->update(matrix);
 }
 
 void Bullet::drawBoundingSpheres(Matrix4 worldMatrix){
-	bullet->drawBoundingSpheres(worldMatrix);
+	Matrix4 translate;
+	translate.makeTranslate(pos.m[0], pos.m[1], pos.m[2]);
+	Matrix4 shrink;
+	shrink.makeScale(radius, radius, radius);
+
+	sphere->draw(worldMatrix * translate * shrink);
 }
 
 int Bullet::getDuration(){
 	return duration;
 }
+
+void Bullet::render(){}

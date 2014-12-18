@@ -107,3 +107,11 @@ Matrix4 CameraController::getTranslation(){
 Vector3 CameraController::getPosition(){
 	return Vector3(px, 0, pz);
 }
+
+double CameraController::getAngleX(){
+	return angleX;
+}
+
+double CameraController::getAngleY(){
+	return angleY;
+}

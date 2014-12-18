@@ -12,6 +12,8 @@ public:
 	Sphere();
 	void render();
 	~Sphere() {};
+
+	double r, g, b;
 };
 
 #endif
