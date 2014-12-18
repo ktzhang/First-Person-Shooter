@@ -9,6 +9,8 @@ void Geode::draw(Matrix4 matrix) {
 }
 
 void Geode::drawBoundingSpheres(Matrix4 worldMatrix) { 
+	sphereOrigin = worldMatrix * 
+		Vector4(sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2], 0);
 	setModelView(worldMatrix);
 	glutWireSphere(sphereRadius, 10, 10);
 	unsetModelView();
