@@ -419,6 +419,7 @@ int main(int argc, char *argv[])
 	//Shader shade = Shader("reflection3.vert", "reflection3.frag");
 	//printProgramInfoLog(shade.pid);
 	//p = shade.pid;
+	glutFullScreen();
 
 	glActiveTexture(GL_TEXTURE1);
 	top = loadTexture("Skybox_Water222_top.ppm");
