@@ -449,11 +449,18 @@ void Window::displayCallback()
 	}
 
 	//objTrans.addChild(&enemies[0]);
+	Matrix4 moveMatrix = Matrix4();
+	moveMatrix.makeTranslate(-1, 0, -1);
+
+	Matrix4 bigMatrix = Matrix4();
+	bigMatrix.makeScale(2, 2, 2);
+	MatrixTransform moveTransform = MatrixTransform(bigMatrix);
+	
 	EnemyBox enemyBox = EnemyBox();
-	objTrans.addChild(&enemyBox);
-
-
-
+	
+	moveTransform.addChild(&enemyBox);
+	objTrans.addChild(&moveTransform);
+	moveTransform.draw(identity);
 
 
 
@@ -469,7 +476,10 @@ void Window::displayCallback()
 
 	//world.update(identity);
 	world.draw(identity);
+	world.update(identity);
 	world.drawBoundingSpheres(identity);
+
+	//moveTransform.drawBoundingSpheres(identity);
 
 	glPopMatrix();
 
