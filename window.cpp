@@ -327,8 +327,14 @@ void Window::idleCallback()
 	double durationDouble = duration / 1000000;
 	//cout << "FPS = " << (1/durationDouble) << " ";
 
+
+
 }
 
+
+
+EnemyBox enemyBox;
+//TODO move enemybox to init
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when graphics window is resized by the user
 void Window::reshapeCallback(int w, int h)
@@ -394,10 +400,13 @@ void Window::genList() {
 		cout << "x, y, z" << x << " " << y << " " << z;
 		singleEnemyPos = Vector3(x, y, z);
 		singleEnemy.pos = singleEnemyPos;
+		singleEnemy.speed = 0.005;
 		enemies->push_back(singleEnemy);
 	}
-}
 
+	enemyBox = EnemyBox(Vector3(-0.5, 0, -0.5), Vector3(1, 0, 0), 0.005);
+
+}
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
@@ -456,12 +465,10 @@ void Window::displayCallback()
 	bigMatrix.makeScale(2, 2, 2);
 	MatrixTransform moveTransform = MatrixTransform(bigMatrix);
 	
-	EnemyBox enemyBox = EnemyBox();
-	
+	enemyBox.pos = enemyBox.newPosition();
 	moveTransform.addChild(&enemyBox);
 	objTrans.addChild(&moveTransform);
 	moveTransform.draw(identity);
-
 
 
 	//Point light source
