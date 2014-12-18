@@ -20,7 +20,7 @@ public:
 
 class ParticleEffect : public Group{
 public:
-	ParticleEffect();
+	ParticleEffect(Vector3);
 
 
 
