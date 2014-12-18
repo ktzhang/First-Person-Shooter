@@ -78,7 +78,9 @@
     <ClCompile Include="EnemyBox.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="CamControl.cpp" />
+    <ClCompile Include="CamControl.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
@@ -159,7 +161,9 @@
     <ClInclude Include="EnemyBox.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="CamControl.h" />
+    <ClInclude Include="CamControl.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Model">

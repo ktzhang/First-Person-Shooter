@@ -351,7 +351,7 @@ void Window::reshapeCallback(int w, int h)
 	glLoadIdentity();
 	gluPerspective(fov, double(width) / (double)height, nearDistance, farDistance); // set perspective projection viewing frustum
 	//glTranslatef(0, 0, -cameraDistance);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
-	glTranslatef(0, 0, -5);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
+	glTranslatef(0, 0, 0);    // move camera back 20 units so that it looks at the origin (or else it's in the origin)
 
 	glMatrixMode(GL_MODELVIEW);
 	windowSize = (cameraDistance * tan(((fov / 2) / 180.0) * M_PI)) * 2;
@@ -455,12 +455,12 @@ void Window::displayCallback()
 
 //	cout << enemies.size();
 	for (std::vector<EnemyBox>::iterator it = enemies->begin(); it != enemies->end(); ++it) {
-		objTrans.addChild(&(*it));
+	//	objTrans.addChild(&(*it));
 	}
 
 	//objTrans.addChild(&enemies[0]);
-	//EnemyBox enemyBox = EnemyBox();
-//	objTrans.addChild(&enemyBox);
+	EnemyBox enemyBox = EnemyBox();
+	objTrans.addChild(&enemyBox);
 
 
 
@@ -477,7 +477,9 @@ void Window::displayCallback()
 	//if (enablePointLight)
 		//world.addChild(&pointLightTrans);
 
+	//world.update(identity);
 	world.draw(identity);
+	world.drawBoundingSpheres(identity);
 
 	glPopMatrix();
 

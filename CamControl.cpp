@@ -11,7 +11,7 @@ CameraController::CameraController(){
 	prev_y = center_y = glutGet(GLUT_WINDOW_HEIGHT) / 2.0;
 
 	axis_x = Vector4(1, 0, 0, 0);
-	axis_y = Vector4(0, 1, 0, 0);
+	//axis_y = Vector4(0, 1, 0, 0);
 
 	glutWarpPointer(center_x, center_y);
 }
@@ -40,19 +40,20 @@ void CameraController::updateMouse(int x, int y){
 
 	//rotY.makeRotateY(diffx);
 	//rotX.makeRotateX(diffy);
-	string a = "X axis:  ";
+	string a = "\nX axis:  ";
 	cout << a << axis_x.toString() << endl;
-	rotY.makeRotate(-90, Vector3(axis_y.m[0], axis_y.m[1], axis_y.m[2]));
-	rot1.makeRotate(-90, Vector3(axis_y.m[0], axis_y.m[1], axis_y.m[2]));
-	axis_x = rot1 * axis_x;
+	rotX.makeRotateY(-diffx);
+	//rot1.makeRotate(-diffx, Vector3(axis_y.m[0], axis_y.m[1], axis_y.m[2]));
 	//axis_x.normalize();
 
-	cout << a << axis_x.toString() << endl;
+	cout << "\nDiff X " << diffx << " DiffY " << diffy << "\n";
 
+	axis_x = rotX * axis_x;
 
-	rotX.makeRotate(-diffy, Vector3(axis_x.m[0], axis_x.m[1], axis_x.m[2]));
-	rot2.makeRotate(-diffy, Vector3(axis_x.m[0], axis_x.m[1], axis_x.m[2]));
-	axis_y = rot2 * axis_y;
+	rotY.makeRotate(-diffy, Vector3(axis_x.m[0], axis_x.m[1], -axis_x.m[2]));
+	//rot2.makeRotate(-diffy, Vector3(axis_x.m[0], axis_x.m[1], axis_x.m[2]));
+	//axis_y = rot2 * axis_y;
+	cout << "\nY axis:" << axis_y.toString() << endl;
 	//axis_y.normalize();
 }
 
