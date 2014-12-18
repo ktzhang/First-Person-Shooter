@@ -10,6 +10,8 @@
 #include "Geode.h"
 #include "Material.h"
 #include "Cone.h"
+#include "TargetBox.h"
+#include "Bullet.h"
 
 extern Reader* reader;
 
@@ -42,7 +44,7 @@ public:
 	static void rotateObject(int rotation);
 	static void scaleObject(double factor);
 	static void rotateObjectX(int rotation);
-
+	static double rd(bool sign = true);
 
 	static void setMaterialType(int type);
 	static void displayLights(double x, double y, double z);
@@ -52,6 +54,8 @@ public:
 
 	static void genList();
 
+	static bool collisionDetected(TargetBox*, Bullet*);
+	static bool collisionDetected2(TargetBox*, Bullet*);
 	static Vector3 trackBallMapping(Point point);
 };
 

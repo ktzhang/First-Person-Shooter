@@ -32,7 +32,6 @@ void CameraController::updatePrev(int x, int y){
 }
 
 void CameraController::updateMouse(int x, int y){
-	//cout << "UPdated" << endl;
 	//cout << "prev  x : " << prev_x << endl;
 	//cout << "curr x : " << x << endl;
 	double diffx = (x - prev_x) * sensitivity_x;

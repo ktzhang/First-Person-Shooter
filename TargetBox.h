@@ -7,7 +7,7 @@
 
 class TargetBox : public Geode{
 public:
-	TargetBox(Vector3,Vector3,double);
+	TargetBox(Vector3,Vector3,double,double);
 
 	virtual void draw(Matrix4);
 	virtual void update(Matrix4);
@@ -25,7 +25,7 @@ public:
 
 	double px, py, pz;
 	double dx, dy, dz;
-	Cube *cube;
+	Sphere *cube;
 };
 
 
