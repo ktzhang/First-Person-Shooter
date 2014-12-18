@@ -337,7 +337,7 @@ void Window::genList() {
 		//treeObj[i]->addRule('X', "FF+[+F]+[-F]", 1);
 		treeObj[i]->addRule('F', "F-[C1-<F+F&F+F+F]+[C2+F-<F+F&F]", 1);
 		treeObj[i]->addRule('X', "X [- X&X < X][ X< X+ X+ X& X]", 1);
-		treeObj[i]->addRule('I', "C0FF+[C1+F]+[C3-F]", 1);
+		treeObj[i]->addRule('I', "C0FF<[C1+F]+[C3-F]", 1);
 		treeObj[i]->prerender();
 	}
 	double randX, randY;
@@ -345,8 +345,8 @@ void Window::genList() {
 	for (int i = 0; i < 10; i++) {
 		randX = ((double)rand() / (RAND_MAX));
 		randY = ((double)rand() / (RAND_MAX));
-		forestX[i] = randX * 2 - 1;
-		forestY[i] = randY * 2 - 1;
+		forestX[i] = randX * 1.8 - .9;
+		forestY[i] = randY * 1.8 - .9;
 	}
 	forestGroup = new ForestGroup();
 	forestGroup->prerender();
@@ -849,7 +849,7 @@ bool Window::collisionDetected(TargetBox *target, Bullet *bullet){
 	}
 	Vector3 fi = p1 - mid;
 	double result = fi.length();
-	return result <= target->scale;
+	return result <= (target->scale +bullet->radius);
 }
 
 bool Window::collisionDetected2(TargetBox *target, Bullet *bullet){
