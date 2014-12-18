@@ -345,8 +345,8 @@ void Window::genList() {
 	for (int i = 0; i < 10; i++) {
 		randX = ((double)rand() / (RAND_MAX));
 		randY = ((double)rand() / (RAND_MAX));
-		forestX[i] = randX * 1.8 - .9;
-		forestY[i] = randY * 1.8 - .9;
+		forestX[i] = randX * 1.6 - .8;
+		forestY[i] = randY * 1.6 - .8;
 	}
 	forestGroup = new ForestGroup();
 	forestGroup->prerender();

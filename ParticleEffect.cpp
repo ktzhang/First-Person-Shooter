@@ -4,7 +4,7 @@
 
 ParticleEffect::ParticleEffect(Vector3 pos){
 	srand(time(0));
-	speed = 0.005;
+	speed = 0.001;
 	count = 400;
 	particles = new vector<Particle*>();
 	for (int i = 0; i < count; i++){
@@ -15,7 +15,7 @@ ParticleEffect::ParticleEffect(Vector3 pos){
 		double z = double(2 * (rand() % 2) - 1)*(double)(rand() % 1000) * speed / 1000.0;
 		current->dir = Vector3(x, y, z);
 		current->pos = pos;
-		current->duration = 12;
+		current->duration = 150;
 		particles->push_back(current);
 	}
 }
@@ -31,7 +31,7 @@ void ParticleEffect::draw(Matrix4 matrix){
 		Particle *current = *it;
 		if (current->delay <= 0){
 			if (current->duration > 0){
-				cout << "Particle effect!!!" << endl;
+				//cout << "Particle effect!!!" << endl;
 				current->duration = current->duration - 1;
 				current->pos = current->pos + current->dir;
 				Sphere *sphere = new Sphere();
