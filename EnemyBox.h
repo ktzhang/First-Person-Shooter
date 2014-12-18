@@ -10,7 +10,9 @@ private:
 public:
 	double shrinkFactor = 0.01;
 	MatrixTransform* enemy;
-	double sidelen;
+	double sideLen;
+	Vector3 boundingBoxMinMax[2];
+
 	Vector3 pos;
 	EnemyBox();
 	EnemyBox(Vector3 startPos);

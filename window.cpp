@@ -391,7 +391,7 @@ void Window::genList() {
 	double x, y, z, enemyBorderSize, enemyBorderFactor;
 	for (int i = 0; i < initialEnemies; i++) {
 		EnemyBox singleEnemy = EnemyBox();
-		enemyBorderSize = singleEnemy.sidelen;
+		enemyBorderSize = singleEnemy.sideLen;
 		enemyBorderFactor = (Skybox::SIDELEN - enemyBorderSize);
 		x = ((double)rand() / (RAND_MAX)) * enemyBorderFactor - Skybox::SIDELEN/2;
 		y = ((double)rand() / (RAND_MAX)) * enemyBorderFactor;
@@ -443,12 +443,12 @@ void Window::displayCallback()
 
 //	cout << enemies.size();
 	for (std::vector<EnemyBox>::iterator it = enemies->begin(); it != enemies->end(); ++it) {
-		objTrans.addChild(&(*it));
+	//	objTrans.addChild(&(*it));
 	}
 
 	//objTrans.addChild(&enemies[0]);
-	//EnemyBox enemyBox = EnemyBox();
-//	objTrans.addChild(&enemyBox);
+	EnemyBox enemyBox = EnemyBox();
+	objTrans.addChild(&enemyBox);
 
 
 
@@ -462,10 +462,12 @@ void Window::displayCallback()
 	MatrixTransform pointLightTrans = MatrixTransform(pointLightMatrix);
 	Sphere pointLightSphere = Sphere();
 	pointLightTrans.addChild(&pointLightSphere);
-	if (enablePointLight)
+	//if (enablePointLight)
 		//world.addChild(&pointLightTrans);
 
+	//world.update(identity);
 	world.draw(identity);
+	world.drawBoundingSpheres(identity);
 
 	/* swap the back and front buffers so we can see what we just drew */
 	glutSwapBuffers();

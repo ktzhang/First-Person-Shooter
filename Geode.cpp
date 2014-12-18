@@ -8,11 +8,8 @@ void Geode::draw(Matrix4 matrix) {
 	unsetModelView();
 }
 
-void Geode::drawBoundingSpheres(Matrix4 worldMatrix) {
-	Matrix4 translateMatrix = Matrix4();
-	translateMatrix.identity();
-	translateMatrix.makeTranslate(sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2]); 
-	setModelView(translateMatrix);
+void Geode::drawBoundingSpheres(Matrix4 worldMatrix) { 
+	setModelView(worldMatrix);
 	glutWireSphere(sphereRadius, 10, 10);
 	unsetModelView();
 }
@@ -25,7 +22,6 @@ void Geode::setModelView(Matrix4 matrix) {
 void Geode::unsetModelView() {
 	glPopMatrix();
 }
-
 
 //Apply a Matrix4 transform on a point
 Vector3 transformVector(Vector3 vector, Matrix4 transformMatrix) {
