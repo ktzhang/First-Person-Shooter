@@ -366,7 +366,7 @@ void Window::displayCallback()
 				Vector3 p2 = bullet->pos;
 				Vector3 p3 = p1 - p2;
 				double dis = p3.length();
-				if (dis <= (boxes->at(i)->scale+bullet->radius)){
+				if (dis <= (boxes->at(i)->scale+(bullet->radius+Bullet::speed)/2.0)){
 					cout << "HITTTT!" << endl;
 					boxes->erase(boxes->begin() + i);
 					break;
