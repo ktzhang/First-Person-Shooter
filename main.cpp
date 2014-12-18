@@ -239,7 +239,8 @@ void create_cube_map(
 		GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-	};
+	};
+
 
 	unsigned char* tdata;  // texture pixel data
 	int twidth, theight;   // texture width/height [pixels]
@@ -414,7 +415,7 @@ int main(int argc, char *argv[])
 	glutSpecialFunc(Window::processFunctionKeys);
 	glutMotionFunc(Window::processMotionFunction);
 	glutMouseFunc(Window::processMouseFunction);
-
+	glutPassiveMotionFunc(Window::passiveMouseFunction);
 	//Shader shade = Shader("reflection3.vert", "reflection3.frag");
 	//printProgramInfoLog(shade.pid);
 	//p = shade.pid;

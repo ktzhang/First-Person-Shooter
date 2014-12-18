@@ -38,3 +38,14 @@ std::string Vector4::toString() {
 	return ss.str();
 }
 
+void Vector4::normalize(){
+	double l = 0.0;
+	for (int i = 0; i < 3; i++){
+		l += m[i] * m[i];
+	}
+	l = sqrt(l);
+	for (int i = 0; i < 3; i++){
+		m[i] /= l;
+	}
+
+}

@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CamControl.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="cube.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="ZBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CamControl.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cone.cpp" />
     <ClCompile Include="cube.cpp" />
