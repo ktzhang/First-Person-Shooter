@@ -7,6 +7,7 @@ Bullet::Bullet(Vector3 position, Vector3 direction){
 	pos = position;
 	dir = direction;
 	sphere = new Sphere();
+	duration = 30;
 }
 
 
@@ -29,6 +30,7 @@ void Bullet::updateMotion(){
 	pos.m[0] = pos.m[0] + dir.m[0] * speed;
 	pos.m[1] = pos.m[1] + dir.m[1] * speed;
 	pos.m[2] = pos.m[2] + dir.m[2] * speed;
+	duration--;
 }
 
 void Bullet::update(Matrix4 matrix){
@@ -37,4 +39,8 @@ void Bullet::update(Matrix4 matrix){
 
 void Bullet::drawBoundingSpheres(Matrix4 worldMatrix){
 	bullet->drawBoundingSpheres(worldMatrix);
+}
+
+int Bullet::getDuration(){
+	return duration;
 }

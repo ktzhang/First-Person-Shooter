@@ -84,6 +84,12 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Model</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetBox.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
@@ -168,6 +174,12 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffect.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TargetBox.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>

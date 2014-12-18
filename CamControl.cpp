@@ -49,10 +49,6 @@ void CameraController::updateMouse(int x, int y){
 
 	angleX += diffx * 3.14159265359 / 180.0;
 	angleY -= diffy * 3.14159265359 / 180.0;
-	
-
-	cout << "angleX is: " << angleX << endl;
-	cout << "angleY is: " << angleY << endl;
 
 	Matrix4 rot1, rot2;
 

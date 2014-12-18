@@ -97,6 +97,7 @@
     <ClInclude Include="GLee.h" />
     <ClInclude Include="Group.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Material.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="TargetBox.h" />
     <ClInclude Include="TreeObject.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
@@ -138,7 +140,9 @@
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="TargetBox.cpp" />
     <ClCompile Include="TreeObject.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />

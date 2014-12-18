@@ -29,6 +29,8 @@
 #include "CamControl.h"
 #include <chrono>
 #include "Bullet.h"
+#include "ParticleEffect.h"
+#include "TargetBox.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -113,6 +115,9 @@ double increment4 = 3.19* M_PI / 2;
 CameraController *camera;
 Matrix4 cameraMatrix;
 vector<Bullet> *bullets;
+vector<TargetBox*> *boxes;
+ParticleEffect *particles;
+bool addBullet = false;
 
 std::vector<EnemyBox>* enemies = new vector<EnemyBox>();
 
@@ -131,6 +136,15 @@ void Window::init() {
 	camera = new CameraController();
 	cameraMatrix.identity();
 	bullets = new vector<Bullet>();
+	particles = new ParticleEffect();
+
+	boxes = new vector<TargetBox*>();
+	TargetBox *box = new TargetBox(Vector3(0, 0.1, 0), Vector3(1, 0, 0),1);
+	boxes->push_back(box);
+
+	//box = new TargetBox(Vector3(1.5, 1.25, -0.5), Vector3(0, 0, 1), 2);
+	//boxes->push_back(*box);
+
 }
 
 //----------------------------------------------------------------------------
@@ -313,7 +327,6 @@ void Window::processFunctionKeys(int key, int x, int y) {
 		//viewMode = 3;
 	}
 	calculateInitialObjectMatrix();
-
 }
 
 
@@ -388,7 +401,7 @@ void Window::genList() {
 	forestGroup = new ForestGroup();
 	forestGroup->prerender();
 
-
+	/*
 	int initialEnemies = 3;
 	Vector3 singleEnemyPos;
 	double x, y, z, enemyBorderSize, enemyBorderFactor;
@@ -408,6 +421,8 @@ void Window::genList() {
 
 	enemyBox = EnemyBox(Vector3(-0.5, 0, -0.5), Vector3(1, 0, 0), 0.005);
 
+	*/
+
 }
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
@@ -418,6 +433,11 @@ void Window::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+	vector<TargetBox*>::iterator it;
+	for (it = boxes->begin(); it != boxes->end(); it++){
+		TargetBox *box = *it;
+		box->draw(finalMatrix * cameraMatrix);
+	}
 
 	//gluLookAt(0, 0, -5, cos(t*0.1), 0, sin(t*0.1), 0, 1, 0);
 	//t++;
@@ -438,6 +458,34 @@ void Window::displayCallback()
 	//objTrans.addChild(&treeTrans);
 
 	//ForestGroup treeForest;
+
+
+
+	Matrix4 parMat;
+	parMat.makeTranslate(-0.15, 0.0, -0.2);
+	MatrixTransform parTrans = MatrixTransform(parMat);
+	parTrans.addChild(particles);
+	objTrans.addChild(&parTrans);
+
+
+	//vector<Bullet>::iterator it;
+	//stack<int> stack;
+	//for (it = bullets->begin(); it != bullets->end(); it++){
+
+	//}
+
+
+
+	//if (addBullet){
+	//	Bullet *bullet = new Bullet(Vector3(0,0,0),Vector3(0,0,-1));
+	//	Matrix4 iden;
+	//	iden.identity();
+	//	MatrixTransform bultran = MatrixTransform(iden);
+	//	bultran.addChild(bullet);
+	//	objTrans.addChild(&parTrans);
+
+	//	addBullet = false;
+	//}
 	objTrans.addChild(forestGroup);
 
 	Matrix4 skyMatrix;
@@ -463,14 +511,14 @@ void Window::displayCallback()
 	Matrix4 moveMatrix = Matrix4();
 	moveMatrix.makeTranslate(-1, 0, -1);
 
-	Matrix4 bigMatrix = Matrix4();
-	bigMatrix.makeScale(2, 2, 2);
-	MatrixTransform moveTransform = MatrixTransform(bigMatrix);
-	
-	enemyBox.pos = enemyBox.newPosition();
-	moveTransform.addChild(&enemyBox);
-	objTrans.addChild(&moveTransform);
-	moveTransform.draw(identity);
+	//Matrix4 bigMatrix = Matrix4();
+	//bigMatrix.makeScale(2, 2, 2);
+	//MatrixTransform moveTransform = MatrixTransform(bigMatrix);
+	//
+	//enemyBox.pos = enemyBox.newPosition();
+	//moveTransform.addChild(&enemyBox);
+	//objTrans.addChild(&moveTransform);
+	//moveTransform.draw(identity);
 
 
 	//Point light source
@@ -657,7 +705,8 @@ void Window::processMouseFunction(int button, int state, int x, int y) {
 	if (state == GLUT_UP) return;
 
 	if (button == GLUT_LEFT_BUTTON){
-		
+		Bullet *bullet = new Bullet(Vector3(0, 0, 0), Vector3(0, 0, -1));
+		bullets->push_back(*bullet);
 	}
 
 	/*Point point = Point{ x, y };
@@ -689,98 +738,97 @@ Vector3 Window::trackBallMapping(Point point) {
 }
 
 void Window::processMotionFunction(int x, int y) {
-	cout << "\n" << "x" << x << " y" << y;
-	Point point = Point{ x, y };
-	//Detect mouse movement:
-	Vector3 direction;
-	float pixel_diff, pixel_diffY;
-	float rot_angle, zoom_factor, zoom_factorY;
-	Vector3 curPoint;
-	switch (Movement)
-	{
+	
+	//Point point = Point{ x, y };
+	////Detect mouse movement:
+	//Vector3 direction;
+	//float pixel_diff, pixel_diffY;
+	//float rot_angle, zoom_factor, zoom_factorY;
+	//Vector3 curPoint;
+	//switch (Movement)
+	//{
 
-	case ROTATE: // Left-mouse button is being held down
-	{
-		curPoint = trackBallMapping(point); // Map the mouse position to a logical
-		// sphere location.
-		direction = curPoint - lastPoint;
-		float velocity = direction.length();
-		cout << " v: " << velocity;
-		if (velocity > 0.0001) // If little movement - do nothing.
-		{
-			//
-			// Rotate about the axis that is perpendicular to the great circle connecting the mouse movements.
-			//
-			if (!lightMotionEnabled) {
-				Vector3 rotAxis;
-				rotAxis = rotAxis.cross(lastPoint, curPoint);
-				rotAxis.normalize();
-				rot_angle = velocity * m_ROTSCALE;
-				//
-				// We need to apply the rotation as the last transformation.
-				// 1. Get the current matrix and save it.
-				// 2. Set the matrix to the identity matrix (clear it).
-				// 3. Apply the trackball rotation.
-				// 4. Pre-multiply it by the saved matrix.
-				//
-				/*GLdouble modelMatrix[16];
-				glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
-				Matrix4 objectXform = Matrix4(modelMatrix);
-				glLoadIdentity();*/
+	//case ROTATE: // Left-mouse button is being held down
+	//{
+	//	curPoint = trackBallMapping(point); // Map the mouse position to a logical
+	//	// sphere location.
+	//	direction = curPoint - lastPoint;
+	//	float velocity = direction.length();
+	//	cout << " v: " << velocity;
+	//	if (velocity > 0.0001) // If little movement - do nothing.
+	//	{
+	//		//
+	//		// Rotate about the axis that is perpendicular to the great circle connecting the mouse movements.
+	//		//
+	//		if (!lightMotionEnabled) {
+	//			Vector3 rotAxis;
+	//			rotAxis = rotAxis.cross(lastPoint, curPoint);
+	//			rotAxis.normalize();
+	//			rot_angle = velocity * m_ROTSCALE;
+	//			//
+	//			// We need to apply the rotation as the last transformation.
+	//			// 1. Get the current matrix and save it.
+	//			// 2. Set the matrix to the identity matrix (clear it).
+	//			// 3. Apply the trackball rotation.
+	//			// 4. Pre-multiply it by the saved matrix.
+	//			//
+	//			/*GLdouble modelMatrix[16];
+	//			glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+	//			Matrix4 objectXform = Matrix4(modelMatrix);
+	//			glLoadIdentity();*/
 
-				Matrix4 rotateMatrix = Matrix4();
-				rotateMatrix.identity();
-				rotateMatrix.makeRotate(-rot_angle, rotAxis);
-				//glRotated(rot_angle, rotAxis.m[0], rotAxis.m[1], rotAxis.m[2]);
+	//			Matrix4 rotateMatrix = Matrix4();
+	//			rotateMatrix.identity();
+	//			rotateMatrix.makeRotate(-rot_angle, rotAxis);
+	//			//glRotated(rot_angle, rotAxis.m[0], rotAxis.m[1], rotAxis.m[2]);
 
-				finalMatrix = rotateMatrix * finalMatrix;
-			}
-			else {
-				spotlightX = curPoint.m[0] * 10;
-				spotlightY = curPoint.m[1] * 10;
-				spotlightZ = 12 + curPoint.m[2] * 5;
-				displaySpotlightCone();
-			}
+	//			finalMatrix = rotateMatrix * finalMatrix;
+	//		}
+	//		else {
+	//			spotlightX = curPoint.m[0] * 10;
+	//			spotlightY = curPoint.m[1] * 10;
+	//			spotlightZ = 12 + curPoint.m[2] * 5;
+	//			displaySpotlightCone();
+	//		}
 
-			//glMultMatrixd(objectXform.getPointer());
-		}
-		break;
-	}
-	case ZOOM: // Right-mouse button is being held down
-		//
-		// Zoom into or away from the scene based upon how far the 
-		// mouse moved in the x-direction.
-		// This implementation does this by scaling the eye-space.
-		// This should be the first operation performed by the GL_PROJECTION matrix.
-		// 1. Calculate the signed distance
-		// a. movement to the left is negative (zoom out).
-		// b. movement to the right is positive (zoom in).
-		// 2. Calculate a scale factor for the scene s = 1 + a*dx
-		// 3. Call glScalef to have the scale be the first transformation.
-		//
-		if (!lightMotionEnabled) {
-			pixel_diff = point.x - lastPoint.m[0];
-			zoom_factor = 1.0 + pixel_diff * m_ZOOMSCALE;
-			scaleObject(zoom_factor);
-		}
-		else {
-			pixel_diffY = point.y - lastPoint.m[1];
-			zoom_factorY = 1.0 + pixel_diffY * m_ZOOMSCALE * 1.5;
-			spotLightAngle *= zoom_factorY;
-			displaySpotlightCone();
-		}
-		//
-		// Set the current point, so the lastPoint will be saved properly below . 
-		// 
-		lastPoint.m[0] = point.x;
-		lastPoint.m[1] = point.y;
-		lastPoint.m[2] = 0;
+	//		//glMultMatrixd(objectXform.getPointer());
+	//	}
+	//	break;
+	//}
+	//case ZOOM: // Right-mouse button is being held down
+	//	//
+	//	// Zoom into or away from the scene based upon how far the 
+	//	// mouse moved in the x-direction.
+	//	// This implementation does this by scaling the eye-space.
+	//	// This should be the first operation performed by the GL_PROJECTION matrix.
+	//	// 1. Calculate the signed distance
+	//	// a. movement to the left is negative (zoom out).
+	//	// b. movement to the right is positive (zoom in).
+	//	// 2. Calculate a scale factor for the scene s = 1 + a*dx
+	//	// 3. Call glScalef to have the scale be the first transformation.
+	//	//
+	//	if (!lightMotionEnabled) {
+	//		pixel_diff = point.x - lastPoint.m[0];
+	//		zoom_factor = 1.0 + pixel_diff * m_ZOOMSCALE;
+	//		scaleObject(zoom_factor);
+	//	}
+	//	else {
+	//		pixel_diffY = point.y - lastPoint.m[1];
+	//		zoom_factorY = 1.0 + pixel_diffY * m_ZOOMSCALE * 1.5;
+	//		spotLightAngle *= zoom_factorY;
+	//		displaySpotlightCone();
+	//	}
+	//	//
+	//	// Set the current point, so the lastPoint will be saved properly below . 
+	//	// 
+	//	lastPoint.m[0] = point.x;
+	//	lastPoint.m[1] = point.y;
+	//	lastPoint.m[2] = 0;
 
-		break;
-	}
+	//	break;
+	//}
 
-	displayCallback();
-
+	//displayCallback();
 }
 
 void Window::passiveMouseFunction(int x, int y){

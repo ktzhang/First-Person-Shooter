@@ -19,12 +19,14 @@ public:
 	virtual void update(Matrix4);
 	virtual void drawBoundingSpheres(Matrix4);
 
+	int getDuration();
 private:
 	double radius;
 	Vector3 pos;
 	Vector3 dir;
 	Sphere *sphere;
 
+	int duration;
 	MatrixTransform* bullet;
 };
 
