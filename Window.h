@@ -22,6 +22,8 @@ public:
 	// window size
 
 	static void init();
+	static bool enableMouse;
+	static double t;
 
 	static void processNormalKeys(unsigned char key, int x, int y);
 	static void processFunctionKeys(int key, int x, int y);
@@ -32,7 +34,7 @@ public:
 
 	static void processMotionFunction(int x, int y);
 	static void processMouseFunction(int button, int state, int x, int y);
-
+	static void passiveMouseFunction(int x, int y);
 
 	static void calculateInitialObjectMatrix();
 

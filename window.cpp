@@ -26,7 +26,7 @@
 #include "Floor.h"
 #include "ForestGroup.h"
 #include "EnemyBox.h"
-
+#include "CamControl.h"
 #include <chrono>
 
 using namespace std;
@@ -35,9 +35,11 @@ using namespace std::chrono;
 const int ROTATE = 0;
 const int ZOOM = 1;
 
+double Window::t = 1.0;
 
 int Window::width = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
+bool Window::enableMouse = false;
 
 extern vector<float> imageNums[2];
 extern GLuint p;
@@ -106,6 +108,7 @@ double increment2 = 0.0;
 double increment3 = 3.19* M_PI / 2;
 double increment4 = 3.19* M_PI / 2;
 
+CameraController *camera;
 
 std::vector<EnemyBox>* enemies = new vector<EnemyBox>();
 
@@ -121,7 +124,7 @@ void Window::init() {
 	//totalRotateSpotlight.identity();
 	//origin = Vector3(0, 0, 0);
 
-	
+	camera = new CameraController();
 }
 
 //----------------------------------------------------------------------------
@@ -199,6 +202,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		cout << "\nLightMotionEnabled = " << lightMotionEnabled;
 		break;
 	case 'm':
+		enableMouse = !enableMouse;
 		/*	lightMotionEnabled = 0;
 		cout << "\nLightMotionEnabled = " << lightMotionEnabled;*/
 		break;
@@ -263,6 +267,7 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		cout << "\nShaders enabled: " << enableShaders;
 
 		break;
+
 	}
 
 }
@@ -411,6 +416,13 @@ void Window::displayCallback()
 	/* clear the color buffer (resets everything to black) */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
+	//gluLookAt(0, 0, -5, cos(t*0.1), 0, sin(t*0.1), 0, 1, 0);
+	//t++;
+
+	//glMatrixMode(GL_MODELVIEW);
+	
 	Group world = Group();
 	MatrixTransform objTrans = MatrixTransform(finalMatrix);
 	world.addChild(&objTrans);
@@ -468,6 +480,8 @@ void Window::displayCallback()
 	//world.update(identity);
 	world.draw(identity);
 	world.drawBoundingSpheres(identity);
+
+	glPopMatrix();
 
 	/* swap the back and front buffers so we can see what we just drew */
 	glutSwapBuffers();
@@ -611,15 +625,15 @@ void Window::calculateInitialObjectMatrix() {
 	Matrix4 zoom;
 	zoom.identity();
 	zoom.makeScale(10, 10, 10);
-	Matrix4 rotate;
-	rotate.identity();
-	rotate.makeRotateX(-30);
+	//Matrix4 rotate;
+	//rotate.identity();
+	//rotate.makeRotateX(-30);
 	Matrix4 translate;
 	translate.identity();
 	//translate.makeTranslate(0, 10, 0);
 
 	finalMatrix.identity();
-	finalMatrix = finalMatrix * rotate * translate *zoom;
+	finalMatrix = finalMatrix  * translate *zoom;
 }
 
 void Window::applyGlobalMatrix() {
@@ -751,6 +765,20 @@ void Window::processMotionFunction(int x, int y) {
 
 	displayCallback();
 
+}
+
+void Window::passiveMouseFunction(int x, int y){
+	if (!enableMouse) {
+		camera->updatePrev(x, y);
+		return;
+	}
+
+	camera->updateMouse(x, y);
+
+	Matrix4 rotX = camera->getRotX();
+	Matrix4 rotY = camera->getRotY();
+
+	finalMatrix = finalMatrix * rotX * rotY;
 }
 
 
