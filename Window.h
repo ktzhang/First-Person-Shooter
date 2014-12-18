@@ -54,8 +54,8 @@ public:
 
 	static void genList();
 
-	static bool collisionDetected(TargetBox*, Bullet*);
-	static bool collisionDetected2(TargetBox*, Bullet*);
+	//static bool collisionDetected(TargetBox*, Bullet*);
+	//static bool collisionDetected2(TargetBox*, Bullet*);
 	static Vector3 trackBallMapping(Point point);
 };
 

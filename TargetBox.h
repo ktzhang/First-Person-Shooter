@@ -14,9 +14,8 @@ public:
 	virtual void drawBoundingSpheres(Matrix4);
 	void updatePosition();
 	virtual void render();
+	Vector3 getPos();
 
-
-	Vector3 pos;
 	Vector3 dir;
 
 	double limit;

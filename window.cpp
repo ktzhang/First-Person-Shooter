@@ -30,7 +30,6 @@
 #include <chrono>
 #include "Bullet.h"
 #include "ParticleEffect.h"
-#include "TargetBox.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -316,6 +315,15 @@ double forestX[10];
 double forestY[10];
 
 
+
+bool collisionDetected2(TargetBox *target, Bullet *bullet){
+	Vector3 p1 = target->getPos();
+	Vector3 p2 = bullet->pos;
+	Vector3 p3 = p1 - p2;
+	double dis = p3.length();
+	return dis <= (target->scale + (bullet->radius + Bullet::speed) / 2.0);
+}
+
 void Window::genList() {
 	char symbolList[6] = { 'F', '+', '-', '&', '<', 'I' };
 	int randNum;
@@ -405,12 +413,13 @@ void Window::displayCallback()
 			bullet->drawBoundingSpheres(finalMatrix * cameraMatrix);
 		if (bullet->getDuration() > 0){
 			ct++;
-			for (int i = 0; i < boxes->size(); i++){
-				if(collisionDetected(boxes->at(i),bullet)){
+			for (tb = boxes->begin(); tb != boxes->end(); tb++){
+				TargetBox *box = *tb;
+				if (collisionDetected2(box, bullet)){
 					//cout << "HITTTT!" << endl;
-					ParticleEffect *effect = new ParticleEffect(boxes->at(i)->pos);
+					ParticleEffect *effect = new ParticleEffect(box->getPos());
 					effects->push_back(effect);
-					boxes->erase(boxes->begin() + i);
+					boxes->erase(tb);
 					break;
 				}
 			}
@@ -804,27 +813,19 @@ void Window::passiveMouseFunction(int x, int y){
 	finalMatrix = finalMatrix * rotX * rotY;
 }
 
-
-
-bool Window::collisionDetected(TargetBox *target, Bullet *bullet){
-	Vector3 p1 = target->pos;
-	Vector3 p2 = bullet->pos;
-	Vector3 dia = p1 - p2;
-	double dis = dia.dot(dia, bullet->dir);
-	if (dis > bullet->speed) return false;
-	Vector3 mid;
-	for (int i = 0; i < 3; i++){
-		mid.m[i] = p2.m[i] + dis*bullet->dir.m[i];
-	}
-	Vector3 fi = p1 - mid;
-	double result = fi.length();
-	return result <= (target->scale +bullet->radius);
-}
-
-bool Window::collisionDetected2(TargetBox *target, Bullet *bullet){
-	Vector3 p1 = target->pos;
-	Vector3 p2 = bullet->pos;
-	Vector3 p3 = p1 - p2;
-	double dis = p3.length();
-	return dis <= (target->scale + (bullet->radius + Bullet::speed) / 2.0);
-}
+//
+//
+//bool Window::collisionDetected(TargetBox *target, Bullet *bullet){
+//	Vector3 p1 = target->getPos();
+//	Vector3 p2 = bullet->pos;
+//	Vector3 dia = p1 - p2;
+//	double dis = dia.dot(dia, bullet->dir);
+//	if (dis > bullet->speed) return false;
+//	Vector3 mid;
+//	for (int i = 0; i < 3; i++){
+//		mid.m[i] = p2.m[i] + dis*bullet->dir.m[i];
+//	}
+//	Vector3 fi = p1 - mid;
+//	double result = fi.length();
+//	return result <= (target->scale +bullet->radius);
+//}

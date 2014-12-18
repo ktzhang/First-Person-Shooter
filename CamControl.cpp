@@ -51,14 +51,16 @@ void CameraController::updateMouse(int x, int y){
 		return;
 	}
 	prev_x = x;
-	prev_y = y;
 
 
 	double newX = angleX + diffx * 3.14159265359 / 180.0;
 	double newY = angleY - diffy * 3.14159265359 / 180.0;
 
-	if (newY > 0.95 || newY < -0.68) {
+	if (newY > 0.95 || newY < -1) {
 		diffy = 0;
+	}
+	else {
+		prev_y = y;
 	}
 
 	angleX += diffx * 3.14159265359 / 180.0;

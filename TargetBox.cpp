@@ -3,8 +3,7 @@
 #include "cube.h"
 
 
-TargetBox::TargetBox(Vector3 position, Vector3 direction, double s, double l){
-	pos = position;
+TargetBox::TargetBox(Vector3 pos, Vector3 direction, double s, double l){
 	dir = direction;
 
 	scale = s;
@@ -65,3 +64,8 @@ void TargetBox::drawBoundingSpheres(Matrix4 aa){
 }
 
 void TargetBox::render(){}
+
+
+Vector3 TargetBox::getPos(){
+	return Vector3(px, py, pz);
+}
