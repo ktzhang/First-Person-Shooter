@@ -14,20 +14,27 @@ EnemyBox::EnemyBox() {
 	identity.identity();
 	enemy = new MatrixTransform(identity);*/
 	sideLen = Cube::SIDELEN * shrinkFactor;
-
 	pos = Vector3(0, 0, 0);
+	moveDirection = Vector3(1, 0, 0);
+	speed = 0.005;
 }
 
-EnemyBox::EnemyBox(Vector3 startPos) {
+EnemyBox::EnemyBox(Vector3 startPos, Vector3 direction, double speed) {
 	//Matrix4 identity;
 	//identity.identity();
 	//enemy = new MatrixTransform(identity);
 	sideLen = Cube::SIDELEN * shrinkFactor;
-
 	pos = startPos;
+	this->moveDirection = direction;
+	this->speed = speed;
 }
 
 void EnemyBox::prerender() {
+}
+
+Vector3 EnemyBox::newPosition() {
+	Vector3 newPos = pos + Vector3(moveDirection.m[0] * speed, moveDirection.m[1] * speed, moveDirection.m[2] * speed);
+	return newPos;
 }
 
 void EnemyBox::draw(Matrix4 matrix) {
