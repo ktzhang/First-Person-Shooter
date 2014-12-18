@@ -9,6 +9,7 @@
 class Cube : public Geode
 {
 	Color color;
+	void calcBoundingSphereRadius();
 	public:
 		static const double SIDELEN;
 		double sideLen;

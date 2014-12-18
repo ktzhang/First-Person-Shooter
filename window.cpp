@@ -329,8 +329,14 @@ void Window::idleCallback()
 	double durationDouble = duration / 1000000;
 	//cout << "FPS = " << (1/durationDouble) << " ";
 
+
+
 }
 
+
+
+EnemyBox enemyBox;
+//TODO move enemybox to init
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when graphics window is resized by the user
 void Window::reshapeCallback(int w, int h)
@@ -388,7 +394,7 @@ void Window::genList() {
 	double x, y, z, enemyBorderSize, enemyBorderFactor;
 	for (int i = 0; i < initialEnemies; i++) {
 		EnemyBox singleEnemy = EnemyBox();
-		enemyBorderSize = singleEnemy.sidelen;
+		enemyBorderSize = singleEnemy.sideLen;
 		enemyBorderFactor = (Skybox::SIDELEN - enemyBorderSize);
 		x = ((double)rand() / (RAND_MAX)) * enemyBorderFactor - Skybox::SIDELEN/2;
 		y = ((double)rand() / (RAND_MAX)) * enemyBorderFactor;
@@ -396,10 +402,13 @@ void Window::genList() {
 		cout << "x, y, z" << x << " " << y << " " << z;
 		singleEnemyPos = Vector3(x, y, z);
 		singleEnemy.pos = singleEnemyPos;
+		singleEnemy.speed = 0.005;
 		enemies->push_back(singleEnemy);
 	}
-}
 
+	enemyBox = EnemyBox(Vector3(-0.5, 0, -0.5), Vector3(1, 0, 0), 0.005);
+
+}
 //----------------------------------------------------------------------------
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
@@ -451,12 +460,17 @@ void Window::displayCallback()
 	}
 
 	//objTrans.addChild(&enemies[0]);
-	EnemyBox enemyBox = EnemyBox();
-	objTrans.addChild(&enemyBox);
+	Matrix4 moveMatrix = Matrix4();
+	moveMatrix.makeTranslate(-1, 0, -1);
 
-
-
-
+	Matrix4 bigMatrix = Matrix4();
+	bigMatrix.makeScale(2, 2, 2);
+	MatrixTransform moveTransform = MatrixTransform(bigMatrix);
+	
+	enemyBox.pos = enemyBox.newPosition();
+	moveTransform.addChild(&enemyBox);
+	objTrans.addChild(&moveTransform);
+	moveTransform.draw(identity);
 
 
 	//Point light source
@@ -471,7 +485,10 @@ void Window::displayCallback()
 
 	//world.update(identity);
 	world.draw(identity);
+	world.update(identity);
 	world.drawBoundingSpheres(identity);
+
+	//moveTransform.drawBoundingSpheres(identity);
 
 	glPopMatrix();
 
@@ -623,6 +640,7 @@ void Window::calculateInitialObjectMatrix() {
 	Matrix4 translate;
 	//translate.identity();
 	translate.makeTranslate(0, -1.2, 0);
+
 
 	finalMatrix.identity();
 	finalMatrix = finalMatrix  * translate *zoom;

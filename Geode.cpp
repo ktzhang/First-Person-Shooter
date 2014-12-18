@@ -8,11 +8,9 @@ void Geode::draw(Matrix4 matrix) {
 	unsetModelView();
 }
 
-void Geode::drawBoundingSpheres(Matrix4 worldMatrix) {
-	Matrix4 translateMatrix = Matrix4();
-	translateMatrix.identity();
-	translateMatrix.makeTranslate(sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2]); 
-	setModelView(translateMatrix);
+void Geode::drawBoundingSpheres(Matrix4 worldMatrix) { 
+	setModelView(worldMatrix);
+	glColor3f(0, 0, 1);
 	glutWireSphere(sphereRadius, 10, 10);
 	unsetModelView();
 }
@@ -26,7 +24,6 @@ void Geode::unsetModelView() {
 	glPopMatrix();
 }
 
-
 //Apply a Matrix4 transform on a point
 Vector3 transformVector(Vector3 vector, Matrix4 transformMatrix) {
 	Vector4* origin4 = &Vector4(vector.m[0], vector.m[1], vector.m[2], 1);
@@ -36,30 +33,44 @@ Vector3 transformVector(Vector3 vector, Matrix4 transformMatrix) {
 }
 
 void Geode::update(Matrix4 transformMatrix) {
+	Vector4 temp = transformMatrix * Vector4(sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2], 1);
+	sphereOrigin = Vector3(temp.m[0], temp.m[1], temp.m[2]);
+
+
+	// Method which is to create a vector from 0 to the radius
+	// and then any transformation would change the vector
+	// and then take the vector's final length as the new radius.
+	Vector4 sizeVector = Vector4(0, sphereRadius, 0, 0);
+	//cout << " " << sizeVector.length() << " ";
+	Vector4 tempSize = transformMatrix * sizeVector;
+	newSphereRadius = tempSize.length();;
+	//cout << newSphereRadius << " ";
+
+
 	//Converting the spheres
-	Vector3 xVector = Vector3(sphereRadius + sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2]);
-	Vector3 yVector = Vector3(sphereOrigin.m[0], sphereRadius + sphereOrigin.m[1], sphereOrigin.m[2]);
-	Vector3 zVector = Vector3(sphereOrigin.m[0], sphereOrigin.m[1], sphereRadius + sphereOrigin.m[2]);
+	//Vector3 xVector = Vector3(sphereRadius + sphereOrigin.m[0], sphereOrigin.m[1], sphereOrigin.m[2]);
+	//Vector3 yVector = Vector3(sphereOrigin.m[0], sphereRadius + sphereOrigin.m[1], sphereOrigin.m[2]);
+	//Vector3 zVector = Vector3(sphereOrigin.m[0], sphereOrigin.m[1], sphereRadius + sphereOrigin.m[2]);
 
-	Vector3 newX = transformVector(xVector, transformMatrix);
-	Vector3 newY = transformVector(yVector, transformMatrix);
-	Vector3 newZ = transformVector(zVector, transformMatrix);
-	sphereOrigin = transformVector(sphereOrigin, transformMatrix);
+	//Vector3 newX = transformVector(xVector, transformMatrix);
+	//Vector3 newY = transformVector(yVector, transformMatrix);
+	//Vector3 newZ = transformVector(zVector, transformMatrix);
+	//sphereOrigin = transformVector(sphereOrigin, transformMatrix);
 
-	double distanceX = 0, distanceY = 0, distanceZ = 0;
-	for (int j = 0; j < 3; j++) {
-		
-		distanceX += (newX.m[j] - sphereOrigin.m[j])*(newX.m[j] - sphereOrigin.m[j]);
-		distanceY += (newY.m[j] - sphereOrigin.m[j])*(newY.m[j] - sphereOrigin.m[j]);
-		distanceZ += (newZ.m[j] - sphereOrigin.m[j])*(newZ.m[j] - sphereOrigin.m[j]);
-	}
-	double maxDist = distanceX;
-	if (distanceY > maxDist) maxDist = distanceY;
-	if (distanceZ > maxDist) maxDist = distanceZ;
+	//double distanceX = 0, distanceY = 0, distanceZ = 0;
+	//for (int j = 0; j < 3; j++) {
+	//	
+	//	distanceX += (newX.m[j] - sphereOrigin.m[j])*(newX.m[j] - sphereOrigin.m[j]);
+	//	distanceY += (newY.m[j] - sphereOrigin.m[j])*(newY.m[j] - sphereOrigin.m[j]);
+	//	distanceZ += (newZ.m[j] - sphereOrigin.m[j])*(newZ.m[j] - sphereOrigin.m[j]);
+	//}
+	//double maxDist = distanceX;
+	//if (distanceY > maxDist) maxDist = distanceY;
+	//if (distanceZ > maxDist) maxDist = distanceZ;
 
-	sphereRadius = sqrt(maxDist);
+	//sphereRadius = sqrt(maxDist);
 
-	shouldRender(transformMatrix);
+	//shouldRender(transformMatrix);
 }
 
 void Geode::shouldRender(Matrix4 transformMatrix) {

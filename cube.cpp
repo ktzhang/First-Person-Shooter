@@ -15,12 +15,21 @@ const double Cube::SIDELEN = 10;
 using namespace std;
 Cube::Cube() {
 	sideLen = SIDELEN;
+	calcBoundingSphereRadius();
 	this->color = { 1, 1, 1 };
+	sphereOrigin = Vector3(0, 0, 0);
 }
 
 Cube::Cube(Color color) {
-	sideLen = 10.0;
+	sideLen = SIDELEN;
+	calcBoundingSphereRadius();
 	this->color = color;
+	sphereOrigin = Vector3(0, 0, 0);
+}
+
+
+void Cube::calcBoundingSphereRadius(){
+	sphereRadius = sqrt(3 * sideLen * sideLen) / 2;
 }
 
 void Cube::render() {
