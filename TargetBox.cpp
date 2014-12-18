@@ -1,6 +1,6 @@
 #include "TargetBox.h"
 
-
+#include "cube.h"
 
 
 TargetBox::TargetBox(Vector3 position, Vector3 direction, double l){
@@ -9,7 +9,7 @@ TargetBox::TargetBox(Vector3 position, Vector3 direction, double l){
 	limit = l;
 	scale = 0.02;
 	speed = 0.01;
-	cube = new Sphere();
+	cube = new Cube();
 
 	px = pos.m[0];
 	py = pos.m[1];
@@ -68,6 +68,12 @@ void TargetBox::updatePosition(){
 
 void TargetBox::update(Matrix4 aa){}
 
-void TargetBox::drawBoundingSpheres(Matrix4 aa){}
+void TargetBox::drawBoundingSpheres(Matrix4 aa){
+	Matrix4 translate;
+	translate.makeTranslate(px, py, pz);
+	Matrix4 shrink;
+	shrink.makeScale(scale, scale, scale);
+	cube->drawBoundingSpheres(aa  * translate * shrink);
+}
 
 void TargetBox::render(){}

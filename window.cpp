@@ -181,6 +181,9 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 	case 'm':
 		enableMouse = !enableMouse;
 		break;
+	case 'g':
+		genList();
+		break;
 	}
 	//Vector3 vec = camera->getPosition();
 	//cout << "Camera position: x=" << vec.m[0] << "  y=" << vec.m[1] << "  z=" << vec.m[2] << endl;
@@ -291,14 +294,18 @@ double forestY[10];
 
 
 void Window::genList() {
-	char symbolList[6] = { 'F', '+', '-', '&', '<', 'F' };
+	char symbolList[6] = { 'F', '+', '-', '&', '<', 'I' };
 	int randNum;
 	srand(time(NULL));
 
 	for (int i = 0; i < 10; i++) {
-		treeObj[i] = new TreeObject(2, 3.0, 25, 1.0);
+		treeObj[i] = new TreeObject(2, 4.0, 20, 1.0);
 		char ax[7];
-		ax[0] = 'F';
+		randNum = (rand() % (1 - 0)) + 0;
+		if (randNum)
+			ax[0] = 'F';
+		else
+			ax[0] = 'I';
 		for (int j = 0; j < 6; j++) {
 			randNum = (rand() % (5 - 0)) + 0;
 			ax[j+1] = symbolList[randNum];
@@ -307,8 +314,10 @@ void Window::genList() {
 		treeObj[i]->setAxiom(str);
 		//treeObj[i].addRule('F', "FFF", 1);
 		//treeObj[i]->addRule('F', "FF-[-F+F]+[+F-F]", 1);
-		treeObj[i]->addRule('X', "FF+[+F]+[-F]", 1);
-		treeObj[i]->addRule('F', "F [- & < F][ < + + & F ] | | F [ - - & > F ] [+&F]", 1);
+		//treeObj[i]->addRule('X', "FF+[+F]+[-F]", 1);
+		treeObj[i]->addRule('F', "F-[C1-<F+F&F+F+F]+[C2+F-<F+F&F]", 1);
+		treeObj[i]->addRule('X', "X [- X&X < X][ X< X+ X+ X& X]", 1);
+		treeObj[i]->addRule('I', "C0FF+[C1+F]+[C3-F]", 1);
 		treeObj[i]->prerender();
 	}
 	double randX, randY;
@@ -359,6 +368,7 @@ void Window::displayCallback()
 	for (tb = boxes->begin(); tb != boxes->end(); tb++){
 		TargetBox *box = *tb;
 		box->draw(finalMatrix * cameraMatrix);
+		box->drawBoundingSpheres(finalMatrix * cameraMatrix);
 	}
 
 	//Bullets!
@@ -477,7 +487,7 @@ void Window::displayCallback()
 	//world.update(identity);
 	world.draw(identity);
 	world.update(identity);
-	world.drawBoundingSpheres(identity);
+	//world.drawBoundingSpheres(identity);
 
 	//moveTransform.drawBoundingSpheres(identity);
 

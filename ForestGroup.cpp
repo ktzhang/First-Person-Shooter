@@ -23,7 +23,7 @@ void ForestGroup::prerender() {
 
 	glutIndex = glGenLists(1);
 	glNewList(glutIndex, GL_COMPILE);
-		double treeShrinkFactor = 0.0025;
+		double treeShrinkFactor = 0.01;
 		Matrix4 treeShrinkMatrix;
 		treeShrinkMatrix.identity();
 		treeShrinkMatrix.makeScale(treeShrinkFactor, treeShrinkFactor, treeShrinkFactor);

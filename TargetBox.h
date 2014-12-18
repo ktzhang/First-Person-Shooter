@@ -3,6 +3,7 @@
 
 #include "Geode.h"
 #include "Sphere.h"
+#include "cube.h"
 
 class TargetBox : public Geode{
 public:
@@ -24,7 +25,7 @@ public:
 
 	double px, py, pz;
 	double dx, dy, dz;
-	Sphere *cube;
+	Cube *cube;
 };
 
 
