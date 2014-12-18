@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-const double Bullet::speed = 0.025;
+const double Bullet::speed = 0.02;
 
 Bullet::Bullet(Vector3 position, Vector3 direction, double l){
 	radius = 0.005;

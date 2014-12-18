@@ -21,14 +21,14 @@ public:
 	virtual void render();
 
 	int getDuration();
-private:
-	double radius;
-	double limit;
 	Vector3 pos;
-	Vector3 dir;
+	double radius;
+private:
+	double limit;
 	Sphere *sphere;
 	Cylinder* cylinder;
 
+	Vector3 dir;
 	int duration;
 
 };
