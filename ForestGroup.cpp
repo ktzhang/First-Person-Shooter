@@ -5,7 +5,7 @@
 #include "TreeObject.h"
 #include <cstdlib>
 
-extern TreeObject *treeObj;
+extern TreeObject *treeObj[10];
 extern double forestX[10];
 extern double forestY[10];
 
@@ -37,7 +37,7 @@ void ForestGroup::prerender() {
 			finalMatrix = treeRotateMatrix * treeMoveMatrix * treeShrinkMatrix;
 
 			MatrixTransform *treeTrans = new MatrixTransform(finalMatrix);
-			treeTrans->addChild(treeObj);
+			treeTrans->addChild(treeObj[i]);
 			forest->addChild(treeTrans);
 		}
 
