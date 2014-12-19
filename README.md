@@ -14,25 +14,25 @@ Mouse Move: Camera Move<br>
 Left Mouse: Shoot<br>
 
 r: Reset Scene<br>
-g: Dynamically generate new trees
-p, '[', ']' : generate new skybox background
-n: go into night vision mode to see bounding boxes
-b: see bounding boxes
+g: Dynamically generate new trees<br>
+p, '[', ']' : generate new skybox background<br>
+n: go into night vision mode to see bounding boxes<br>
+b: see bounding boxes<br>
 
 
 <b>The main 3 features we are implementing are:</b><br>
-1. L-system plant generation
-2. Collision detection with bounding boxes and spheres
-3. Particle effects.
+1. L-system plant generation<br>
+2. Collision detection with bounding boxes and spheres<br>
+3. Particle effects.<br>
 
 <b>Some future features we want to implement if we have time:</b><br>
-1. Scoring system
-2. Physics fun!
-3. Adding in Objects with texture maps
-4. Shading effects
-5. Different shaped objects
-6. Jumping!
-7. Shooting affects screen
+1. Scoring system<br>
+2. Physics fun!<br>
+3. Adding in Objects with texture maps<br>
+4. Shading effects<br>
+5. Different shaped objects<br>
+6. Jumping!<br>
+7. Shooting affects screen<br>
 
 Written using C++ with OpenGL. 
 
