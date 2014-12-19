@@ -3,6 +3,7 @@
 Created by: Kevin Zhang and Frankie Liu for CSE 167 
 <br>http://ivl.calit2.net/wiki/index.php/CSE167Fall2014
 
+<b>Description:</b><br>
 You "wake up" in a room filled with a bunch of colorful Dr. Seuss trees. The only way to escape this horrible nightmare is to shoot and blow all the enemies floating around. Little did you know that this is just the beginning of a long and epic journey...
 <br><br>
 Basically in this game you control the camera using your mouse movements, and control the person moving using the keyboard.
