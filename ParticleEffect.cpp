@@ -15,7 +15,7 @@ ParticleEffect::ParticleEffect(Vector3 pos){
 		double z = double(2 * (rand() % 2) - 1)*(double)(rand() % 1000) * speed / 1000.0;
 		current->dir = Vector3(x, y, z);
 		current->pos = pos;
-		current->duration = 120 + rand() % 200;
+		current->duration = 120 + rand() % 300;
 		particles->push_back(current);
 	}
 }

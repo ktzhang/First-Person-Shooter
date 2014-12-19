@@ -103,6 +103,13 @@ Reader* bunny;
 Reader* dragon;
 Reader* bear;
 Reader* reader;
+extern GLuint* top;
+extern GLuint* front;
+extern GLuint* leftCube;
+extern GLuint* rightCube;
+extern GLuint* back;
+extern GLuint* bottom;
+extern GLuint* loadTexture(char* file_name);
 
 
 //Wave Stuff
@@ -143,23 +150,23 @@ void Window::init() {
 	effects = new vector<ParticleEffect*>();
 
 	boxes = new vector<TargetBox*>();
-	TargetBox *box = new TargetBox(Vector3(0.12, 0.1, 0.2), Vector3(0, 0, 0),0.02,1);
+	TargetBox *box = new TargetBox(Vector3(0.12, 0.1, 0.2), Vector3(0, 0, 0),(double)(rand()%5+1)/100.0,1);
 	boxes->push_back(box);
-	int numBalls = 10;
+	int numBalls = 15;
 	for (int i = 0; i < numBalls; i++){
-		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(1, 0, 0),0.03,1);
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(1, 0, 0), (double)(rand() % 5 + 1) / 100.0, 1);
 		boxes->push_back(box);
 	}
 	for (int i = 0; i < numBalls; i++){
-		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 1, 0), 0.03, 1);
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 1, 0), (double)(rand() % 5 + 1) / 100.0, 1);
 		boxes->push_back(box);
 	}
 	for (int i = 0; i < numBalls; i++){
-		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 1), 0.03, 1);
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 1), (double)(rand() % 5 + 1) / 100.0, 1);
 		boxes->push_back(box);
 	}
 	for (int i = 0; i < numBalls; i++){
-		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 0),0.02, 1);
+		box = new TargetBox(Vector3(rd(), rd(false), rd()), Vector3(0, 0, 0), (double)(rand() % 5 + 1) / 100.0, 1);
 		boxes->push_back(box);
 	}
 
@@ -215,6 +222,49 @@ void Window::processNormalKeys(unsigned char key, int x, int y)
 		delete camera;
 		init();
 		reshapeCallback(width, height);
+		break;
+
+	case 'p':
+
+		glActiveTexture(GL_TEXTURE1);
+		top = loadTexture("frozen_top.ppm");
+		glActiveTexture(GL_TEXTURE2);
+		leftCube = loadTexture("frozen_left.ppm");
+		glActiveTexture(GL_TEXTURE3);
+		rightCube = loadTexture("frozen_right.ppm");
+		glActiveTexture(GL_TEXTURE4);
+		back = loadTexture("frozen_back.ppm");
+		glActiveTexture(GL_TEXTURE5);
+		front = loadTexture("frozen_front.ppm");
+		bottom = loadTexture("floor__.ppm");
+		break;
+	case '[':
+
+		glActiveTexture(GL_TEXTURE1);
+		top = loadTexture("Skybox_Water222_top.ppm");
+		glActiveTexture(GL_TEXTURE2);
+		leftCube = loadTexture("Skybox_Water222_left.ppm");
+		glActiveTexture(GL_TEXTURE3);
+		rightCube = loadTexture("Skybox_Water222_right.ppm");
+		glActiveTexture(GL_TEXTURE4);
+		back = loadTexture("Skybox_Water222_back.ppm");
+		glActiveTexture(GL_TEXTURE5);
+		front = loadTexture("Skybox_Water222_front.ppm");
+		bottom = loadTexture("floor__.ppm");
+		break;
+	case ']':
+
+		glActiveTexture(GL_TEXTURE1);
+		top = loadTexture("ashcanyon_top.ppm");
+		glActiveTexture(GL_TEXTURE2);
+		leftCube = loadTexture("ashcanyon_left.ppm");
+		glActiveTexture(GL_TEXTURE3);
+		rightCube = loadTexture("ashcanyon_right.ppm");
+		glActiveTexture(GL_TEXTURE4);
+		back = loadTexture("ashcanyon_back.ppm");
+		glActiveTexture(GL_TEXTURE5);
+		front = loadTexture("ashcanyon_front.ppm");
+		bottom = loadTexture("floor__.ppm");
 		break;
 	case 'g':
 		genList();

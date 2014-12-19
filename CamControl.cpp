@@ -87,9 +87,15 @@ void CameraController::updateMouse(int x, int y){
 	//axis_y.normalize();
 }
 
+double constValue = 0.95;
+
 void CameraController::moveForward(){
 	pz += sin(angleX) * step;
 	px += cos(angleX) * step;
+	if (pz > constValue) pz = constValue;
+	else if (pz < -constValue) pz = -constValue;
+	if (px > constValue) px = constValue;
+	else if (px < -constValue) px = -constValue;
 }
 
 void CameraController::moveUp(){
@@ -104,16 +110,28 @@ void CameraController::moveDown(){
 void CameraController::moveBack(){
 	pz -= sin(angleX) * step;
 	px -= cos(angleX) * step;
+	if (pz > constValue) pz = constValue;
+	else if (pz < -constValue) pz = -constValue;
+	if (px > constValue) px = constValue;
+	else if (px < -constValue) px = -constValue;
 
 }
 void CameraController::moveLeft(){
 	pz -= cos(angleX) * step;
 	px += sin(angleX) * step;
+	if (pz > constValue) pz = constValue;
+	else if (pz < -constValue) pz = -constValue;
+	if (px > constValue) px = constValue;
+	else if (px < -constValue) px = -constValue;
 }
 
 void CameraController::moveRight(){
 	pz += cos(angleX) * step;
 	px -= sin(angleX) * step;
+	if (pz > constValue) pz = constValue;
+	else if (pz < -constValue) pz = -constValue;
+	if (px > constValue) px = constValue;
+	else if (px < -constValue) px = -constValue;
 }
 
 Matrix4 CameraController::getRotX(){
