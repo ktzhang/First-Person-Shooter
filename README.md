@@ -2,23 +2,43 @@
 
 Created by: Kevin Zhang and Frankie Liu
 
-This is a shooting game occurs in a room, where a person has to shoot different boxes  that are floating around in a scene. They have a gun and the more boxes they destroy, the more points they get. They can freely walk and look around the scene.
+You "wake up" in a room filled with a bunch of colorful Dr. Seuss trees. The only way to escape this horrible nightmare is to shoot and blow all the enemies floating around... Little did you know that this is just the beginning of a long and epic journey...
+<br>
+Basically in this game you control the camera using your mouse movements, and control the person moving using the keyboard.
+Pressing MOUSE1 will fire a ball in the center of your screen and if that bullet hits an enemy in the scene, the enemy will blow up! 
 
-The main 3 features we are implementing are:
+<b/>Controls:</b>
+w, a, s, d: Person Move
+Mouse Move: Camera Move
+Left Mouse: Shoot
+
+r: Reset Scene
+g: Dynamically generate new trees
+p, '[', ']' : generate new skybox background
+n: go into night vision mode to see bounding boxes
+b: see bounding boxes
+
+
+<b>The main 3 features we are implementing are:</b>
 1. L-system plant generation
 2. Collision detection with bounding boxes and spheres
 3. Particle effects.
 
-Some future features we want to implement if we have time:
+<b>Some future features we want to implement if we have time:</b>
 1. Scoring system
-2. Better shaped trees
-3. Smoother movements
-4. Physics fun!
+2. Physics fun!
+3. Adding in Objects with texture maps
+4. Shading effects
+5. Different shaped objects
+6. Jumping!
+7. Shooting affects screen
 
 Written using C++ with OpenGL. 
 
-Checkout our game demo here!
+Checkout our game demo here!</br>
+http://www.youtube.com/watch?v=BLzkSCvzkwA
+</br>
 [![GAMEDEMO](http://img.youtube.com/vi/BLzkSCvzkwA/0.jpg)](http://www.youtube.com/watch?v=BLzkSCvzkwA)
 
-Blog here!
+Blog here! </br>
 http://kevinandfrankie.blogspot.com/
