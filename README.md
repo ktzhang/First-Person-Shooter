@@ -18,7 +18,7 @@ Some future features we want to implement if we have time:
 Written using C++ with OpenGL. 
 
 Checkout our game demo here!
-https://www.youtube.com/watch?v=BLzkSCvzkwA
+[![GAMEDEMO](http://img.youtube.com/vi/BLzkSCvzkwA/0.jpg)](http://www.youtube.com/watch?v=BLzkSCvzkwA)
 
 Blog here!
 http://kevinandfrankie.blogspot.com/
