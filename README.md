@@ -8,7 +8,7 @@ You "wake up" in a room filled with a bunch of colorful Dr. Seuss trees. The onl
 Basically in this game you control the camera using your mouse movements, and control the person moving using the keyboard.
 Pressing MOUSE1 will fire a ball in the center of your screen and if that bullet hits an enemy in the scene, the enemy will blow up! 
 
-<b/>Controls:</b><br>
+<b>Controls:</b><br>
 w, a, s, d: Person Move<br>
 Mouse Move: Camera Move<br>
 Left Mouse: Shoot<br>
@@ -20,12 +20,12 @@ n: go into night vision mode to see bounding boxes<br>
 b: see bounding boxes<br>
 
 
-<b>The main 3 features we are implementing are:</b><br>
+<b>The main 3 features we are implemented are:</b><br>
 1. L-system plant generation<br>
 2. Collision detection with bounding boxes and spheres<br>
 3. Particle effects.<br>
 
-<b>Some future features we want to implement if we have time:</b><br>
+<b>Some future features we plan to implement</b><br>
 1. Scoring system<br>
 2. Physics fun!<br>
 3. Adding in Objects with texture maps<br>
